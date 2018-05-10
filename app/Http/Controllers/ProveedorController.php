@@ -3,12 +3,25 @@
 namespace App\Http\Controllers;
 use App\Proveedor;
 use Illuminate\Http\Request;
-
+use DB;
 class ProveedorController extends Controller
 {
     public function getProveedores(){
-    	$proveedores=Proveedor::all();
+    	$proveedores=DB::table('proveedors')
+                        ->join('tipo_proveedors','proveedors.tipo_proveedor','=','tipo_proveedors.id')
+                        ->select('proveedors.id','proveedors.nombre_proveedor','proveedors.ruc','proveedors.direccion','proveedors.telefono','proveedors.email','tipo_proveedors.tipo')
+                        ->where('proveedors.estado','=',true)->get();
     	return $proveedores;
+    }
+
+    public function deleteProveedores($id)
+    {
+        $proveedor=Proveedor::where('id','=',$id)->first();
+        if(@count(proveedor)>=1){
+            $proveedor->estado=false;
+            $proveedor->save();
+            return $proveedor;
+        }
     }
 
     public function addProveedores(Request $request){
@@ -54,7 +67,7 @@ class ProveedorController extends Controller
             $data=array(
                 'status'=>'error',
                 'code'=>400,
-                'mesaje'=>'faltan datos'
+                'mensage'=>'faltan datos'
             );
         }
         return response()->json($data,200);

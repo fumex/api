@@ -27,10 +27,11 @@ Route::middleware(['jwt.auth'])->group(function(){
 	//Proveedor
 	Route::get('auth/proveedores','ProveedorController@getProveedores');
 	Route::post('auth/proveedores-add','ProveedorController@addProveedores');
+	Route::get('auth/proveedores-delete/{id}','ProveedorController@deleteProveedores');
 	//tipo Proveedor
-	Route::get('tipo','TipoProveedorController@getAll');
-	Route::post('tipo','TipoProveedorController@add');
-	Route::get('tipo/{id}','TipoProveedorController@get');
+	Route::get('auth/tipo','TipoProveedorController@getAll');
+	Route::post('auth/tipo-add','TipoProveedorController@addTipo');
+	//Route::get('tipo/{id}','TipoProveedorController@get');
 });
 
 
