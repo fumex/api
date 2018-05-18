@@ -17,59 +17,47 @@ class ProveedorController extends Controller
     public function deleteProveedores($id)
     {
         $proveedor=Proveedor::where('id','=',$id)->first();
-        if(@count(proveedor)>=1){
+        if(@count($proveedor)>=1){
             $proveedor->estado=false;
             $proveedor->save();
             return $proveedor;
         }
     }
 
+    public function updateProveedores($id, Request $request)
+    {
+        $json =$request->input('json',null);
+        $params = json_decode($json);
+        $params_array=json_decode($json, true);
+        //validar datos
+        $proveedor=Proveedor::where('id',$id)->update($params_array);
+
+        $data=array(
+            'proveedor'=>$params,
+            'status'=>'success',
+            'code'=>200
+        );
+        return response()->json($data);
+    
+    }
     public function addProveedores(Request $request){
-        $json=$request->input('json',null);
-        $params=json_decode($json);
+        $json = $request->input('json',null);
+        $params = json_decode($json);
+        //guardar
+        $proveedor= new Proveedor();
+        $proveedor->nombre_proveedor=$params->nombre_proveedor;
+        $proveedor->ruc=$params->ruc;
+        $proveedor->direccion=$params->direccion;
+        $proveedor->telefono=$params->telefono;
+        $proveedor->email=$params->email;
+        $proveedor->tipo_proveedor=$params->tipo_proveedor;
 
-        $nombre_proveedor=(!is_null($json) && isset($params->nombre_proveedor))?$params->nombre_proveedor:null;
-        $ruc=(!is_null($json) && isset($params->ruc))?$params->ruc:null;
-        $direccion=(!is_null($json) && isset($params->direccion))?$params->direccion:null;
-        $telefono=(!is_null($json) && isset($params->telefono))?$params->telefono:null;
-        $email=(!is_null($json) && isset($params->email))?$params->email:null;
-        $tipo_proveedor=(!is_null($json) && isset($params->tipo_proveedor))?$params->tipo_proveedor:null;
-
-        if(!is_null($nombre_proveedor) && !is_null($ruc) && !is_null($direccion) && !is_null($telefono) && !is_null($tipo_proveedor)){
-
-            $proveedor = new Proveedor ();
-            $proveedor->nombre_proveedor=$nombre_proveedor;
-            $proveedor->ruc=$ruc;
-            $proveedor->direccion=$direccion;
-            $proveedor->telefono=$telefono;
-            $proveedor->email=$email;
-            $proveedor->tipo_proveedor=$tipo_proveedor;
-
-            $isset_proveedor=Proveedor::where('nombre_proveedor','=',$proveedor->nombre_proveedor)->first();
-            if(@count($isset_proveedor)===0){
-                $proveedor->save();
-                $data=array(
+        $proveedor->save();
+        $data=array(
                     'status'=>'success',
                     'code'=>200,
-                    'mensage'=>'registrado'
+                    'mensage'=>'registrado pago'
                 );
-            }
-            else{
-                $data =array(
-                    'status'=>'error',
-                    'code'=>300,
-                    'mensage'=>'ya existe'
-                );
-            }
-
-        }
-        else{
-            $data=array(
-                'status'=>'error',
-                'code'=>400,
-                'mensage'=>'faltan datos'
-            );
-        }
         return response()->json($data,200);
     } 
 }

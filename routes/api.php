@@ -27,11 +27,23 @@ Route::middleware(['jwt.auth'])->group(function(){
 	//Proveedor
 	Route::get('auth/proveedores','ProveedorController@getProveedores');
 	Route::post('auth/proveedores-add','ProveedorController@addProveedores');
+	Route::put('auth/proveedores-update/{id}','ProveedorController@updateProveedores');
 	Route::get('auth/proveedores-delete/{id}','ProveedorController@deleteProveedores');
 	//tipo Proveedor
 	Route::get('auth/tipo','TipoProveedorController@getAll');
 	Route::post('auth/tipo-add','TipoProveedorController@addTipo');
 	//Route::get('tipo/{id}','TipoProveedorController@get');
+	
+	//***Pagos****
+	Route::post('auth/pagos-add','PagoController@addPago');
+	Route::get('auth/pagos-code','PagoController@code');
+	Route::get('auth/proveedor-list','PagoController@getProveedores');
+	//***Detalles Pago*****
+	Route::post('auth/pago-detalle-add','PagoDetalleController@addPagoDetalle');
+
+	//***Unidades de producto*******
+	Route::get('auth/unidades','UnidadController@getUnidad');
+	Route::post('auth/unidad','UnidadController@addUnidad');
 });
 
 
