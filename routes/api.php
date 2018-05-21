@@ -38,9 +38,11 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('auth/pagos-add','PagoController@addPago');
 	Route::get('auth/pagos-code','PagoController@code');
 	Route::get('auth/proveedor-list','PagoController@getProveedores');
+
 	//***Detalles Pago*****
 	Route::post('auth/pago-detalle-add','PagoDetalleController@addPagoDetalle');
-
+	Route::get('auth/get','PagoDetalleController@getAlmacen');
+	Route::post('auth/almacen-detalle','PagoDetalleController@DetalleAlmacen');
 	//***Unidades de producto*******
 	Route::get('auth/unidades','UnidadController@getUnidad');
 	Route::post('auth/unidad','UnidadController@addUnidad');
@@ -59,6 +61,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('/productos','ProductosController@insertar');
 	Route::post('/productos/{id}','ProductosController@modificar')->where(['id' => '[0-9]+']);
 	Route::get('/productos/buscar/{name}','ProductosController@buscar');
+	Route::get('/productos-get','ProductosController@getProductos');
 
 	//***Unidades de almacenes*******
 	Route::get('almacenes','AlmacenesController@ver' );

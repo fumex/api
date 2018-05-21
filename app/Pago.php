@@ -8,5 +8,5 @@ class Pago extends Model
 {
  	protected $table='pagos';
 
- 	protected $fillable=['code','nroBoleta','id_proveedor','tipoPago'];  
+ 	protected $fillable=['code','nroBoleta','id_proveedor','id_almacen','tipoPago'];  
 }

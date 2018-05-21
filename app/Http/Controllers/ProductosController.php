@@ -112,4 +112,9 @@ class ProductosController extends Controller
         $Productos=Productos::where('nombre','like',$name.'%')->first();
         return $Productos;
     }
+
+    public function getProductos(){
+        $productos=Productos::all();
+        return $productos;
+    }
 }
