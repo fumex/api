@@ -53,9 +53,24 @@ class CategoriaController extends Controller
     }
        
     public function modificar($id,Request $request){
-        $categoria=Categoria::find($id);
-    	$categoria->fill($request->all())->save();
-    	return $categoria;
+        $json=$request->input('json',null);
+        $params=json_decode($json,true);
+        
+        $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
+        $descripcion	=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
+        $direccion	=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
+        $telefono	=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
+
+              //guardar
+                $Almacenes= Almacenes::where('id',$id)->update($params);
+
+                $data =array(
+                    'status'=>'succes',
+                    'code'=>200,
+                    'mensage'=>'registrado'
+                );
+            
+        return response()->json($data,200);
        }
 
        public function seleccionar($id){
