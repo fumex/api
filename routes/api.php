@@ -28,8 +28,9 @@ Route::middleware(['jwt.auth'])->group(function(){
 	//Proveedor
 	Route::get('auth/proveedores','ProveedorController@getProveedores');
 	Route::post('auth/proveedores-add','ProveedorController@addProveedores');
-	Route::put('auth/proveedores-update/{id}','ProveedorController@updateProveedores');
+	Route::post('auth/proveedores-update/{id}','ProveedorController@updateProveedores');
 	Route::get('auth/proveedores-delete/{id}','ProveedorController@deleteProveedores');
+	Route::get('auth/proveedor/{id}','ProveedorController@getProveedor');
 	//tipo Proveedor
 	Route::get('auth/tipo','TipoProveedorController@getAll');
 	Route::post('auth/tipo-add','TipoProveedorController@addTipo');

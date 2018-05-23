@@ -24,21 +24,16 @@ class ProveedorController extends Controller
         }
     }
 
-    public function updateProveedores($id, Request $request)
-    {
-        $json =$request->input('json',null);
-        $params = json_decode($json);
-        $params_array=json_decode($json, true);
-        //validar datos
-        $proveedor=Proveedor::where('id',$id)->update($params_array);
+    public function getProveedor($id){
+        $proveedor=Proveedor::find($id);
+        
+        return response()->json($proveedor);
+    }
 
-        $data=array(
-            'proveedor'=>$params,
-            'status'=>'success',
-            'code'=>200
-        );
-        return response()->json($data);
-    
+    public function updateProveedores($id,Request $request)
+    {
+       $edit=Proveedor::find($id)->update($request->all());
+       return response()->json($edit); 
     }
     public function addProveedores(Request $request){
         $json = $request->input('json',null);
