@@ -61,7 +61,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('/productos/{id}','ProductosController@seleccionar' )->where(['id' => '[0-9]+']);
 	Route::get('/productos/eliminar/{id}','ProductosController@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('/productos','ProductosController@insertar');
-	Route::post('/productos/{id}','ProductosController@modificar')->where(['id' => '[0-9]+']);
+	Route::post('/productos/{iden}','ProductosController@modificar')->where(['id' => '[0-9]+']);
 	Route::get('/productos/buscar/{name}','ProductosController@buscar');
 	Route::get('/productos-get','ProductosController@getProductos');
 
