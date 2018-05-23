@@ -54,21 +54,25 @@ class CategoriaController extends Controller
        
     public function modificar($id,Request $request){
         $json=$request->input('json',null);
-        $params=json_decode($json,true);
+        $params=json_decode($json);
         
         $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
-        $descripcion	=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
-        $direccion	=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
-        $telefono	=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
-
               //guardar
-                $Almacenes= Almacenes::where('id',$id)->update($params);
+        if(!is_null($nombre)){
+            $categorias= Categoria::where('id','=',$id)->update(['nombre'=>$nombre]);
 
-                $data =array(
-                    'status'=>'succes',
-                    'code'=>200,
-                    'mensage'=>'registrado'
-                );
+            $data =array(
+            'status'=>'succes',
+            'code'=>200,
+            'mensage'=>'registrado'
+            );
+        }else{
+            $data =array(
+                'status'=>'error',
+                'code'=>400,
+                'mensage'=>'faltan datos'
+            );
+        }
             
         return response()->json($data,200);
        }

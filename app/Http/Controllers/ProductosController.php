@@ -70,10 +70,11 @@ class ProductosController extends Controller
         //return $Productos;
     }
        
-    public function modificar($id,Request $request){
+    public function modificar($iden,Request $request){
         $json=$request->input('json',null);
-        $params=json_decode($json,true);
-        
+        $params=json_decode($json);
+
+        $id=(!is_null($json) && isset($params->id)) ? $params->id : null;
         $nombre_producto=(!is_null($json) && isset($params->nombre_producto)) ? $params->nombre_producto : null;
         $id_categoria=(!is_null($json) && isset($params->id_categoria)) ? $params->id_categoria : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
@@ -81,7 +82,11 @@ class ProductosController extends Controller
         $precio=(!is_null($json) && isset($params->precio)) ? $params->precio : null;
            
               //guardar
-                $Productos= Productos::where('id',$id)->update($params);
+                $Productos= Productos::where('id',$iden)->update(['nombre_producto'=>$nombre_producto,
+                    'id_categoria'=>$id_categoria,
+                    'descripcion'=>$descripcion,
+                    'unidad_de_medida'=>$unidad,
+                    'precio'=>$precio]);
 
                 $data =array(
                     'status'=>'succes',
