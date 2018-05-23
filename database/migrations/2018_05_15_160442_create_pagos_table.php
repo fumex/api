@@ -17,6 +17,7 @@ class CreatePagosTable extends Migration
             $table->string('code',7)->primary();
             $table->string('nroBoleta')->unique();
             $table->Integer('id_proveedor');
+            $table->Integer('id_almacen');
             $table->string('tipoPago');
             $table->timestamps();
         });
