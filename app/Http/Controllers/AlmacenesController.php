@@ -8,7 +8,7 @@ use App\Almacenes;
 class AlmacenesController extends Controller
 {
     public function ver(){
-        return $listar=Almacenes::all();
+        return $listar=Almacenes::where('habilitado','habilitado')->get();
        }
 
     public function veralmacen($id){
@@ -27,11 +27,14 @@ class AlmacenesController extends Controller
 
 
         if(!is_null($nombre)){
+            $habilitado='habilitado';
             $Almacenes=new Almacenes();
+
             $Almacenes->nombre=$nombre;
             $Almacenes->descripcion=$descripcion;
             $Almacenes->direccion=$direccion;
             $Almacenes->telefono=$telefono;
+            $Almacenes->habilitado=$habilitado;
             
 
             $isset_cate=Almacenes::where('nombre','=',$nombre)->first();
@@ -67,7 +70,7 @@ class AlmacenesController extends Controller
        
     public function modificar($id,Request $request){
         $json=$request->input('json',null);
-        $params=json_decode($json,true);
+        $params=json_decode($json);
         
         $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
         $descripcion	=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
@@ -75,7 +78,10 @@ class AlmacenesController extends Controller
         $telefono	=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
 
               //guardar
-                $Almacenes= Almacenes::where('id',$id)->update($params);
+                $Almacenes= Almacenes::where('id',$id)->update(['nombre'=>$nombre,
+                'descripcion'=>$descripcion,
+                'direccion'=>$direccion,
+                'telefono'=>$telefono]);
 
                 $data =array(
                     'status'=>'succes',
@@ -94,8 +100,8 @@ class AlmacenesController extends Controller
        }
 
     public function eliminar($id){
-        $Almacenes=Almacenes::find($id);
-    	$Almacenes->delete();
+        $cambio='desabilitado';
+        $Almacenes=Almacenes::where('id',$id)->update(['habilitado'=>$cambio]);
     	return $Almacenes;
        }
 

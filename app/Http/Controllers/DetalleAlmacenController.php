@@ -55,16 +55,12 @@ class DetalleAlmacenController extends Controller
        
     public function modificar($id,Request $request){
         $json=$request->input('json',null);
-        $params=json_decode($json,true);
+        $params=json_decode($json);
         
-        $id_almacen	=(!is_null($json) && isset($params->id_almacen)) ? $params->id_almacen : null;
-        $id_pago=(!is_null($json) && isset($params->id_pago)) ? $params->id_pago : null;
-        $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
-        $tipo_movimiento=(!is_null($json) && isset($params->tipo_movimiento)) ? $params->tipo_movimiento : null;
-        $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
+        $precio_venta=(!is_null($json) && isset($params->precio_venta)) ? $params->precio_venta : null;
 
               //guardar
-                $Inventario= Inventario::where('id',$id)->update($params);
+                $detalle_almacen= detalle_almacen::where('id',$id)->update(['precio_venta'=> $precio_venta]);
 
                 $data =array(
                     'status'=>'succes',
@@ -76,16 +72,13 @@ class DetalleAlmacenController extends Controller
 
        }
 
-       public function seleccionar($id){
-       
-        $Inventario=Inventario::find($id);
-        return $Inventario;
-       }
+    public function seleccionar($id){   
+        $detalle_almacen=detalle_almacen::find($id);
+        return $detalle_almacen;
+    }
 
     public function eliminar($id){
-        $Inventario=Inventario::find($id);
-    	$Inventario->delete();
-    	return $Inventario;
+        
        }
 
 }

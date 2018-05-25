@@ -12,6 +12,7 @@ class ProductosController extends Controller
     public function ver(){
         $listar2=productos::join('categorias','productos.id_categoria','=','categorias.id')
         ->select('productos.id','nombre_producto','categorias.nombre','descripcion','precio','unidad_de_medida')
+        ->where('habilitado','habilitado')
         ->get();
         //return $listar=Productos::all();
         return $listar2;
@@ -29,13 +30,14 @@ class ProductosController extends Controller
 
         if(!is_null($nombre_producto)  && !is_null($precio) && !is_null($id_categoria)){
             $Productos=new Productos();
-           
+            $habilitado='habilitado';
            
             $Productos->nombre_producto=$nombre_producto;
             $Productos->id_categoria=$id_categoria;
             $Productos->descripcion=$descripcion;
             $Productos->unidad_de_medida=$unidad;
             $Productos->precio=$precio;
+            $Productos->habilitado=$habilitado;
 
             $isset_producto=Productos::where('nombre_producto','=',$nombre_producto)->first();
             if(@count($isset_producto)==0){
@@ -107,8 +109,8 @@ class ProductosController extends Controller
        }
 
     public function eliminar($id){
-        $Productos=Productos::find($id);
-    	$Productos->delete();
+        $cambio='desabilitado';
+        $Productos=Productos::where('id',$id)->update(['habilitado'=>$cambio]);
     	return $Productos;
        }
 
