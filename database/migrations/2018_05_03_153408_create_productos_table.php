@@ -20,6 +20,7 @@ class CreateProductosTable extends Migration
             $table->string('descripcion')->nullable();
             $table->string('unidad_de_medida')->nullable();
             $table->decimal('precio');
+            $table->string('habilitado');
             $table->timestamps();
         });
     }
