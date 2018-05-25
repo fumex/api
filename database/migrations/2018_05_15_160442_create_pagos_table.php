@@ -15,6 +15,7 @@ class CreatePagosTable extends Migration
     {
         Schema::create('pagos', function (Blueprint $table) {
             $table->string('code',7)->primary();
+            $table->Integer('id_documento');
             $table->string('nroBoleta')->unique();
             $table->Integer('id_proveedor');
             $table->Integer('id_almacen');

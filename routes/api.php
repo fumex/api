@@ -31,6 +31,14 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('auth/proveedores-update/{id}','ProveedorController@updateProveedores');
 	Route::get('auth/proveedores-delete/{id}','ProveedorController@deleteProveedores');
 	Route::get('auth/proveedor/{id}','ProveedorController@getProveedor');
+	//tipo de documento
+	Route::get('auth/documentos','TipoDocumentoController@getDocumentos');
+	Route::get('auth/documento/{id}','TipoDocumentoController@getDocumento');
+	Route::get('auth/documento-delete/{id}','TipoDocumentoController@deleteDocumento');
+	Route::post('auth/documento-add','TipoDocumentoController@addDocumento');
+	Route::post('auth/documento-update/{id}','TipoDocumentoController@updateDocumento');
+	Route::get('auth/documentos-persona','TipoDocumentoController@getDocumenPersona');
+	Route::get('auth/documentos-comprobante','TipoDocumentoController@getDocumenComprobante');
 	//tipo Proveedor
 	Route::get('auth/tipo','TipoProveedorController@getAll');
 	Route::post('auth/tipo-add','TipoProveedorController@addTipo');
