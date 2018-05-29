@@ -48,6 +48,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('auth/pagos-add','PagoController@addPago');
 	Route::get('auth/pagos-code','PagoController@code');
 	Route::get('auth/proveedor-list','PagoController@getProveedores');
+	Route::get('auth/productos-listas','ProductosController@listaProductos');
 
 	//***Detalles Pago*****
 	Route::post('auth/pago-detalle-add','PagoDetalleController@addPagoDetalle');
