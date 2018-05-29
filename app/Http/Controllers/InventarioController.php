@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Inventario;
 use App\detalle_almacen;
+use App\Productos;
 
 class InventarioController extends Controller
 {
     public function ver(){
         $listar2=Inventario::join('almacenes','inventarios.id_almacen','=','almacenes.id')
         ->join('productos','inventarios.id_producto','=','productos.id')
-        ->select('inventarios.id','inventarios.fecha','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','tipo_movimiento','cantidad')
+        ->select('inventarios.id','inventarios.fecha','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','tipo_movimiento','inventarios.cantidad')
         ->get();
         return $listar2;
        }
@@ -80,6 +81,20 @@ class InventarioController extends Controller
         }
         
          if(!is_null($escoja) && $opciones=='tranferencia entre almacenes' ){
+
+            $isset_dettalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->first();
+                if(@count($isset_dettalle)==0){
+                    $d_almacen=new detalle_almacen();
+                    $d_almacen->id_almacen=$escoja;
+                    $d_almacen->id_producto=$id_producto;
+                    $d_almacen->stock=0;
+                    $d_almacen->precio_compra=0;
+                    $d_almacen->precio_venta=0;
+                    $d_almacen->save();
+                    $data2 =array(
+                        'status'=>'echo'
+                     );
+                }
             $otronumero=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->value('stock');
             $otroinventario=new Inventario();
             $otroinventario->id_almacen=$escoja;
@@ -146,12 +161,13 @@ class InventarioController extends Controller
     	$Inventario->delete();
     	return $Inventario;
        }
-    public function prueba(){
-        $isset_dettalle=detalle_almacen::where('id_almacen','=',1)->where("id_producto",'=',1)->first();
-        
-       return $isset_dettalle;
+    public function prueba(Request $request){
+        $json=$request->input('json',null);
+        $params=json_decode($json);
 
-    	
+        $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
+        $producto_id=Productos::where('nombre_producto',$id_producto)->value('id');
+        return $producto_id;
        }
 
 }
