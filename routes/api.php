@@ -87,7 +87,23 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('almacen','DetalleAlmacenController@insertar');
 	Route::post('almacen/{id}','DetalleAlmacenController@modificar')->where(['id' => '[0-9]+']);
 
-	Route::get('prueba','InventarioController@prueba');
+	//***Orden de pedido */
+	Route::get('OrdenPedidos','orden_depedidocontroler@ver' );
+	Route::get('OrdenPedidos/{id}','orden_depedidocontroler@seleccionar' )->where(['id' => '[0-9]+']);
+	Route::get('OrdenPedidos/eliminar/{id}','orden_depedidocontroler@eliminar' )->where(['id' => '[0-9]+']);
+	Route::post('OrdenPedidos','orden_depedidocontroler@insertar');
+	Route::post('OrdenPedidos/{id}','orden_depedidocontroler@modificar')->where(['id' => '[0-9]+']);
+
+	//***de talle de Orden de pedido */
+	Route::get('DetalleOrdenPedidos','detalle_orden_depedidocontroler@ver' );
+	Route::get('DetalleOrdenPedidos/{id}','detalle_orden_depedidocontroler@seleccionar' )->where(['id' => '[0-9]+']);
+	Route::get('DetalleOrdenPedidos/eliminar/{id}','detalle_orden_depedidocontroler@eliminar' )->where(['id' => '[0-9]+']);
+	Route::post('DetalleOrdenPedidos','detalle_orden_depedidocontroler@insertar');
+	Route::post('DetalleOrdenPedidos/{id}','detalle_orden_depedidocontroler@modificar')->where(['id' => '[0-9]+']);
+
+	Route::get('fecha','orden_depedidocontroler@fecha');
+
+	Route::post('prueba','InventarioController@prueba');
 });
 
 
