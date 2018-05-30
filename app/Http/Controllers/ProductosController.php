@@ -80,14 +80,14 @@ class ProductosController extends Controller
         $nombre_producto=(!is_null($json) && isset($params->nombre_producto)) ? $params->nombre_producto : null;
         $id_categoria=(!is_null($json) && isset($params->id_categoria)) ? $params->id_categoria : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
-        $unidadmedida=(!is_null($json) && isset($params->unidadmedida)) ? $params->unidadmedida : null;
+        $unidad_de_medida=(!is_null($json) && isset($params->unidad_de_medida)) ? $params->unidad_de_medida : null;
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
            
               //guardar
                 $Productos= Productos::where('id',$iden)->update(['nombre_producto'=>$nombre_producto,
                     'id_categoria'=>$id_categoria,
                     'descripcion'=>$descripcion,
-                    'unidad_de_medida'=>$unidadmedida,
+                    'unidad_de_medida'=>$unidad_de_medida,
                     'cantidad'=>$cantidad]);
 
                 $data =array(
