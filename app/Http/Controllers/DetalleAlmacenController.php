@@ -21,6 +21,7 @@ class DetalleAlmacenController extends Controller
         $params=json_decode($json);
 
         $id_almacen	=(!is_null($json) && isset($params->id_almacen)) ? $params->id_almacen : null;
+        $codigo=(!is_null($json) && isset($params->codigo)) ? $params->codigo : null;
         $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
         $stock=(!is_null($json) && isset($params->stock)) ? $params->stock : null;
         $precio_compra=(!is_null($json) && isset($params->precio_compra)) ? $params->precio_compra : null;
@@ -28,8 +29,8 @@ class DetalleAlmacenController extends Controller
 
         if(!is_null($id_almacen) && !is_null($id_producto)){
             $detalle_almacen=new detalle_almacen();
-
             $detalle_almacen->id_almacen=$id_almacen;
+            $detalle_almacen->codigo=$codigo;
             $detalle_almacen->id_producto=$id_producto;
             $detalle_almacen->stock=$stock;
             $detalle_almacen->precio_compra=$precio_compra;

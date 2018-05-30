@@ -13,14 +13,15 @@ class PagoDetalleController extends Controller
       	return response()->json($create);
     }
     public function DetalleAlmacen(Request $request){
-    	$pago=Pago::get()->last(); //recuperael ultimo pago realizado
+    	$pago=Pago::get()->last(); //recupera el ultimo pago realizado
     	$pago_d=PagoDetalle::get()->last();  //recupera el ultimo detalle
     	$id=$pago['id_almacen'];
     	$cantidad=$pago_d['cantidad'];
+        $codigo=$request->codigo;
     	$id_pro=$request->id_producto;
     	$pre_comp=$request->precio_compra;
     	$pre_vent=$request->precio_venta;
-    	$d_almace=detalle_almacen::where('id_almacen','=',$id)->where('id_producto','=',$id_pro)->first();
+    	$d_almace=detalle_almacen::where('id_almacen','=',$id)->where('id_producto','=',$id_pro)->where('codigo','=',$codigo)->first();
     	if(@count($d_almace)>=1){
     		$d_almace->stock=$d_almace['stock']+$cantidad;
     		$d_almace->update();
@@ -30,6 +31,7 @@ class PagoDetalleController extends Controller
 
     		$detalle_almacen= new detalle_almacen();
 	    	$detalle_almacen->id_almacen=$id;
+            $detalle_almacen->codigo=$codigo;
 	    	$detalle_almacen->id_producto=$id_pro;
 	    	$detalle_almacen->stock =$cantidad ;
 	    	$detalle_almacen->precio_compra=$pre_comp;

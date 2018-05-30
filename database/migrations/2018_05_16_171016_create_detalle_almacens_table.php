@@ -16,6 +16,7 @@ class CreateDetalleAlmacensTable extends Migration
         Schema::create('detalle_almacen', function (Blueprint $table) {
             $table->increments('id');
             $table->Integer('id_almacen');
+            $table->string('codigo');
             $table->Integer('id_producto');
             $table->Integer('stock')->default(0);
             $table->decimal('precio_compra')->nullable()->default(0);

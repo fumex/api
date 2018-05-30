@@ -124,4 +124,12 @@ class ProductosController extends Controller
         $productos=Productos::all();
         return $productos;
     }
+    public function listaProductos(){
+        $productos=DB::table('productos')
+                      ->join('categorias','productos.id_categoria','=','categorias.id')
+                      ->select('productos.id','categorias.nombre','productos.unidad_de_medida','productos.nombre_producto','productos.descripcion')
+                      ->get();
+        return response()->json($productos);
+
+    }
 }
