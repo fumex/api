@@ -18,7 +18,6 @@ class CreatePagoDetallesTable extends Migration
             $table->string('id_pago',7);
             $table->Integer('id_producto');
             $table->Integer('cantidad');
-            $table->Integer('id_unidad');
             $table->float('precio_unitario');
             $table->timestamps();
         });
