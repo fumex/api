@@ -19,6 +19,7 @@ class CreateInventariosTable extends Migration
             $table->Integer('id_almacen');
             $table->Integer('id_producto');
             $table->string('descripcion');
+            $table->decimal('precio');
             $table->Integer('tipo_movimiento');
             $table->Integer('cantidad');
             $table->timestamps();

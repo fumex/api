@@ -84,10 +84,11 @@ Route::middleware(['jwt.auth'])->group(function(){
 
 	//***inventario*******
 	Route::get('inventario','InventarioController@ver' );
-	Route::get('inventario/{id}','InventarioController@seleccionar' )->where(['id' => '[0-9]+']);
+	Route::post('inventarioselect','InventarioController@seleccionar' );
 	Route::get('inventario/eliminar/{id}','InventarioController@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('inventario','InventarioController@insertar');
 	Route::post('inventario/{id}','InventarioController@modificar')->where(['id' => '[0-9]+']);
+	Route::get('productosalmacen/{id}','InventarioController@mostrarproductos' )->where(['id' => '[0-9]+']);;
 
 	//***Udetalles_de almacen*******
 	Route::get('almacen','DetalleAlmacenController@ver' );
@@ -112,7 +113,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 
 	Route::get('fecha','orden_depedidocontroler@fecha');
 
-	Route::post('prueba','InventarioController@prueba');
+	Route::get('prueba','InventarioController@prueba');
 });
 
 

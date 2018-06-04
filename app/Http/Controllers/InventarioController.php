@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use App\Inventario;
 use App\detalle_almacen;
 use App\Productos;
+use Illuminate\Support\Facades\DB;
 
 class InventarioController extends Controller
 {
     public function ver(){
         $listar2=Inventario::join('almacenes','inventarios.id_almacen','=','almacenes.id')
         ->join('productos','inventarios.id_producto','=','productos.id')
-        ->select('inventarios.id','inventarios.fecha','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','tipo_movimiento','inventarios.cantidad')
+        ->select('inventarios.id','inventarios.fecha','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','inventarios.precio','tipo_movimiento','inventarios.cantidad')
         ->get();
         return $listar2;
        }
@@ -28,9 +29,10 @@ class InventarioController extends Controller
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
         $opciones=(!is_null($json) && isset($params->opciones)) ? $params->opciones : null;
         $escoja=(!is_null($json) && isset($params->escoja)) ? $params->escoja : null;
-
+        $presio=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->get()->last();
        $isset_dettalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->first();
         if(@count($isset_dettalle)==0){
+
             $d_almacen=new detalle_almacen();
             $d_almacen->id_almacen=$id_almacen;
             $d_almacen->id_producto=$id_producto;
@@ -42,7 +44,6 @@ class InventarioController extends Controller
                 'status'=>'echo'
             );
         }
-                
 
         if(!is_null($id_almacen) && !is_null($cantidad) && !is_null($id_producto)){
 
@@ -51,77 +52,113 @@ class InventarioController extends Controller
             $Inventario->id_producto=$id_producto;
             $Inventario->tipo_movimiento=$tipo_movimiento;
             $Inventario->cantidad=$cantidad;
-
-            if(!is_null($opciones)) {
-                $Inventario->descripcion=$opciones .$descripcion ;
+            
+            $Inventario->precio=$presio['precio_compra'];
+            if(!is_null($opciones) && !is_null($descripcion) ) {
+                $Inventario->descripcion=$opciones." : ".$descripcion ;
             }else{
-                $Inventario->descripcion=$descripcion;
+                if(!is_null($opciones))
+                {
+                    $Inventario->descripcion=$descripcion;
+                }else{
+                    $Inventario->descripcion=$opciones;
+                }
+                
             }
 
             $Inventario->save();
-            $data =array(
-                'status'=>'succes',
-                'code'=>200,
-                'mensage'=>'registrado'
-            );
-        }else{
-            $data =array(
-                'status'=>'error',
-                'code'=>400,
-                'mensage'=>'faltan datos'
-            );
-        }
+           
         $numero=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->value('stock');
+        $stockactual=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->value('stock');
+        $precioctual=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->value('precio_compra');
+        
         if($tipo_movimiento!='1')
         {
             $resultado=$numero+$cantidad;
-            
+            $costoactualizado=(($stockactual *$precioctual)+($cantidad*$presio['precio_compra']))/($stockactual+$cantidad);
+                       
         }else{
             $resultado=$numero-$cantidad;
+            $costoactualizado=(($stockactual *$precioctual)-($cantidad*$presio['precio_compra']))/($stockactual-$cantidad);
+            
         }
-        
+        $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['precio_compra'=>$costoactualizado]);
+        $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['stock'=>$resultado]);
+            $data =array(
+                    'resultado'=>$costoactualizado.' : (('.$stockactual.'*'.$precioctual.')-('.$cantidad.'*'.$presio['precio_compra'].'))/('.$stockactual.'-'.$cantidad.')',
+                    'status'=>'succes',
+                    'code'=>200,
+                    'mensage'=>'registrado'
+                );
+            }else{
+                $data =array(
+                    'status'=>'error',
+                    'code'=>400,
+                    'mensage'=>'faltan datos'
+                );
+            }
          if(!is_null($escoja) && $opciones=='tranferencia entre almacenes' ){
-
+            $otro_movimiento=2;
             $isset_dettalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->first();
                 if(@count($isset_dettalle)==0){
                     $d_almacen=new detalle_almacen();
+
                     $d_almacen->id_almacen=$escoja;
                     $d_almacen->id_producto=$id_producto;
-                    $d_almacen->stock=0;
-                    $d_almacen->precio_compra=0;
+                    $d_almacen->stock=$cantidad;
+                    $d_almacen->codigo="aun no ay";
+                    $d_almacen->precio_compra=$presio['precio_compra'];
                     $d_almacen->precio_venta=0;
                     $d_almacen->save();
                     $data2 =array(
                         'status'=>'echo'
                      );
+                }else{
+                    $otronumero=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->value('stock');
+                    $otrostockactual=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->value('stock');
+                    $otroprecioctual=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->value('precio_compra');
+                    $presio2=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->get()->last();
+                    
+                    if($tipo_movimiento!='1'){
+                        $otroresultado=$otronumero-$cantidad;
+                        $otrocostoactualizado=(($otrostockactual *$otroprecioctual)-($cantidad*$presio['precio_compra']))/($otrostockactual-$cantidad);
+                        $otro_movimiento=1;
+                    }else{
+                        $otroresultado=$otronumero+$cantidad;
+                        $otrocostoactualizado=($otrostockactual *$otroprecioctual+$cantidad*$presio['precio_compra'])/($otrostockactual+$cantidad);
+                        $otro_movimiento=2;
+                    }
+                    $detalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->update(['precio_compra'=>$otrocostoactualizado]);
+                    $detalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->update(['stock'=>$otroresultado]);
                 }
-            $otronumero=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->value('stock');
             $otroinventario=new Inventario();
             $otroinventario->id_almacen=$escoja;
             $otroinventario->id_producto=$id_producto;
             $otroinventario->cantidad=$cantidad;
-            if(!is_null($opciones)) {
-                $otroinventario->descripcion=$opciones .$descripcion ;
+            $otroinventario->precio=$presio['precio_compra'];
+
+            if(!is_null($opciones) && !is_null($descripcion)) {
+                $otroinventario->descripcion=$opciones.' : ' .$descripcion ;
             }else{
-                $otroinventario->descripcion=$descripcion;
-            }
-            if($tipo_movimiento!='1'){
-                $otroresultado=$otronumero-$cantidad;
-                $otro_movimiento=1;
-            }else{
-                $otroresultado=$otronumero+$cantidad;
-                $otro_movimiento=2;
+                if(!is_null($opciones))
+                {
+                    $otroinventario->descripcion=$descripcion;
+                }else{
+                    $otroinventario->descripcion=$opciones;
+                }
+                
             }
             $otroinventario->tipo_movimiento=$otro_movimiento;
             $otroinventario->save();
             $data =array(
+                'resultado'=>$otrocostoactualizado.' : (('.$otrostockactual.'*'.$otroprecioctual.')-('.$cantidad.'*'.$presio['precio_compra'].'))/('.$otrostockactual.'-'.$cantidad.')',
                 'status'=>'succes',
                 'code'=>200,
                 'mensage'=>'se guardo el otro'
             );
-            $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['stock'=>$otroresultado]);
+
         }
-        $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['stock'=>$resultado]);
+        
         return response()->json($data,200);
         /*$categoria=Categoria::create($request->all());
         return $categoria;*/
@@ -150,10 +187,20 @@ class InventarioController extends Controller
 
        }
 
-       public function seleccionar($id){
-       
-        $Inventario=Inventario::find($id);
-        return $Inventario;
+       public function seleccionar(Request $request){
+        $json=$request->input('json');
+        $params=json_decode($json);
+
+        $id_almacen	=(!is_null($json) && isset($params->id_almacen)) ? $params->id_almacen : null;
+        $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
+
+        $listar2=Inventario::join('almacenes','inventarios.id_almacen','=','almacenes.id')
+        ->join('productos','inventarios.id_producto','=','productos.id')
+        ->select('inventarios.id','inventarios.fecha','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','inventarios.precio','tipo_movimiento','inventarios.cantidad')
+        ->where("id_producto",'=',$id_producto)
+        ->where('id_almacen','=',$id_almacen)
+        ->get();
+        return $listar2;
        }
 
     public function eliminar($id){
@@ -161,13 +208,22 @@ class InventarioController extends Controller
     	$Inventario->delete();
     	return $Inventario;
        }
-    public function prueba(Request $request){
-        $json=$request->input('json',null);
-        $params=json_decode($json);
+    public function mostrarproductos($id){
+        $listar2=detalle_almacen::join('productos','detalle_almacen.id_producto','=','productos.id')
+        ->join('categorias','productos.id_categoria','=','categorias.id')
+        ->select('productos.id','productos.nombre_producto','productos.descripcion','productos.unidad_de_medida','productos.cantidad','categorias.nombre','stock')
+        ->where('detalle_almacen.id_almacen',$id)
+        ->get();
+        return $listar2;
 
-        $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
-        $producto_id=Productos::where('nombre_producto',$id_producto)->value('id');
-        return $producto_id;
+    }
+    
+    public function prueba(){
+        $stockactual=detalle_almacen::where('id_almacen','=',1)->where("id_producto",'=',1)->value('stock');
+        $preciactual=detalle_almacen::where('id_almacen','=',1)->where("id_producto",'=',1)->value('precio_compra');
+            
+        $total=(($stockactual * $preciactual)+500)/ $stockactual+10;
+        return ($stockactual * $preciactual.'* + 500/'.$stockactual.'='.$total);
        }
 
 }
