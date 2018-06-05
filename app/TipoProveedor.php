@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class TipoProveedor extends Model
 {
     protected $table='tipo_proveedors';
-    protected $fillable=['tipo'];
+    protected $fillable=['tipo','operacion'];
 }

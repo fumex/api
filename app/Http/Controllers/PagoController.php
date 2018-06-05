@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Pago;
 use App\Proveedor;
+use App\PagoDetalle;
+use App\detalle_almacen;
+use DB;
 class PagoController extends Controller
 {
     public function addPago(Request $request){
@@ -32,7 +35,70 @@ class PagoController extends Controller
     }
 
     public function getProveedores(){
-    	$proveedores=Proveedor::orderBy('id','desc')->get();
-    	return response()->json($proveedores);
+        $proveedores=DB::table('proveedors')
+                         ->join('tipo_proveedors','proveedors.tipo_proveedor','=','tipo_proveedors.id')
+                         ->select('proveedors.id','proveedors.nombre_proveedor','proveedors.ruc','proveedors.direccion','proveedors.telefono','proveedors.email')
+                         ->where('proveedors.estado','=',true)->where('tipo_proveedors.operacion','=','Proveedor')
+                         ->get();
+        return response()->json($proveedores);
     }
+
+    public function listPagos(){
+       $pagos=DB::table('pagos')
+                    ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
+                    ->join('tipo_documentos','pagos.id_documento','=','tipo_documentos.id')
+                    ->join('detalle_almacen','pagos.id_almacen','=','detalle_almacen.id')
+                    ->join('almacenes','detalle_almacen.id_almacen','=','almacenes.id')
+                    ->select('pagos.id','pagos.code','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.created_at')
+                    ->where('pagos.estado','=',true)
+                    ->get();
+        return response()->json($pagos);
+    }
+
+    public function getPagoDetalle($code){
+        $pago_d=DB::table('pago_detalles')
+                    ->join('pagos','pago_detalles.id_pago','=','pagos.code')
+                    ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
+                    ->join('productos','pago_detalles.id_producto','=','productos.id')
+                    ->join('almacenes','pagos.id_almacen','=','almacenes.id')
+                    ->select('pago_detalles.id','pago_detalles.id_pago','pago_detalles.id_producto','productos.nombre_producto','pagos.id_almacen','almacenes.nombre','pago_detalles.cantidad','pago_detalles.precio_unitario')
+                    ->where('pago_detalles.id_pago','=',$code)->where('pago_detalles.estado','=',true)
+                    ->get();
+        return response()->json($pago_d);
+    }
+    public function getCompra($code){
+        $compra=Pago::where('code','=',$code)->first();
+        $id_pago=$compra['id'];
+        return $id_pago;
+    }
+    public function deletePago($id){
+       $pago=Pago::find($id);
+       if(@count($pago)>=1){
+         $pago->estado=false;
+         $pago->save();
+         return $pago;
+       }
+    }
+   
+   public function deletePagoDetalle($id){
+        $pago_d=PagoDetalle::find($id);
+        $cantidad=$pago_d['cantidad'];
+        $cod=$pago_d['id_pago'];
+        $id_producto=$pago_d['id_producto'];
+        if(@count($pago_d)>=1){
+            $pago_d->estado=false;
+            $pago_d->save();
+            //return $pago_d;
+            $pago=Pago::where('code','=',$cod)->first();
+            $id_almacen=$pago['id_almacen'];
+            if(@count($pago)>=1){
+                $almacen_d=detalle_almacen::where('id_almacen','=',$id_almacen)->where('id_producto','=',$id_producto)->first();
+                if(@count($almacen_d)>=1){
+                    $almacen_d->stock=$almacen_d['stock']-$cantidad;
+                    $almacen_d->save();
+                    return response()->json($almacen_d);
+                }
+            }   
+        }
+   }
 }

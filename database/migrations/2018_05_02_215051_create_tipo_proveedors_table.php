@@ -16,6 +16,7 @@ class CreateTipoProveedorsTable extends Migration
         Schema::create('tipo_proveedors', function (Blueprint $table) {
             $table->increments('id');
             $table->string('tipo',100)->unique();
+            $table->string('operacion');
             $table->timestamps();
         });
     }
