@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\PagoDetalle;
 use App\Pago;
 use App\detalle_almacen;
+use App\Inventario;
+use App\TipoDocumento;
 class PagoDetalleController extends Controller
 {
     public function addPagoDetalle(Request $request){
@@ -23,9 +25,16 @@ class PagoDetalleController extends Controller
     	$pre_vent=$request->precio_venta;
     	$d_almace=detalle_almacen::where('id_almacen','=',$id)->where('id_producto','=',$id_pro)->first();
     	if(@count($d_almace)>=1){
-    		$d_almace->stock=$d_almace['stock']+$cantidad;
-    		$d_almace->update();
-    		return response()->json($d_almace);
+//actualizacion de precio de detalle_almacen---------------------------------------------------------------------
+			$stockactual=$d_almace['stock'];
+        	$precioctual=$d_almace['precio_compra'];
+			$costoactualizado=(($stockactual *$precioctual)+($cantidad*$pre_comp))/($stockactual+$cantidad);
+			$d_almace->precio_compra=$costoactualizado;
+//-----------------------------------------------------------------------------------------------------------
+			$d_almace->stock=$d_almace['stock']+$cantidad;
+			$d_almace->update();
+
+			return response()->json($d_almace);
     	}
     	else{
 
@@ -36,8 +45,20 @@ class PagoDetalleController extends Controller
 	    	$detalle_almacen->stock=$cantidad ;
 	    	$detalle_almacen->precio_compra=$pre_comp;
 	    	$detalle_almacen->precio_venta=$pre_vent;
-	    	$detalle_almacen->save();
+			$detalle_almacen->save();
 	    	return $detalle_almacen;
-    	}
+		}
+//insercion de datos a inventario------------------------------------------------------
+		$tipodocumento=$pago['id_documento'];
+		$nombretipodocumento=TipoDocumento::where('id','=',$tipodocumento)->value('documento');
+		$Inventario=new Inventario();
+		$Inventario->id_almacen=$id;
+		$Inventario->id_producto=$id_pro;
+		$Inventario->descripcion=$nombretipodocumento;
+		$Inventario->tipo_movimiento=2;
+		$Inventario->cantidad=$cantidad;
+		$Inventario->precio=$$pre_comp;
+		$Inventario->save();
+//-----------------------------------------------------------------------------------
     }	
 }
