@@ -54,9 +54,14 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('auth/pago-detalle-add','PagoDetalleController@addPagoDetalle');
 	Route::get('auth/get','PagoDetalleController@getAlmacen');
 	Route::post('auth/almacen-detalle','PagoDetalleController@DetalleAlmacen');
+
 	//***Unidades de producto*******
-	Route::get('auth/unidades','UnidadController@getUnidad');
-	Route::post('auth/unidad','UnidadController@addUnidad');
+	Route::get('auth/unidad','UnidadController@getUnidad');
+	//Route::post('auth/unidad','UnidadController@addUnidad');
+	//Route::get('auth/unidad','UnidadController@ver' );
+	Route::get('auth/unidad/{id}','UnidadController@seleccionar' )->where(['id' => '[0-9]+']);
+	Route::post('auth/unidad','UnidadController@insertar');
+	Route::post('auth/unidad/{id}','UnidadController@modificar')->where(['id' => '[0-9]+']);
 
 	//***categorias*******
 	Route::get('categorias','CategoriaController@ver' );
@@ -111,9 +116,12 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('DetalleOrdenPedidos','detalle_orden_depedidocontroler@insertar');
 	Route::post('DetalleOrdenPedidos/{id}','detalle_orden_depedidocontroler@modificar')->where(['id' => '[0-9]+']);
 
+	Route::post('mantenimientousuario','UserController@insertar');
+	Route::post('mantenimientousuario/{id}','UserController@modificar')->where(['id' => '[0-9]+']);
+	
 	Route::get('fecha','orden_depedidocontroler@fecha');
 
-	Route::get('prueba','InventarioController@prueba');
+	Route::post('prueba','Auth\RegisterController@create');
 });
 
 

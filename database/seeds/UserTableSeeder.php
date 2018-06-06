@@ -12,9 +12,16 @@ class UserTableSeeder extends Seeder
     public function run()
     {
         factory(App\User::class)->create([
-
-        	'name'=>'Gregori',
-        	'email'=>'admin@gmail.com'
+            'name'=>'Gregori',
+            'apellidos'=>'perez',
+            'id_documento'=>'1',
+            'numero_documento'=>'12345678',
+            'direccion'=>'calle',
+            'telefono'=>'12312312',
+            'nacimiento'=>'1994/12/12',
+            'rol'=>'admin',
+            'email'=>'admin@gmail.com',
+            'estado'=>'habilitado',
         ]);
     }
 }

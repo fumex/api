@@ -18,7 +18,7 @@ class CreateProductosTable extends Migration
             $table->Integer('id_categoria')->nullable();
             $table->string('nombre_producto');
             $table->string('descripcion')->nullable();
-            $table->string('unidad_de_medida')->nullable();
+            $table->string('id_unidad')->nullable();
             $table->Integer('cantidad');
             $table->string('habilitado');
             $table->timestamps();
