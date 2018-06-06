@@ -43,13 +43,25 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/tipo','TipoProveedorController@getAll');
 	Route::post('auth/tipo-add','TipoProveedorController@addTipo');
 	//Route::get('tipo/{id}','TipoProveedorController@get');
-	
-	//***Pagos****
+	//******************************** Pago *******************************
+	//*******Pagos Servicios******
+	Route::get('auth/servicio-list','ServicioController@getServicios');//listado de servicios
+	Route::get('auth/servicio-code','ServicioController@code');//codigo
+	Route::post('auth/servicio-add','ServicioController@addServicio');
+	Route::get('auth/servicio-delete/{id}','ServicioController@deleteServicio');
+	Route::get('auth/servicios-get','ServicioController@listServicios');
+	//*******Pagos Proveedores****
 	Route::post('auth/pagos-add','PagoController@addPago');
 	Route::get('auth/pagos-code','PagoController@code');
 	Route::get('auth/proveedor-list','PagoController@getProveedores');
 	Route::get('auth/productos-listas','ProductosController@listaProductos');
+	Route::get('auth/pagos-list','PagoController@listPagos');
+	//--------Anulacion de Pagos----------------------------
+	Route::get('auth/compra-get/{code}','PagoController@getCompra');
+	Route::get('auth/pagos_detalle-list/{code}','PagoController@getPagoDetalle');
+	Route::get('auth/pagos-delete/{code}','PagoController@deletePago');
 
+	Route::get('auth/pagos_d/{id}','PagoController@deletePagoDetalle');
 	//***Detalles Pago*****
 	Route::post('auth/pago-detalle-add','PagoDetalleController@addPagoDetalle');
 	Route::get('auth/get','PagoDetalleController@getAlmacen');

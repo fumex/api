@@ -15,6 +15,7 @@ class TipoProveedorController extends Controller
     public function addTipo(Request $request){
         $this->validate($request,[
             'tipo'=>'required',
+            'operacion'=>'required',
         ]);
         $create=TipoProveedor::create($request->all());
         return response()->json($create);
