@@ -11,7 +11,7 @@ use DB;
 class ProductosController extends Controller
 {
     public function ver(){
-        $listar2=productos::join('categorias','productos.id_unidad','=','categorias.id')
+        $listar2=productos::join('categorias','productos.id_categoria','=','categorias.id')
         ->join('unidades','productos.id_unidad','=','unidades.id')
         ->select('productos.id','nombre_producto','categorias.nombre','descripcion','productos.cantidad','unidades.abreviacion')
         ->where('habilitado','habilitado')

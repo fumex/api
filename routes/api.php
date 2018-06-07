@@ -133,7 +133,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	
 	Route::get('fecha','orden_depedidocontroler@fecha');
 
-	Route::post('prueba','Auth\RegisterController@create');
+	Route::get('prueba','InventarioController@prueba');
 });
 
 
