@@ -24,7 +24,7 @@ class AlmacenesController extends Controller
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $direccion=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
         $telefono=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
-
+        $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
 
         if(!is_null($nombre)){
             $habilitado='habilitado';
@@ -34,6 +34,7 @@ class AlmacenesController extends Controller
             $Almacenes->descripcion=$descripcion;
             $Almacenes->direccion=$direccion;
             $Almacenes->telefono=$telefono;
+            $Almacenes->id_user=$id_user;
             $Almacenes->habilitado=$habilitado;
             
 
@@ -76,12 +77,13 @@ class AlmacenesController extends Controller
         $descripcion	=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $direccion	=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
         $telefono	=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
-
+        $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
               //guardar
                 $Almacenes= Almacenes::where('id',$id)->update(['nombre'=>$nombre,
                 'descripcion'=>$descripcion,
                 'direccion'=>$direccion,
-                'telefono'=>$telefono]);
+                'telefono'=>$telefono,
+                'id_user'=>$id_user]);
 
                 $data =array(
                     'status'=>'succes',

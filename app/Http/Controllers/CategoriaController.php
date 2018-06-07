@@ -16,10 +16,12 @@ class CategoriaController extends Controller
         $params=json_decode($json);
         
         $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
+        $id_user =(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
 
         if(!is_null($nombre)){
             $categorias=new Categoria();
             $categorias->nombre=$nombre;
+            $categorias->id_user=$id_user;
 
             $isset_cate=Categoria::where('nombre','=',$nombre)->first();
             if(@count($isset_cate)==0){
@@ -53,34 +55,14 @@ class CategoriaController extends Controller
     }
        
     public function modificar($id,Request $request){
-        $json=$request->input('json',null);
-        $params=json_decode($json);
-        
-        $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
-              //guardar
-        if(!is_null($nombre)){
-            $categorias= Categoria::where('id','=',$id)->update(['nombre'=>$nombre]);
+        $edit=Categoria::find($id)->update($request->all());
+        return response()->json($edit);
+    }
 
-            $data =array(
-            'status'=>'succes',
-            'code'=>200,
-            'mensage'=>'registrado'
-            );
-        }else{
-            $data =array(
-                'status'=>'error',
-                'code'=>400,
-                'mensage'=>'faltan datos'
-            );
-        }
-            
-        return response()->json($data,200);
-       }
-
-       public function seleccionar($id){
-        $categoria=Categoria::find($id);
-        return $categoria;
-       }
+   public function seleccionar($id){
+    $categoria=Categoria::find($id);
+    return $categoria;
+   }
 
     public function eliminar($id){
         $categoria=Categoria::find($id);

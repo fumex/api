@@ -21,6 +21,7 @@ class CreateProductosTable extends Migration
             $table->string('id_unidad')->nullable();
             $table->Integer('cantidad');
             $table->string('habilitado');
+            $table->Integer('id_user');
             $table->timestamps();
         });
     }

@@ -29,6 +29,7 @@ class ProductosController extends Controller
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_unidad=(!is_null($json) && isset($params->id_unidad)) ? $params->id_unidad : null;
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
+        $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
 
         if(!is_null($nombre_producto)  && !is_null($cantidad) && !is_null($id_categoria)){
             $Productos=new Productos();
@@ -40,6 +41,7 @@ class ProductosController extends Controller
             $Productos->id_unidad=$id_unidad;
             $Productos->cantidad=$cantidad;
             $Productos->habilitado=$habilitado;
+            $Productos->id_user=$id_user;
 
             $isset_producto=Productos::where('nombre_producto','=',$nombre_producto)->first();
             if(@count($isset_producto)==0){
@@ -84,13 +86,15 @@ class ProductosController extends Controller
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_unidad=(!is_null($json) && isset($params->id_unidad)) ? $params->id_unidad : null;
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
+         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
            
               //guardar
                 $Productos= Productos::where('id',$iden)->update(['nombre_producto'=>$nombre_producto,
                     'id_categoria'=>$id_categoria,
                     'descripcion'=>$descripcion,
                     'unidad_de_medida'=>$id_unidad,
-                    'cantidad'=>$cantidad]);
+                    'cantidad'=>$cantidad,
+                    'id_user'=>$id_user]);
 
                 $data =array(
                     'status'=>'succes',

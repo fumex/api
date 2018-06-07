@@ -17,6 +17,7 @@ class CreateTipoProveedorsTable extends Migration
             $table->increments('id');
             $table->string('tipo',100)->unique();
             $table->string('operacion');
+            $table->Integer('id_user');
             $table->timestamps();
         });
     }

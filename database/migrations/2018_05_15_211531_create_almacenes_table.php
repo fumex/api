@@ -20,6 +20,7 @@ class CreateAlmacenesTable extends Migration
             $table->string('direccion');
             $table->Integer('telefono');
             $table->string('habilitado');
+            $table->Integer('id_user');
             $table->timestamps();
         });
     }

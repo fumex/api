@@ -36,23 +36,7 @@ class ProveedorController extends Controller
        return response()->json($edit); 
     }
     public function addProveedores(Request $request){
-        $json = $request->input('json',null);
-        $params = json_decode($json);
-        //guardar
-        $proveedor= new Proveedor();
-        $proveedor->nombre_proveedor=$params->nombre_proveedor;
-        $proveedor->ruc=$params->ruc;
-        $proveedor->direccion=$params->direccion;
-        $proveedor->telefono=$params->telefono;
-        $proveedor->email=$params->email;
-        $proveedor->tipo_proveedor=$params->tipo_proveedor;
-
-        $proveedor->save();
-        $data=array(
-                    'status'=>'success',
-                    'code'=>200,
-                    'mensage'=>'registrado pago'
-                );
-        return response()->json($data,200);
+       $create=Proveedor::create($request->all());
+        return response()->json($create);
     } 
 }

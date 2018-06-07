@@ -26,12 +26,14 @@ class UnidadController extends Controller
         
 		$unidad	=(!is_null($json) && isset($params->unidad)) ? $params->unidad : null;
 		$abreviacion=(!is_null($json) && isset($params->abreviacion)) ? $params->abreviacion : null;
+        $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
 
         if(!is_null($unidad)){
             $Unidad=new Unidad();
             
             $Unidad->unidad=$unidad;
             $Unidad->abreviacion=$abreviacion;
+            $Unidad->id_user=$id_user;
 
             $isset_cate=Unidad::where('unidad','=',$unidad)->first();
             if(@count($isset_cate)==0){
@@ -70,9 +72,10 @@ class UnidadController extends Controller
         
         $unidad	=(!is_null($json) && isset($params->unidad)) ? $params->unidad : null;
 		$abreviacion=(!is_null($json) && isset($params->abreviacion)) ? $params->abreviacion : null;
-              
+        $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
+     
         if(!is_null($unidad)){
-            $Unidad= Unidad::where('id','=',$id)->update(['unidad'=>$unidad,'abreviacion'=>$abreviacion]);
+            $Unidad= Unidad::where('id','=',$id)->update(['unidad'=>$unidad,'abreviacion'=>$abreviacion,'id_user'=>$id_user]);
 
             $data =array(
             'status'=>'succes',

@@ -21,7 +21,8 @@ class CreateProveedorsTable extends Migration
             $table->string('telefono')->nullable();
             $table->string('email');
             $table->Integer('tipo_proveedor')->nullable();
-            $table->boolean('estado')->nullable()->default(true); 
+            $table->boolean('estado')->nullable()->default(true);
+            $table->Integer('id_user'); 
             $table->timestamps();
         });
     }

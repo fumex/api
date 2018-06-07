@@ -24,6 +24,7 @@ class CreateServiciosTable extends Migration
             $table->float('subtotal');
             $table->float('igv');
             $table->boolean('estado')->nullable()->default(true);
+            $table->Integer('id_user');
             $table->timestamps();
         });
     }

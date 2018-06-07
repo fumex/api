@@ -17,7 +17,8 @@ class CreateTipoDocumentosTable extends Migration
             $table->increments('id');
             $table->string('documento');
             $table->string('operacion');
-            $table->boolean('estado')->nullable()->default(true); 
+            $table->boolean('estado')->nullable()->default(true);
+            $table->Integer('id_user'); 
             $table->timestamps();
         });
     }

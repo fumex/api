@@ -17,6 +17,7 @@ class CreateUnidadesTable extends Migration
             $table->increments('id');
             $table->string('unidad');
             $table->string('abreviacion');
+            $table->Integer('id_user');
             $table->timestamps();
         });
     }
