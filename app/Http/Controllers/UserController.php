@@ -21,7 +21,6 @@ class UserController extends Controller
         $rol=(!is_null($json) && isset($params->rol)) ? $params->rol : null;
         $email=(!is_null($json) && isset($params->email)) ? $params->email : null;
         $password=(!is_null($json) && isset($params->password)) ? $params->password : null;
-        
         //$estado=(!is_null($json) && isset($params->estado)) ? $params->estado : null;
  
        $isset_user=User::where('email','=',$email)->first();
@@ -30,16 +29,17 @@ class UserController extends Controller
                 $d_user=new User();
                 $d_user->name=$name;
                 $d_user->apellidos=$apellidos;
-                $d_user->id_documento=1;
-                $d_user->numero_documento=12457;
-                $d_user->direccion='calleja';
-                $d_user->telefono=15487542;
-                $d_user->nacimiento='2018/12/12';
+                $d_user->id_documento=$id_documento;
+                $d_user->numero_documento= $numero_documento;
+                $d_user->direccion= $direccion;
+                $d_user->telefono= $telefono;
+                $d_user->nacimiento= $nacimiento;
                 $d_user->rol=$rol;
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
+                $d_user->estado='hablitado';
                 $d_user->save();
-                $data2 =array(
+                $data =array(
                     'status'=>'succes',
                     'code'=>200,
                     'mensage'=>'sew incerto'

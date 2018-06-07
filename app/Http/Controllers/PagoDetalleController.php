@@ -7,6 +7,9 @@ use App\PagoDetalle;
 use App\Pago;
 use App\detalle_almacen;
 use App\Inventario;
+use App\Movimiento;
+use App\Almacenes;
+use App\Productos;
 use App\TipoDocumento;
 class PagoDetalleController extends Controller
 {
@@ -25,12 +28,14 @@ class PagoDetalleController extends Controller
     	$pre_vent=$request->precio_venta;
     	$d_almace=detalle_almacen::where('id_almacen','=',$id)->where('id_producto','=',$id_pro)->first();
     	if(@count($d_almace)>=1){
+
 //actualizacion de precio de detalle_almacen---------------------------------------------------------------------
 			$stockactual=$d_almace['stock'];
         	$precioctual=$d_almace['precio_compra'];
 			$costoactualizado=(($stockactual *$precioctual)+($cantidad*$pre_comp))/($stockactual+$cantidad);
 			$d_almace->precio_compra=$costoactualizado;
 //-----------------------------------------------------------------------------------------------------------
+
 			$d_almace->stock=$d_almace['stock']+$cantidad;
 			$d_almace->update();
 
@@ -60,5 +65,22 @@ class PagoDetalleController extends Controller
 		$Inventario->precio=$$pre_comp;
 		$Inventario->save();
 //-----------------------------------------------------------------------------------
+//----------movimientos--------------------------------//-----------------------------------------------------------------------------------------------
+//----------movimientos--------------------------------//-----------------------------------------------------------------------------------------------
+		$id_tabla=Inventario::get()->last();
+		$almacen_nombre=Almacenes::where('id','=',$id)->get()->first();
+		$productos_nombre=Productos::where('id','=',$id_pro)->get()->first();
+		$movimiento=new Movimiento();
+		$movimiento->tabla_nombre='pagos';
+		$movimiento->id_tabla=$pago['id_documento'];
+		$movimiento->almacen_nombre=$almacen_nombre['nombre'];
+		$movimiento->productos_nombre=$productos_nombre['nombre_producto'];
+		$movimiento->id_usuario=$usuario;
+		$movimiento->valor=$d_almace['stock']+$cantidad;
+		$movimiento->valor_antiguo=$d_almace['stock'];
+		$movimiento->save();
+//----------movimientos--------------------------------//-----------------------------------------------------------------------------------------------
+//----------movimientos--------------------------------//-----------------------------------------------------------------------------------------------
+
     }	
 }
