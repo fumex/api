@@ -133,7 +133,8 @@ class ProductosController extends Controller
     public function listaProductos(){
         $productos=DB::table('productos')
                       ->join('categorias','productos.id_categoria','=','categorias.id')
-                      ->select('productos.id','categorias.nombre','productos.unidad_de_medida','productos.nombre_producto','productos.descripcion')
+                      ->join('unidades','productos.id_unidad','=','unidades.id')
+                      ->select('productos.id','categorias.nombre','unidades.unidad','productos.nombre_producto','productos.descripcion')
                       ->get();
         return response()->json($productos);
 
