@@ -3,34 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Almacenes;
+use App\sucursal;
 
-class AlmacenesController extends Controller
+class SucursalController extends Controller
 {
     public function ver(){
-        return $listar=Almacenes::where('habilitado','habilitado')->get();
-       }
-
-    public function veralmacen($id){
-
-        return $listar=Almacenes::whereNotIn('id',[$id])->get();
-        
+        return $listar=sucursal::where('habilitado','habilitado')->get();
     }
-    public function almacenusuario($id){
- 
-        $almacen=Almacenes::join('sucursals','almacenes.id','=','sucursals.id_almacen')
-        ->join('detalle_usuarios','sucursals.id','=',  'detalle_usuarios.id_sucursal')
-        ->where('detalle_usuarios.id_user','=',$id)
-        ->where('permiso','=','1')
-        ->where('almacenes.habilitado','habilitado')
-        ->select('almacenes.id','almacenes.nombre','almacenes.descripcion','almacenes.direccion','almacenes.telefono','almacenes.id_user')
-        ->get();
-
-        return $almacen;
-    }   
-
-
-
 
     public function insertar(Request $request){
         $json=$request->input('json',null);
@@ -40,24 +19,26 @@ class AlmacenesController extends Controller
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $direccion=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
         $telefono=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
+        $id_almacen=(!is_null($json) && isset($params->id_almacen)) ? $params->id_almacen : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
 
         if(!is_null($nombre)){
             $habilitado='habilitado';
-            $Almacenes=new Almacenes();
+            $sucursal=new sucursal();
 
-            $Almacenes->nombre=$nombre;
-            $Almacenes->descripcion=$descripcion;
-            $Almacenes->direccion=$direccion;
-            $Almacenes->telefono=$telefono;
-            $Almacenes->id_user=$id_user;
-            $Almacenes->habilitado=$habilitado;
+            $sucursal->nombre=$nombre;
+            $sucursal->descripcion=$descripcion;
+            $sucursal->direccion=$direccion;
+            $sucursal->telefono=$telefono;
+            $sucursal->id_user=$id_user;
+            $sucursal->id_almacen=$id_almacen;
+            $sucursal->habilitado=$habilitado;
             
 
-            $isset_cate=Almacenes::where('nombre','=',$nombre)->first();
+            $isset_cate=sucursal::where('nombre','=',$nombre)->first();
             if(@count($isset_cate)==0){
                 //guardar
-                $Almacenes->save();
+                $sucursal->save();
 
                 $data =array(
                     'status'=>'succes',
@@ -90,15 +71,17 @@ class AlmacenesController extends Controller
         $params=json_decode($json);
         
         $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
-        $descripcion	=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
-        $direccion	=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
-        $telefono	=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
+        $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
+        $direccion=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
+        $telefono=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
+        $id_almacen=(!is_null($json) && isset($params->id_almacen)) ? $params->id_almacen : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
               //guardar
-                $Almacenes= Almacenes::where('id',$id)->update(['nombre'=>$nombre,
+                $sucursal= sucursal::where('id',$id)->update(['nombre'=>$nombre,
                 'descripcion'=>$descripcion,
                 'direccion'=>$direccion,
                 'telefono'=>$telefono,
+                'id_almacen'=>$id_almacen,
                 'id_user'=>$id_user]);
 
                 $data =array(
@@ -113,15 +96,13 @@ class AlmacenesController extends Controller
 
        public function seleccionar($id){
        
-        $Almacenes=Almacenes::find($id);
-        return $Almacenes;
+        $sucursal=sucursal::find($id);
+        return $sucursal;
        }
 
     public function eliminar($id){
         $cambio='desabilitado';
-        $Almacenes=Almacenes::where('id',$id)->update(['habilitado'=>$cambio]);
-    	return $Almacenes;
+        $sucursal=sucursal::where('id',$id)->update(['habilitado'=>$cambio]);
+    	return $sucursal;
        }
-
-
 }

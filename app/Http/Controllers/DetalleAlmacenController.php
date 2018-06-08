@@ -4,15 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\detalle_almacen;
+use App\Detalle_usuario;
 
 class DetalleAlmacenController extends Controller
 {
-    public function ver(){
-        $listar2=detalle_almacen::join('almacenes','detalle_almacen.id_almacen','=','almacenes.id')
+    public function ver(Request $request){
+        $json=$request->input('json',null);
+        $params=json_decode($json);
+
+        $id_usuario	=(!is_null($json) && isset($params->id_usuario)) ? $params->id_usuario : null;
+
+        $id_almacen=Detalle_usuario::join('sucursals','detalle_usuarios.id_sucursal','=','sucursals.id')
+        ->join('almacenes','sucursals.id_almacen','=','almacenes.id')
+        ->join('detalle_almacen','almacenes.id','=','detalle_almacen.id_almacen')
+        ->join('productos','detalle_almacen.id_producto','=','productos.id')
+        ->where('detalle_usuarios.id_user','=',$id_usuario)
+        ->where('permiso','=','1')
+        ->select('detalle_almacen.id','almacenes.nombre','productos.nombre_producto','detalle_almacen.stock','detalle_almacen.precio_compra','detalle_almacen.precio_venta')->get();
+        
+
+        /*$listar2=detalle_almacen::join('almacenes','detalle_almacen.id_almacen','=','almacenes.id')
         ->join('productos','detalle_almacen.id_producto','=','productos.id')
         ->select('detalle_almacen.id','almacenes.nombre','productos.nombre_producto','stock','precio_compra','precio_venta')
-        ->get();
-        return $listar2;
+        ->get();*/
+        return $id_almacen;
 
        }
 

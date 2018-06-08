@@ -92,7 +92,7 @@ class ProductosController extends Controller
                 $Productos= Productos::where('id',$iden)->update(['nombre_producto'=>$nombre_producto,
                     'id_categoria'=>$id_categoria,
                     'descripcion'=>$descripcion,
-                    'unidad_de_medida'=>$id_unidad,
+                    'id_unidad'=>$id_unidad,
                     'cantidad'=>$cantidad,
                     'id_user'=>$id_user]);
 

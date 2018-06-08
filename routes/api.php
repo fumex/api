@@ -18,7 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-Route::middleware(['jwt.auth'])->group(function(){
+//Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -98,6 +98,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('almacenes','AlmacenesController@insertar');
 	Route::post('almacenes/{id}','AlmacenesController@modificar')->where(['id' => '[0-9]+']);
 	Route::get('veralmacen/{id}','AlmacenesController@veralmacen');
+	Route::get('mostralamacenusuario/{id}','AlmacenesController@almacenusuario');
 
 	//***inventario*******
 	Route::get('inventario','InventarioController@ver' );
@@ -108,7 +109,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('productosalmacen/{id}','InventarioController@mostrarproductos' )->where(['id' => '[0-9]+']);;
 
 	//***Udetalles_de almacen*******
-	Route::get('almacen','DetalleAlmacenController@ver' );
+	Route::post('mostrarlamacen','DetalleAlmacenController@ver' );
 	Route::get('almacen/{id}','DetalleAlmacenController@seleccionar' )->where(['id' => '[0-9]+']);
 	Route::get('almacen/eliminar/{id}','DetalleAlmacenController@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('almacen','DetalleAlmacenController@insertar');
@@ -134,7 +135,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('fecha','orden_depedidocontroler@fecha');
 
 	Route::get('prueba','InventarioController@prueba');
-});
+//});
 
 
 
