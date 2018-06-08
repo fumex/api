@@ -10,7 +10,8 @@ class ProveedorController extends Controller
     	$proveedores=DB::table('proveedors')
                         ->join('tipo_proveedors','proveedors.tipo_proveedor','=','tipo_proveedors.id')
                         ->select('proveedors.id','proveedors.nombre_proveedor','proveedors.ruc','proveedors.direccion','proveedors.telefono','proveedors.email','tipo_proveedors.tipo')
-                        ->where('proveedors.estado','=',true)->get();
+                        ->where('proveedors.estado','=',true)->where('tipo_proveedors.operacion','=','Proveedor')
+                        ->get();
     	return $proveedores;
     }
 
