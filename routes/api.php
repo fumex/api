@@ -129,8 +129,22 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('DetalleOrdenPedidos','detalle_orden_depedidocontroler@insertar');
 	Route::post('DetalleOrdenPedidos/{id}','detalle_orden_depedidocontroler@modificar')->where(['id' => '[0-9]+']);
 
+	//***DETALLE USUARIOS */
+	Route::get('detalleusuario','Dettalle_UsuarioController@ver' );
+	Route::post('detalleusuario','Dettalle_UsuarioController@insertar');
+	Route::post('detalleusuario/{id}','Dettalle_UsuarioController@modificar')->where(['id' => '[0-9]+']);
+
+	//***sucursal */
+	Route::get('sucursales','SucursalController@ver' );
+	Route::get('sucursales/{id}','SucursalController@seleccionar' )->where(['id' => '[0-9]+']);
+	Route::get('sucursales/eliminar/{id}','SucursalController@eliminar' )->where(['id' => '[0-9]+']);
+	Route::post('sucursales','SucursalController@insertar');
+	Route::post('sucursales/{id}','SucursalController@modificar')->where(['id' => '[0-9]+']);
+
 	Route::post('mantenimientousuario','UserController@insertar');
 	Route::post('mantenimientousuario/{id}','UserController@modificar')->where(['id' => '[0-9]+']);
+
+	Route::get('modificarpas','UserController@modificarcontra');
 	
 	Route::get('fecha','orden_depedidocontroler@fecha');
 

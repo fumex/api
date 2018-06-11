@@ -7,6 +7,24 @@ use App\User;
 
 class UserController extends Controller
 {
+    public function ver(){
+        return $listar=User::join('tipo_documentos','Users.id_documento=tipo_documentos.id')
+        ->select('Users.id','Users.name','Users.apellidos','Users.numero_documento','Users.direccion','Users.telefono','Users.rol','Users.nacimiento','tipo_documentos.documento')
+        ->get();
+    }
+    public function modificarcontra(){
+		/*$json=$request->input('json',null);
+		$params=json_decode($json);
+		
+		$password=(!is_null($json) && isset($params->password)) ? $params->password : null;
+		
+		if (! $user = $this->jwtAuth->parseToken()->authenticate()) {
+			return response()->json(['error'=>'user_not_found'], 404);
+		}*/
+		//if(Hash::check())
+		return $pas=User::all();
+	 }
+
     public function insertar(Request $request){
         $json=$request->input('json',null);
         $params=json_decode($json);

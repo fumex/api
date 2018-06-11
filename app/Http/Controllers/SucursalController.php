@@ -8,7 +8,10 @@ use App\sucursal;
 class SucursalController extends Controller
 {
     public function ver(){
-        return $listar=sucursal::where('habilitado','habilitado')->get();
+        return $listar=sucursal::join('almacenes','sucursals.id_almacen','=','almacenes.id')
+        ->where('sucursals.habilitado','habilitado')
+        ->select('sucursals.id','almacenes.nombre','sucursals.nombre_sucursal','sucursals.direccion','sucursals.descripcion','sucursals.telefono')
+        ->get();
     }
 
     public function insertar(Request $request){
