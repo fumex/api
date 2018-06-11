@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Support\Facades\Auth;
+use Hash;
 
 class AuthenticateController extends Controller
 {
@@ -48,6 +49,5 @@ class AuthenticateController extends Controller
 		// the token is valid and we have found the user via the sub claim
 		return response()->json(compact('user'));
 	 }
-	 
-
+	
 }

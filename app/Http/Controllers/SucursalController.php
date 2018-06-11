@@ -8,7 +8,12 @@ use Illuminate\Http\Request;
 class SucursalController extends Controller
 {
     public function ver(){
-        
+
+    }
+
+    public function insertar(Request $request){
+        $json=$request->input('json',null);
+        $params=json_decode($json);
     }
 
     public function addSucursal(Request $request){
