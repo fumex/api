@@ -134,17 +134,18 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('detalleusuario','Dettalle_UsuarioController@insertar');
 	Route::post('detalleusuario/{id}','Dettalle_UsuarioController@modificar')->where(['id' => '[0-9]+']);
 
+
 	/*-----------------------------------------sucursal ------------------------------------------*/
 	Route::get('sucursales','SucursalController@getSucursales' );
 	Route::get('sucursal/{id}','SucursalController@getSucursal' );
 	Route::get('sucursal-delete/{id}','SucursalController@deleteSucursal' );
 	Route::post('sucursal-add','SucursalController@addSucursal');
 	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
-    //------------------------------------------------------------------------------------
+
+	//---------------------------Usuario ---------------------------------------/
 	Route::post('mantenimientousuario','UserController@insertar');
 	Route::post('mantenimientousuario/{id}','UserController@modificar')->where(['id' => '[0-9]+']);
-
-	Route::get('modificarpas','UserController@modificarcontra');
+	Route::post('modificarpas/{id}','UserController@modificarcontra')->where(['id' => '[0-9]+']);
 	
 	Route::get('fecha','orden_depedidocontroler@fecha');
 

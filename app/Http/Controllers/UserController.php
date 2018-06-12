@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\Auth;
+use Hash;
+
 
 class UserController extends Controller
 {
@@ -12,17 +15,41 @@ class UserController extends Controller
         ->select('Users.id','Users.name','Users.apellidos','Users.numero_documento','Users.direccion','Users.telefono','Users.rol','Users.nacimiento','tipo_documentos.documento')
         ->get();
     }
-    public function modificarcontra(){
-		/*$json=$request->input('json',null);
-		$params=json_decode($json);
-		
-		$password=(!is_null($json) && isset($params->password)) ? $params->password : null;
-		
-		if (! $user = $this->jwtAuth->parseToken()->authenticate()) {
+    public function modificarcontra($id,Request $request){
+        /*if (! $user = $this->jwtAuth->parseToken()->authenticate()) {
 			return response()->json(['error'=>'user_not_found'], 404);
 		}*/
-		//if(Hash::check())
-		return $pas=User::all();
+		$json=$request->input('json',null);
+		$params=json_decode($json);
+		
+        $password=(!is_null($json) && isset($params->password)) ? $params->password : null;
+        $email=(!is_null($json) && isset($params->email)) ? $params->email : null;
+        $nuevo=(!is_null($json) && isset($params->nuevo)) ? $params->nuevo : null;
+
+        $pas=User::where('id', $id)->get()->last();
+        if(!is_null($password)  && !is_null($nuevo) ){
+            if(Hash::check($password, $pas['password'])){
+                $User= User::where('id',$id)->update(['password'=>bcrypt($nuevo)]);
+                $data =array(
+                    'status'=>'succes',
+                    'code'=>200,
+                    'mensage'=>'sew incerto'
+                );
+            }else{
+                $data =array(
+                    'status'=>'error',
+                    'code'=>408,
+                    'mensage'=>'contraseña incorrecta',
+                );
+            };
+        }else{
+            $data =array(
+                'status'=>'error',
+                'code'=>404,
+                'mensage'=>'faltan datos',
+            );
+        }
+        return response()->json($data,200);
 	 }
 
     public function insertar(Request $request){
@@ -76,16 +103,27 @@ class UserController extends Controller
        
     public function modificar($id,Request $request){
         $json=$request->input('json',null);
-        $params=json_decode($json,true);
+        $params=json_decode($json);
         
-        $id_almacen	=(!is_null($json) && isset($params->id_almacen)) ? $params->id_almacen : null;
-        $id_pago=(!is_null($json) && isset($params->id_pago)) ? $params->id_pago : null;
-        $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
-        $tipo_movimiento=(!is_null($json) && isset($params->tipo_movimiento)) ? $params->tipo_movimiento : null;
-        $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
+        $name=(!is_null($json) && isset($params->name)) ? $params->name : null;
+        $apellidos=(!is_null($json) && isset($params->apellidos)) ? $params->apellidos : null;
+        $id_documento=(!is_null($json) && isset($params->id_documento)) ? $params->id_documento : null;
+        $numero_documento=(!is_null($json) && isset($params->numero_documento)) ? $params->numero_documento : null;
+        $direccion=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
+        $telefono=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
+        $nacimiento=(!is_null($json) && isset($params->nacimiento)) ? $params->nacimiento : null;
+        $rol=(!is_null($json) && isset($params->rol)) ? $params->rol : null;
 
               //guardar
-                $Inventario= Inventario::where('id',$id)->update($params);
+                $User= User::where('id',$id)->update(['name'=>$name,
+                'apellidos'=>$apellidos,
+                'id_documento'=>$id_documento,
+                'numero_documento'=>$numero_documento,
+                'direccion'=>$direccion,
+                'telefono'=>$telefono,
+                'nacimiento'=>$nacimiento,
+                'rol'=>$rol,]);
+                
 
                 $data =array(
                     'status'=>'succes',
