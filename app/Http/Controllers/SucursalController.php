@@ -3,17 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Sucursal;
 
 class SucursalController extends Controller
 {
-    public function ver(){
-
-    }
-
-    public function insertar(Request $request){
-        $json=$request->input('json',null);
-        $params=json_decode($json);
+    public function getSucursales(){
+        $sucursales=Sucursal::where('estado','=',true)->get();
+        return $sucursales;
     }
 
     public function addSucursal(Request $request){
@@ -23,13 +19,20 @@ class SucursalController extends Controller
        
     public function updateSucursal($id,Request $request){
         $edit=Sucursal::find($id)->update($request->all());
+        return response()->json($edit);
     }
 
-   public function seleccionar($id){
-   
+   public function getSucursal($id){
+        $sucursal=Sucursal::find($id);
+        return response()->json($sucursal);   
    }
 
-    public function eliminar($id){
-        
+    public function deleteSucursal($id){
+        $sucursal=Sucursal::where('id','=',$id)->first();
+        if(@count($sucursal)>=1){
+            $sucursal->estado=false;
+            $sucursal->save();
+            return $sucursal;
+        }
     }
 }

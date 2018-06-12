@@ -134,13 +134,13 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('detalleusuario','Dettalle_UsuarioController@insertar');
 	Route::post('detalleusuario/{id}','Dettalle_UsuarioController@modificar')->where(['id' => '[0-9]+']);
 
-	//***sucursal */
-	Route::get('sucursales','SucursalController@ver' );
-	Route::get('sucursales/{id}','SucursalController@seleccionar' )->where(['id' => '[0-9]+']);
-	Route::get('sucursales/eliminar/{id}','SucursalController@eliminar' )->where(['id' => '[0-9]+']);
-	Route::post('sucursales','SucursalController@insertar');
-	Route::post('sucursales/{id}','SucursalController@modificar')->where(['id' => '[0-9]+']);
-
+	/*-----------------------------------------sucursal ------------------------------------------*/
+	Route::get('sucursales','SucursalController@getSucursales' );
+	Route::get('sucursal/{id}','SucursalController@getSucursal' );
+	Route::get('sucursal-delete/{id}','SucursalController@deleteSucursal' );
+	Route::post('sucursal-add','SucursalController@addSucursal');
+	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
+    //------------------------------------------------------------------------------------
 	Route::post('mantenimientousuario','UserController@insertar');
 	Route::post('mantenimientousuario/{id}','UserController@modificar')->where(['id' => '[0-9]+']);
 
