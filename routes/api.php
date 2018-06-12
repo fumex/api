@@ -141,10 +141,10 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('sucursales','SucursalController@insertar');
 	Route::post('sucursales/{id}','SucursalController@modificar')->where(['id' => '[0-9]+']);
 
+	//***Usuario */
 	Route::post('mantenimientousuario','UserController@insertar');
 	Route::post('mantenimientousuario/{id}','UserController@modificar')->where(['id' => '[0-9]+']);
-
-	Route::get('modificarpas','UserController@modificarcontra');
+	Route::post('modificarpas/{id}','UserController@modificarcontra')->where(['id' => '[0-9]+']);
 	
 	Route::get('fecha','orden_depedidocontroler@fecha');
 
