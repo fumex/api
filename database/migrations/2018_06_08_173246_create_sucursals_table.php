@@ -17,10 +17,10 @@ class CreateSucursalsTable extends Migration
             $table->increments('id');
             $table->String('nombre_sucursal');
             $table->String('direccion');
-            $table->Integer('telefono');
+            $table->String('telefono');
             $table->Integer('id_almacen')->nullable();
             $table->String('descripcion');
-            $table->String('habilitado');
+            $table->boolean('estado')->nullable()->default(true);
             $table->Integer('id_user');
             $table->timestamps();
         });
