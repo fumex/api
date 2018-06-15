@@ -11,9 +11,7 @@ use Hash;
 class UserController extends Controller
 {
     public function ver(){
-        return $listar=User::join('tipo_documentos','Users.id_documento=tipo_documentos.id')
-        ->select('Users.id','Users.name','Users.apellidos','Users.numero_documento','Users.direccion','Users.telefono','Users.rol','Users.nacimiento','tipo_documentos.documento')
-        ->get();
+        return $listar=User::where('estado','habilitado')->get();
     }
     public function modificarcontra($id,Request $request){
         /*if (! $user = $this->jwtAuth->parseToken()->authenticate()) {
@@ -82,7 +80,7 @@ class UserController extends Controller
                 $d_user->rol=$rol;
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
-                $d_user->estado='hablitado';
+                $d_user->estado='habilitado';
                 $d_user->save();
                 $data =array(
                     'status'=>'succes',
@@ -134,4 +132,15 @@ class UserController extends Controller
         return response()->json($data,200);
 
        }
+    public function getusuario($id){
+        $User=User::find($id);
+        
+        return response()->json($User);
+    }
+    public function delete($id){
+        $cambio='desabilitado';
+        $User=User::where('id',$id)->update(['estado'=>$cambio]);
+    	return $User;
+
+    }
 }
