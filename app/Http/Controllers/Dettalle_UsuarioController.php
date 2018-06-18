@@ -20,7 +20,7 @@ class Dettalle_UsuarioController extends Controller
 
             $Detalle_usuario->id_sucursal=$id_sucursal;
             $Detalle_usuario->id_user=$id_user['id'];
-            $Detalle_usuario->permiso=$permiso;
+            $Detalle_usuario->permiso=true;
                 //guardar
             $Detalle_usuario->save();
             $data =array(

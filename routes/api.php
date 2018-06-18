@@ -140,7 +140,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('sucursal/{id}','SucursalController@getSucursal' );
 	Route::get('sucursal-delete/{id}','SucursalController@deleteSucursal' );
 	Route::post('sucursal-add','SucursalController@addSucursal');
-	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
+		Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
 
 	//---------------------------Usuario ---------------------------------------/
 	//***Usuario */

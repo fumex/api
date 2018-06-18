@@ -8,7 +8,7 @@ use App\Sucursal;
 class SucursalController extends Controller
 {
     public function getSucursales(){
-        $sucursales=Sucursal::where('estado','=',true)->get();
+        $sucursales=Sucursal::where('habilitado','=','habilitado')->get();
         return $sucursales;
     }
 
