@@ -11,9 +11,7 @@ use DB;
 class UserController extends Controller
 {
     public function ver(){
-        return $listar=User::join('tipo_documentos','Users.id_documento=tipo_documentos.id')
-        ->select('Users.id','Users.name','Users.apellidos','Users.numero_documento','Users.direccion','Users.telefono','Users.rol','Users.nacimiento','tipo_documentos.documento')
-        ->get();
+        return $listar=User::where('estado','habilitado')->get();
     }
     public function modificarcontra($id,Request $request){
         /*if (! $user = $this->jwtAuth->parseToken()->authenticate()) {
@@ -82,6 +80,7 @@ class UserController extends Controller
                 $d_user->rol=$rol;
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
+<<<<<<< HEAD
                 $d_user->estado='hablitado';
                 if($d_user->rol='admin'){
                     $d_user->strd=1305;
@@ -91,6 +90,10 @@ class UserController extends Controller
                     $d_user->strd=20;
                     $d_user->save();
                 }
+=======
+                $d_user->estado='habilitado';
+                $d_user->save();
+>>>>>>> aa4eb9c140d5f85e8f0cbb7761cab169db6dccc4
                 $data =array(
                     'status'=>'succes',
                     'code'=>200,
@@ -141,6 +144,7 @@ class UserController extends Controller
         return response()->json($data,200);
 
        }
+<<<<<<< HEAD
 
     public function rol($id){
         $rol=User::where('id','=',$id)
@@ -148,5 +152,17 @@ class UserController extends Controller
                 ->get();
 
         return response()->json($rol);
+=======
+    public function getusuario($id){
+        $User=User::find($id);
+        
+        return response()->json($User);
+    }
+    public function delete($id){
+        $cambio='desabilitado';
+        $User=User::where('id',$id)->update(['estado'=>$cambio]);
+    	return $User;
+
+>>>>>>> aa4eb9c140d5f85e8f0cbb7761cab169db6dccc4
     }
 }
