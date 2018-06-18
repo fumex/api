@@ -27,7 +27,7 @@ class UserController extends Controller
         $pas=User::where('id', $id)->get()->last();
         if(!is_null($password)  && !is_null($nuevo) ){
             if(Hash::check($password, $pas['password'])){
-                $User= User::where('id',$id)->update(['password'=>bcrypt($nuevo)]);
+                $User= User::where('id',$id)->update(['password'=>  ($nuevo)]);
                 $data =array(
                     'status'=>'succes',
                     'code'=>200,
@@ -81,11 +81,11 @@ class UserController extends Controller
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
                 $d_user->estado='hablitado';
-                if($d_user->rol='admin'){
+                if($d_user->rol=='admin'){
                     $d_user->strd=1305;
                     $d_user->save();
                 }
-                if($d_user->rol='empleado'){
+                if($d_user->rol=='empleado'){
                     $d_user->strd=20;
                     $d_user->save();
                 }
@@ -139,7 +139,7 @@ class UserController extends Controller
         return response()->json($data,200);
 
        }
-<<<<<<< HEAD
+
 
     public function rol($id){
         $rol=User::where('id','=',$id)
@@ -147,7 +147,8 @@ class UserController extends Controller
                 ->get();
 
         return response()->json($rol);
-=======
+    }
+
     public function getusuario($id){
         $User=User::find($id);
         
@@ -158,6 +159,6 @@ class UserController extends Controller
         $User=User::where('id',$id)->update(['estado'=>$cambio]);
     	return $User;
 
->>>>>>> aa4eb9c140d5f85e8f0cbb7761cab169db6dccc4
+
     }
 }
