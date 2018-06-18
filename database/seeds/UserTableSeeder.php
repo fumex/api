@@ -22,6 +22,7 @@ class UserTableSeeder extends Seeder
             'rol'=>'admin',
             'email'=>'admin@gmail.com',
             'estado'=>'habilitado',
+            'strd'=>'1305'
         ]);
     }
 }

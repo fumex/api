@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Hash;
-
+use DB;
 
 class UserController extends Controller
 {
@@ -83,7 +83,14 @@ class UserController extends Controller
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
                 $d_user->estado='hablitado';
-                $d_user->save();
+                if($d_user->rol='admin'){
+                    $d_user->strd=1305;
+                    $d_user->save();
+                }
+                if($d_user->rol='empleado'){
+                    $d_user->strd=20;
+                    $d_user->save();
+                }
                 $data =array(
                     'status'=>'succes',
                     'code'=>200,
@@ -114,24 +121,32 @@ class UserController extends Controller
         $nacimiento=(!is_null($json) && isset($params->nacimiento)) ? $params->nacimiento : null;
         $rol=(!is_null($json) && isset($params->rol)) ? $params->rol : null;
 
-              //guardar
-                $User= User::where('id',$id)->update(['name'=>$name,
-                'apellidos'=>$apellidos,
-                'id_documento'=>$id_documento,
-                'numero_documento'=>$numero_documento,
-                'direccion'=>$direccion,
-                'telefono'=>$telefono,
-                'nacimiento'=>$nacimiento,
-                'rol'=>$rol,]);
-                
+          //guardar
+            $User= User::where('id',$id)->update(['name'=>$name,
+            'apellidos'=>$apellidos,
+            'id_documento'=>$id_documento,
+            'numero_documento'=>$numero_documento,
+            'direccion'=>$direccion,
+            'telefono'=>$telefono,
+            'nacimiento'=>$nacimiento,
+            'rol'=>$rol,]);
+            
 
-                $data =array(
-                    'status'=>'succes',
-                    'code'=>200,
-                    'mensage'=>'registrado'
-                );
+            $data =array(
+                'status'=>'succes',
+                'code'=>200,
+                'mensage'=>'registrado'
+            );
             
         return response()->json($data,200);
 
        }
+
+    public function rol($id){
+        $rol=User::where('id','=',$id)
+                ->select('rol')
+                ->get();
+
+        return response()->json($rol);
+    }
 }

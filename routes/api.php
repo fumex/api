@@ -133,6 +133,8 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('detalleusuario','Dettalle_UsuarioController@ver' );
 	Route::post('detalleusuario','Dettalle_UsuarioController@insertar');
 	Route::post('detalleusuario/{id}','Dettalle_UsuarioController@modificar')->where(['id' => '[0-9]+']);
+	//-------------Rol-----------------------
+	Route::get('user/rol/{id}','UserController@rol');
 
 
 	/*-----------------------------------------sucursal ------------------------------------------*/
@@ -141,14 +143,12 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('sucursal-delete/{id}','SucursalController@deleteSucursal' );
 	Route::post('sucursal-add','SucursalController@addSucursal');
 	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
-
+	Route::get('sucursales-list','SucursalController@listSucursales');
 	//---------------------------Usuario ---------------------------------------/
 	Route::post('mantenimientousuario','UserController@insertar');
 	Route::post('mantenimientousuario/{id}','UserController@modificar')->where(['id' => '[0-9]+']);
 	Route::post('modificarpas/{id}','UserController@modificarcontra')->where(['id' => '[0-9]+']);
-	
 	Route::get('fecha','orden_depedidocontroler@fecha');
-
 	Route::get('prueba','InventarioController@prueba');
 });
 

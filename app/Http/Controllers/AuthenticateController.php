@@ -24,7 +24,7 @@ class AuthenticateController extends Controller
             return response()->json(['error' => 'invalid_credentials'], 401);
         }
        
-        $user = $this->jwtAuth->authenticate($token);
+        $user = $this->jwtAuth->authenticate($token); 
 
         return response()->json(compact('token','user'));
     }
@@ -47,6 +47,7 @@ class AuthenticateController extends Controller
 		}
 		// the token is valid and we have found the user via the sub claim
 		return response()->json(compact('user'));
+
 	 }
 	 
 
