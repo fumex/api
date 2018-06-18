@@ -79,7 +79,7 @@ class UserController extends Controller
                 $d_user->rol=$rol;
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
-                $d_user->estado='hablitado';
+                $d_user->estado=true;
                 if($d_user->rol=='admin'){
                     $d_user->strd=1305;
                     $d_user->save();
