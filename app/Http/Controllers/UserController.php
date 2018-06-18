@@ -79,6 +79,7 @@ class UserController extends Controller
                 $d_user->rol=$rol;
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
+                
                 $d_user->estado=true;
                 if($d_user->rol=='admin'){
                     $d_user->strd=1305;
@@ -154,7 +155,7 @@ class UserController extends Controller
         return response()->json($User);
     }
     public function delete($id){
-        $cambio='desabilitado';
+        $cambio=false;
         $User=User::where('id',$id)->update(['estado'=>$cambio]);
     	return $User;
 

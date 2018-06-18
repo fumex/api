@@ -14,7 +14,7 @@ class ProductosController extends Controller
         $listar2=productos::join('categorias','productos.id_categoria','=','categorias.id')
         ->join('unidades','productos.id_unidad','=','unidades.id')
         ->select('productos.id','nombre_producto','categorias.nombre','descripcion','productos.cantidad','unidades.abreviacion')
-        ->where('habilitado','habilitado')
+        ->where('estado',true)
         ->get();
         //return $listar=Productos::all();
         return $listar2;
@@ -33,14 +33,13 @@ class ProductosController extends Controller
 
         if(!is_null($nombre_producto)  && !is_null($cantidad) && !is_null($id_categoria)){
             $Productos=new Productos();
-            $habilitado='habilitado';
            
             $Productos->nombre_producto=$nombre_producto;
             $Productos->id_categoria=$id_categoria;
             $Productos->descripcion=$descripcion;
             $Productos->id_unidad=$id_unidad;
             $Productos->cantidad=$cantidad;
-            $Productos->habilitado=$habilitado;
+            $Productos->estado=true;
             $Productos->id_user=$id_user;
 
             $isset_producto=Productos::where('nombre_producto','=',$nombre_producto)->first();
@@ -115,7 +114,7 @@ class ProductosController extends Controller
        }
 
     public function eliminar($id){
-        $cambio='desabilitado';
+        $cambio=false;
         $Productos=Productos::where('id',$id)->update(['habilitado'=>$cambio]);
     	return $Productos;
        }

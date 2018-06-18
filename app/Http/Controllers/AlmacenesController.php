@@ -8,12 +8,11 @@ use App\Almacenes;
 class AlmacenesController extends Controller
 {
     public function ver(){
-        return $listar=Almacenes::where('habilitado','habilitado')->get();
-       }
-
+        return $listar=Almacenes::where('estado',true)->get();
+    }
     public function veralmacen($id){
 
-        return $listar=Almacenes::whereNotIn('id',[$id])->get();
+        return $listar=Almacenes::whereNotIn('id',[$id])->where('estado',true)->get();
         
     }
     public function almacenusuario($id){
@@ -22,7 +21,7 @@ class AlmacenesController extends Controller
         ->join('detalle_usuarios','sucursals.id','=',  'detalle_usuarios.id_sucursal')
         ->where('detalle_usuarios.id_user','=',$id)
         ->where('permiso','=','1')
-        ->where('almacenes.habilitado','habilitado')
+        ->where('almacenes.estado',true)
         ->select('almacenes.id','almacenes.nombre','almacenes.descripcion','almacenes.direccion','almacenes.telefono','almacenes.id_user')
         ->get();
 
@@ -43,7 +42,6 @@ class AlmacenesController extends Controller
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
 
         if(!is_null($nombre)){
-            $habilitado='habilitado';
             $Almacenes=new Almacenes();
 
             $Almacenes->nombre=$nombre;
@@ -51,7 +49,7 @@ class AlmacenesController extends Controller
             $Almacenes->direccion=$direccion;
             $Almacenes->telefono=$telefono;
             $Almacenes->id_user=$id_user;
-            $Almacenes->habilitado=$habilitado;
+            $Almacenes->estado=true;
             
 
             $isset_cate=Almacenes::where('nombre','=',$nombre)->first();
@@ -118,8 +116,8 @@ class AlmacenesController extends Controller
        }
 
     public function eliminar($id){
-        $cambio='desabilitado';
-        $Almacenes=Almacenes::where('id',$id)->update(['habilitado'=>$cambio]);
+        $cambio=false;
+        $Almacenes=Almacenes::where('id',$id)->update(['estado'=>$cambio]);
     	return $Almacenes;
        }
 

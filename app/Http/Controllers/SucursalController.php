@@ -15,7 +15,7 @@ class SucursalController extends Controller
         $sucursales=DB::table('sucursals')
                         ->join('almacenes','sucursals.id_almacen','=','almacenes.id')
                         ->select('sucursals.id','sucursals.nombre_sucursal','sucursals.direccion','sucursals.telefono','almacenes.nombre','sucursals.descripcion')
-                        ->where('estado','=',true)
+                        ->where('sucursals.estado','=',true)
                         ->get();
         return response()->json($sucursales);
     }
