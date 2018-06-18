@@ -132,27 +132,29 @@ Route::middleware(['jwt.auth'])->group(function(){
 	//***DETALLE USUARIOS */
 	Route::get('detalleusuario','Dettalle_UsuarioController@ver' );
 	Route::post('detalleusuario','Dettalle_UsuarioController@insertar');
+	Route::get('user/rol/{id}','UserController@rol');
 	Route::post('modificardetalleusuario','Dettalle_UsuarioController@modificar');
 	Route::get('detalleusuario/{id}','Dettalle_UsuarioController@getdetalleudsuario')->where(['id' => '[0-9]+']);
-
 	/*-----------------------------------------sucursal ------------------------------------------*/
 	Route::get('sucursales','SucursalController@getSucursales' );
 	Route::get('sucursal/{id}','SucursalController@getSucursal' );
 	Route::get('sucursal-delete/{id}','SucursalController@deleteSucursal' );
 	Route::post('sucursal-add','SucursalController@addSucursal');
-		Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
+	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
+	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
+	Route::get('sucursales-list','SucursalController@listSucursales');
 
 	//---------------------------Usuario ---------------------------------------/
 	//***Usuario */
 	Route::post('mantenimientousuario','UserController@insertar');
 	Route::post('mantenimientousuario/{id}','UserController@modificar')->where(['id' => '[0-9]+']);
 	Route::post('modificarpas/{id}','UserController@modificarcontra')->where(['id' => '[0-9]+']);
+
 	Route::get('usuario/{id}','UserController@getusuario')->where(['id' => '[0-9]+']);
 	Route::get('usuario','UserController@ver');
 	Route::get('eliminarusuario/{id}','UserController@delete')->where(['id' => '[0-9]+']);
 
 	Route::get('fecha','orden_depedidocontroler@fecha');
-
 	Route::get('prueba','InventarioController@prueba');
 });
 

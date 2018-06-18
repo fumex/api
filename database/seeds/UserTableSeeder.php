@@ -21,7 +21,8 @@ class UserTableSeeder extends Seeder
             'nacimiento'=>'1994/12/12',
             'rol'=>'admin',
             'email'=>'admin@gmail.com',
-            'estado'=>'habilitado',
+            'estado'=>true,
+            'strd'=>'1305'
         ]);
     }
 }

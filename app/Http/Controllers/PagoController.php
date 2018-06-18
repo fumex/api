@@ -47,10 +47,10 @@ class PagoController extends Controller
        $pagos=DB::table('pagos')
                     ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
                     ->join('tipo_documentos','pagos.id_documento','=','tipo_documentos.id')
-                    ->join('detalle_almacen','pagos.id_almacen','=','detalle_almacen.id')
-                    ->join('almacenes','detalle_almacen.id_almacen','=','almacenes.id')
+                    ->join('almacenes','pagos.id_almacen','=','almacenes.id')
                     ->select('pagos.id','pagos.code','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.created_at')
                     ->where('pagos.estado','=',true)
+                    //->where('pagos.id_almacen','=',$id_almacen)
                     ->get();
         return response()->json($pagos);
     }
