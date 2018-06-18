@@ -64,7 +64,6 @@ class UserController extends Controller
         $rol=(!is_null($json) && isset($params->rol)) ? $params->rol : null;
         $email=(!is_null($json) && isset($params->email)) ? $params->email : null;
         $password=(!is_null($json) && isset($params->password)) ? $params->password : null;
-        //$estado=(!is_null($json) && isset($params->estado)) ? $params->estado : null;
  
        $isset_user=User::where('email','=',$email)->first();
         if(@count($isset_user)==0){
@@ -80,7 +79,7 @@ class UserController extends Controller
                 $d_user->rol=$rol;
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
-
+                
                 $d_user->estado=true;
                 if($d_user->rol=='admin'){
                     $d_user->strd=1305;
