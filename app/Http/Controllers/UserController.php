@@ -80,7 +80,7 @@ class UserController extends Controller
                 $d_user->rol=$rol;
                 $d_user->email=$email;
                 $d_user->password=bcrypt($password);
-<<<<<<< HEAD
+
                 $d_user->estado='hablitado';
                 if($d_user->rol='admin'){
                     $d_user->strd=1305;
@@ -90,10 +90,6 @@ class UserController extends Controller
                     $d_user->strd=20;
                     $d_user->save();
                 }
-=======
-                $d_user->estado='habilitado';
-                $d_user->save();
->>>>>>> aa4eb9c140d5f85e8f0cbb7761cab169db6dccc4
                 $data =array(
                     'status'=>'succes',
                     'code'=>200,
