@@ -11,7 +11,7 @@ use DB;
 class UserController extends Controller
 {
     public function ver(){
-        return $listar=User::where('estado','habilitado')->get();
+        return $listar=User::where('estado',true)->get();
     }
     public function modificarcontra($id,Request $request){
         /*if (! $user = $this->jwtAuth->parseToken()->authenticate()) {
@@ -64,7 +64,6 @@ class UserController extends Controller
         $rol=(!is_null($json) && isset($params->rol)) ? $params->rol : null;
         $email=(!is_null($json) && isset($params->email)) ? $params->email : null;
         $password=(!is_null($json) && isset($params->password)) ? $params->password : null;
-        //$estado=(!is_null($json) && isset($params->estado)) ? $params->estado : null;
  
        $isset_user=User::where('email','=',$email)->first();
         if(@count($isset_user)==0){
