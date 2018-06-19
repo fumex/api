@@ -16,7 +16,7 @@ class TipoDocumentoController extends Controller
     	return  response()->json($documentos);
     }
     public function getDocumenPersona(){
-        $persona=TipoDocumento::where('operacion','=','Persona')->get();
+        $persona=TipoDocumento::where('operacion','=','Personal')->get();
         return response()->json($persona);
     }
     public function getDocumenComprobante(){
