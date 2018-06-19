@@ -27,7 +27,7 @@ class UserController extends Controller
         $pas=User::where('id', $id)->get()->last();
         if(!is_null($password)  && !is_null($nuevo) ){
             if(Hash::check($password, $pas['password'])){
-                $User= User::where('id',$id)->update(['password'=>  ($nuevo)]);
+                $User= User::where('id',$id)->update(['password'=> bcrypt($nuevo)]);
                 $data =array(
                     'status'=>'succes',
                     'code'=>200,

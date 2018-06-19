@@ -115,7 +115,7 @@ class ProductosController extends Controller
 
     public function eliminar($id){
         $cambio=false;
-        $Productos=Productos::where('id',$id)->update(['habilitado'=>$cambio]);
+        $Productos=Productos::where('id',$id)->update(['estado'=>$cambio]);
     	return $Productos;
        }
 
