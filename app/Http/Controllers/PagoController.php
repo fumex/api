@@ -43,14 +43,17 @@ class PagoController extends Controller
         return response()->json($proveedores);
     }
 
-    public function listPagos(){
+    public function listPagos($id){
        $pagos=DB::table('pagos')
                     ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
                     ->join('tipo_documentos','pagos.id_documento','=','tipo_documentos.id')
                     ->join('almacenes','pagos.id_almacen','=','almacenes.id')
+                    ->join('sucursals','almacenes.id','=','sucursals.id_almacen')
+                    ->join('detalle_usuarios','sucursals.id','=','detalle_usuarios.id_sucursal')
                     ->select('pagos.id','pagos.code','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.created_at')
+                    ->where('detalle_usuarios.id_user','=',$id)
+                    ->where('detalle_usuarios.permiso','=',true)
                     ->where('pagos.estado','=',true)
-                    //->where('pagos.id_almacen','=',$id_almacen)
                     ->get();
         return response()->json($pagos);
     }
