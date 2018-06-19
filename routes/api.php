@@ -106,7 +106,8 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('inventario/eliminar/{id}','InventarioController@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('inventario','InventarioController@insertar');
 	Route::post('inventario/{id}','InventarioController@modificar')->where(['id' => '[0-9]+']);
-	Route::get('productosalmacen/{id}','InventarioController@mostrarproductos' )->where(['id' => '[0-9]+']);;
+	Route::get('productosalmacen/{id}','InventarioController@mostrarproductos' )->where(['id' => '[0-9]+']);
+	Route::post('inventariopagos','InventarioController@insertardepagos');
 
 	//***Udetalles_de almacen*******
 	Route::get('mostrarlamacen/{id}','DetalleAlmacenController@ver' );

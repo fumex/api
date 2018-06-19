@@ -8,6 +8,8 @@ use App\Movimiento;
 use App\Almacenes;
 use App\detalle_almacen;
 use App\Productos;
+use App\Pago;
+use App\TipoDocumento;
 use Illuminate\Support\Facades\DB;
 
 class InventarioController extends Controller
@@ -125,6 +127,7 @@ class InventarioController extends Controller
          if(!is_null($escoja) && $opciones=='tranferencia entre almacenes' ){
             $otro_movimiento=2;
             $otronumero=0;
+            $otroresultado=0;
             $isset_dettalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->first();
                 if(@count($isset_dettalle)==0){
                     $d_almacen=new detalle_almacen();
@@ -188,7 +191,6 @@ class InventarioController extends Controller
             $otromovimiento->almacen_nombre=$otro_almacen['nombre'];
             $otromovimiento->productos_nombre=$productos_nombre['nombre_producto'];
             $otromovimiento->id_usuario=$usuario;
-            $otromovimiento->tipo_movimiento=$otro_movimiento;
             $otromovimiento->valor=$otroresultado;
             $otromovimiento->valor_antiguo=$otronumero;
             $otromovimiento->save();
@@ -263,7 +265,49 @@ class InventarioController extends Controller
         return $listar2;
 
     }
-    
+    public function insertardepagos(Request $request){
+        $json=$request->input('json',null);
+        $params=json_decode($json);
+
+        $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
+        $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
+        $precio=(!is_null($json) && isset($params->precio)) ? $params->precio : null;
+        $usuario=(!is_null($json) && isset($params->usuario)) ? $params->usuario : null;
+
+        $pago=Pago::get()->last(); 
+        $tipodocumento=$pago['id_documento'];
+		$nombretipodocumento=TipoDocumento::where('id','=',$tipodocumento)->value('documento');
+		$Inventario=new Inventario();
+		$Inventario->id_almacen=$pago['id_almacen'];
+		$Inventario->id_producto=$id_producto;
+		$Inventario->descripcion="Compras ".$nombretipodocumento." ".$pago['nroBoleta'];
+		$Inventario->tipo_movimiento=2;
+		$Inventario->cantidad=$cantidad;
+		$Inventario->precio=$precio;
+        $Inventario->save();
+
+        $d_almace=detalle_almacen::where('id_almacen','=',$pago['id_almacen'])->where('id_producto','=',$id_producto)->first();
+        $id_tabla=Inventario::get()->last();
+		$almacen_nombre=Almacenes::where('id','=',$pago['id_almacen'])->get()->first();
+		$productos_nombre=Productos::where('id','=',$id_producto)->get()->first();
+		$movimiento=new Movimiento();
+		$movimiento->tabla_nombre='Pagos';
+		$movimiento->id_tabla=$pago['id'];
+		$movimiento->almacen_nombre=$almacen_nombre['nombre'];
+		$movimiento->productos_nombre=$productos_nombre['nombre_producto'];
+		$movimiento->id_usuario=$usuario;
+		$movimiento->valor=$d_almace['stock']+$cantidad;
+		$movimiento->valor_antiguo=$d_almace['stock'];
+        $movimiento->save();
+        
+        $data =array(
+            'status'=>'succes',
+            'code'=>200,
+            'mensage'=>'se inserto'
+        );
+        
+        return response()->json($data,200);
+    }
     public function prueba(){
         $i= Inventario::get()->last();
         return  $i['id'];

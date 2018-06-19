@@ -23,6 +23,7 @@ class AlmacenesController extends Controller
         ->where('permiso','=','1')
         ->where('almacenes.estado',true)
         ->select('almacenes.id','almacenes.nombre','almacenes.descripcion','almacenes.direccion','almacenes.telefono','almacenes.id_user')
+        ->distinct('almacenes.nombre')
         ->get();
 
         return $almacen;

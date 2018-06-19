@@ -9,13 +9,8 @@ use App\Detalle_usuario;
 class DetalleAlmacenController extends Controller
 {
     public function ver($id){
-        $id_almacen=Detalle_usuario::join('sucursals','detalle_usuarios.id_sucursal','=','sucursals.id')
-        ->join('almacenes','sucursals.id_almacen','=','almacenes.id')
-        ->join('detalle_almacen','almacenes.id','=','detalle_almacen.id_almacen')
-        ->join('productos','detalle_almacen.id_producto','=','productos.id')
-        ->where('detalle_usuarios.id_user','=',$id)
-        ->where('permiso','=','1')
-        ->select('detalle_almacen.id','almacenes.nombre','productos.nombre_producto','detalle_almacen.stock','detalle_almacen.precio_compra','detalle_almacen.precio_venta')->get();
+        $id_almacen=Detalle_usuario::where('id_almacen',$id)->get();
+        
         return $id_almacen;
 
        }
