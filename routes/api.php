@@ -55,7 +55,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('auth/pagos-code','PagoController@code');
 	Route::get('auth/proveedor-list','PagoController@getProveedores');
 	Route::get('auth/productos-listas','ProductosController@listaProductos');
-	Route::get('auth/pagos-list','PagoController@listPagos');
+	Route::get('auth/pagos-list/{id}','PagoController@listPagos');
 	//--------Anulacion de Pagos----------------------------
 	Route::get('auth/compra-get/{code}','PagoController@getCompra');
 	Route::get('auth/pagos_detalle-list/{code}','PagoController@getPagoDetalle');
