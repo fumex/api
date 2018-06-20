@@ -10,7 +10,8 @@ class orden_depedidocontroler extends Controller
 {
     public function ver(){
         $listar2=orden_depedido::join('almacenes','orden_depedidos.id_almacen','=','almacenes.id')
-        ->select('orden_depedidos.id','almacenes.nombre','orden_depedidos.fecha','orden_depedidos.fecha_estimada_entrega')
+        ->join('proveedors','orden_depedidos.id_proveedor','=','proveedors.id')
+        ->select('orden_depedidos.id','proveedors.nombre_proveedor','almacenes.nombre','orden_depedidos.fecha','orden_depedidos.fecha_estimada_entrega')
         ->get();
         return $listar2;
 

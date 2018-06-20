@@ -9,8 +9,9 @@ use App\Productos;
 
 class detalle_orden_depedidocontroler extends Controller
 {
-    public function ver(){
+    public function ver($id){
         $listar2=detalle_orden_depedido::join('productos','detalle_orden_depedidos.id_producto','=','productos.id')
+        ->where('id_orden_pedido',$id)
         ->select('detalle_orden_depedidos.id','detalle_orden_depedidos.id_orden_pedido','productos.nombre_producto','detalle_orden_depedidos.cantidad')
         ->get();
         return $listar2;
