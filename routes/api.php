@@ -124,7 +124,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('OrdenPedidos/{id}','orden_depedidocontroler@modificar')->where(['id' => '[0-9]+']);
 
 	//***de talle de Orden de pedido */
-	Route::get('DetalleOrdenPedidos','detalle_orden_depedidocontroler@ver' );
+	Route::get('detalleordenselect/{id}','detalle_orden_depedidocontroler@ver' );
 	Route::get('DetalleOrdenPedidos/{id}','detalle_orden_depedidocontroler@seleccionar' )->where(['id' => '[0-9]+']);
 	Route::get('DetalleOrdenPedidos/eliminar/{id}','detalle_orden_depedidocontroler@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('DetalleOrdenPedidos','detalle_orden_depedidocontroler@insertar');

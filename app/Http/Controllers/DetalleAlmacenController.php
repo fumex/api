@@ -9,10 +9,12 @@ use App\Detalle_usuario;
 class DetalleAlmacenController extends Controller
 {
     public function ver($id){
-        $id_almacen=Detalle_usuario::where('id_almacen',$id)->get();
-        
-        return $id_almacen;
-
+        $detalle_almacen=detalle_almacen::join('almacenes','detalle_almacen.id_almacen','almacenes.id')
+        ->join('productos','detalle_almacen.id_producto','productos.id')
+        ->where('id_almacen',$id)
+        ->select('detalle_almacen.id','detalle_almacen.precio_compra','detalle_almacen.precio_venta','detalle_almacen.stock','almacenes.nombre','productos.nombre_producto')
+        ->get();
+        return $detalle_almacen;
        }
 
     public function insertar(Request $request){
