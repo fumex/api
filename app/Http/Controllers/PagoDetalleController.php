@@ -41,9 +41,6 @@ class PagoDetalleController extends Controller
 			return response()->json($d_almace);
     	}
     	else{
-			if(is_null($codigo)){
-				$codigo='aun no hay codigo';
-			}
     		$detalle_almacen= new detalle_almacen();
 	    	$detalle_almacen->id_almacen=$id;
             $detalle_almacen->codigo=$codigo;
