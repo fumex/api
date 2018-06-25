@@ -15,7 +15,7 @@ class CreateTipoDocumentosTable extends Migration
     {
         Schema::create('tipo_documentos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('documento');
+            $table->string('documento')->unique();
             $table->string('operacion');
             $table->boolean('estado')->nullable()->default(true);
             $table->Integer('id_user'); 
