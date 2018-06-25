@@ -15,10 +15,10 @@ class CreateOrdenDepedidosTable extends Migration
     {
         Schema::create('orden_depedidos', function (Blueprint $table) {
             $table->increments('id');
-            $table->TIMESTAMP('fecha');
             $table->Integer('id_almacen');
             $table->Integer('id_proveedor');
             $table->date('fecha_estimada_entrega');
+            $table->boolean('estado');
             $table->timestamps();
         });
     }

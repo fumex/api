@@ -51,27 +51,13 @@ class AlmacenesController extends Controller
             $Almacenes->telefono=$telefono;
             $Almacenes->id_user=$id_user;
             $Almacenes->estado=true;
-            
 
-            $isset_cate=Almacenes::where('nombre','=',$nombre)->first();
-            if(@count($isset_cate)==0){
-                //guardar
-                $Almacenes->save();
-
-                $data =array(
-                    'status'=>'succes',
-                    'code'=>200,
-                    'mensage'=>'registrado'
-                );
-            }else{
-                //no guiardar
-                $data =array(
-                    'status'=>'error',
-                    'code'=>300,
-                    'mensage'=>'ya existe'
-                );
-            }
-        
+            $Almacenes->save();
+            $data =array(
+                'status'=>'succes',
+                'code'=>200,
+                'mensage'=>'registrado'
+            );    
         }else{
             $data =array(
                 'status'=>'error',

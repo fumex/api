@@ -22,26 +22,13 @@ class CategoriaController extends Controller
             $categorias=new Categoria();
             $categorias->nombre=$nombre;
             $categorias->id_user=$id_user;
+            $categorias->save();
 
-            $isset_cate=Categoria::where('nombre','=',$nombre)->first();
-            if(@count($isset_cate)==0){
-                //guardar
-                $categorias->save();
-
-                $data =array(
-                    'status'=>'succes',
-                    'code'=>200,
-                    'mensage'=>'registrado'
-                );
-            }else{
-                //no guiardar
-                $data =array(
-                    'status'=>'error',
-                    'code'=>300,
-                    'mensage'=>'ya existe'
-                );
-            }
-        
+            $data =array(
+                'status'=>'succes',
+                'code'=>200,
+                'mensage'=>'registrado'
+            );
         }else{
             $data =array(
                 'status'=>'error',

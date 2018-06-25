@@ -17,7 +17,7 @@ class InventarioController extends Controller
     public function ver(){
         $listar2=Inventario::join('almacenes','inventarios.id_almacen','=','almacenes.id')
         ->join('productos','inventarios.id_producto','=','productos.id')
-        ->select('inventarios.id','inventarios.fecha','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','inventarios.precio','tipo_movimiento','inventarios.cantidad')
+        ->select('inventarios.id','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','inventarios.precio','tipo_movimiento','inventarios.cantidad','inventarios.created_at')
         ->get();
         return $listar2;
        }
@@ -243,7 +243,7 @@ class InventarioController extends Controller
 
         $listar2=Inventario::join('almacenes','inventarios.id_almacen','=','almacenes.id')
         ->join('productos','inventarios.id_producto','=','productos.id')
-        ->select('inventarios.id','inventarios.fecha','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','inventarios.precio','tipo_movimiento','inventarios.cantidad')
+        ->select('inventarios.id','inventarios.created_at','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','inventarios.precio','tipo_movimiento','inventarios.cantidad')
         ->where("id_producto",'=',$id_producto)
         ->where('id_almacen','=',$id_almacen)
         ->get();

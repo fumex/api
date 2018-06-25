@@ -27,6 +27,7 @@ class UnidadController extends Controller
 		$unidad	=(!is_null($json) && isset($params->unidad)) ? $params->unidad : null;
 		$abreviacion=(!is_null($json) && isset($params->abreviacion)) ? $params->abreviacion : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
+        
 
         if(!is_null($unidad)){
             $Unidad=new Unidad();
@@ -35,25 +36,25 @@ class UnidadController extends Controller
             $Unidad->abreviacion=$abreviacion;
             $Unidad->id_user=$id_user;
 
-            $isset_cate=Unidad::where('unidad','=',$unidad)->first();
+            $isset_cate=Unidad::where('abreviacion','=',$abreviacion)->first();
             if(@count($isset_cate)==0){
-                //guardar
                 $Unidad->save();
 
                 $data =array(
                     'status'=>'succes',
                     'code'=>200,
-                    'mensage'=>'registrado'
+                    'mensage'=>'registrado',
                 );
             }else{
-                //no guiardar
                 $data =array(
                     'status'=>'error',
                     'code'=>300,
-                    'mensage'=>'ya existe'
+                    'mensage'=>'ya existe',
+                    'seleccionado'=>$isset_cate['unidad']
                 );
             }
-        
+            
+
         }else{
             $data =array(
                 'status'=>'error',
@@ -75,13 +76,24 @@ class UnidadController extends Controller
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
      
         if(!is_null($unidad)){
-            $Unidad= Unidad::where('id','=',$id)->update(['unidad'=>$unidad,'abreviacion'=>$abreviacion,'id_user'=>$id_user]);
+            $isset_cate=Unidad::whereNotIn('id',[$id])->where('abreviacion','=',$abreviacion)->first();
+            if(@count($isset_cate)==0){
+                $Unidad= Unidad::where('id','=',$id)->update(['unidad'=>$unidad,'abreviacion'=>$abreviacion,'id_user'=>$id_user]);
 
-            $data =array(
-            'status'=>'succes',
-            'code'=>200,
-            'mensage'=>'registrado'
-            );
+                $data =array(
+                'status'=>'succes',
+                'code'=>200,
+                'mensage'=>'registrado'
+                );
+            }else{
+                $data =array(
+                    'status'=>'error',
+                    'code'=>300,
+                    'mensage'=>'ya existe',
+                    'seleccionado'=>$isset_cate['unidad']
+                );
+            }
+           
         }else{
             $data =array(
                 'status'=>'error',

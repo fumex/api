@@ -73,11 +73,15 @@ class detalle_orden_depedidocontroler extends Controller
        }
 
     public function seleccionar($id){   
-        $orden_depedido=orden_depedido::find($id);
-        return $orden_depedido;
+        $detalle_orden=detalle_orden_depedido::join('productos','detalle_orden_depedidos.id_producto','=','productos.id')
+        ->select('detalle_orden_depedidos.id','detalle_orden_depedidos.id_orden_pedido','productos.nombre_producto','detalle_orden_depedidos.cantidad')
+        ->find($id);
+        return $detalle_orden;
     }
 
     public function eliminar($id){
-        
+        $detalle_orden=detalle_orden_depedido::find($id);
+    	$detalle_orden->delete();
+    	return $detalle_orden;
     }
 }
