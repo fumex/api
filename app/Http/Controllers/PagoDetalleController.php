@@ -23,10 +23,14 @@ class PagoDetalleController extends Controller
     	$id=$pago['id_almacen'];
     	$cantidad=$pago_d['cantidad'];
         $codigo=$request->codigo;
+        $vendible=$request->vendible;
     	$id_pro=$request->id_producto;
     	$pre_comp=$request->precio_compra;
 		$pre_vent=$request->precio_venta;
-    	$d_almace=detalle_almacen::where('id_almacen','=',$id)->where('id_producto','=',$id_pro)->first();
+    	$d_almace=detalle_almacen::where('id_almacen','=',$id)
+                                   ->where('id_producto','=',$id_pro)
+                                   ->where('vendible','=',$vendible)
+                                   ->first();
     	if(@count($d_almace)>=1){
 //actualizacion de precio de detalle_almacen---------------------------------------------------------------------
 			$stockactual=$d_almace['stock'];
@@ -44,12 +48,13 @@ class PagoDetalleController extends Controller
     		$detalle_almacen= new detalle_almacen();
 	    	$detalle_almacen->id_almacen=$id;
             $detalle_almacen->codigo=$codigo;
+            $detalle_almacen->vendible=$vendible;
 	    	$detalle_almacen->id_producto=$id_pro;
 	    	$detalle_almacen->stock=$cantidad ;
 	    	$detalle_almacen->precio_compra=$pre_comp;
 	    	$detalle_almacen->precio_venta=$pre_vent;
 			$detalle_almacen->save();
-	    	return $detalle_almacen;
+	    	return response()->json($detalle_almacen);
 		}
 
 
