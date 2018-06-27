@@ -18,7 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-Route::middleware(['jwt.auth'])->group(function(){
+//Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -157,7 +157,9 @@ Route::middleware(['jwt.auth'])->group(function(){
 
 	Route::get('fecha','orden_depedidocontroler@fecha');
 	Route::get('prueba','InventarioController@prueba');
-});
+
+	route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
+//});
 
 
 

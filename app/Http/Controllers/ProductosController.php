@@ -42,27 +42,15 @@ class ProductosController extends Controller
             $Productos->estado=true;
             $Productos->id_user=$id_user;
 
-            $isset_producto=Productos::where('nombre_producto','=',$nombre_producto)->first();
-            if(@count($isset_producto)==0){
-                
-
+          
                 //guardar
-                $Productos->save();
+            $Productos->save();
 
-                $data =array(
-                    'status'=>'succes',
-                    'code'=>200,
-                    'mensage'=>'registrado'
-                );
-            }else{
-                //no guiardar
-                $data =array(
-                    'status'=>'error',
-                    'code'=>300,
-                    'mensage'=>'ya existe'
-                );
-            }
-        
+            $data =array(
+                'status'=>'succes',
+                'code'=>200,
+                'mensage'=>'registrado'
+            );        
         }else{
             $data =array(
                 'status'=>'error',

@@ -11,6 +11,7 @@ use App\Movimiento;
 use App\Almacenes;
 use App\Productos;
 use App\TipoDocumento;
+
 class PagoDetalleController extends Controller
 {
     public function addPagoDetalle(Request $request){
@@ -32,7 +33,8 @@ class PagoDetalleController extends Controller
 			$stockactual=$d_almace['stock'];
         	$precioctual=$d_almace['precio_compra'];
 			$costoactualizado=(($stockactual *$precioctual)+($cantidad*$pre_comp))/($stockactual+$cantidad);
-			$d_almace->precio_compra=$costoactualizado;
+			$costoguardado=redondeo($costoactualizado);
+			$d_almace->precio_compra=$costoguardado;
 //-----------------------------------------------------------------------------------------------------------
 
 			$d_almace->stock=$d_almace['stock']+$cantidad;
@@ -53,5 +55,10 @@ class PagoDetalleController extends Controller
 		}
 
 
-    }	
+	}
+	
+	public function redondeo($cantidad){
+		$resultado=round($cantidad * 100) / 100; 
+		return $resultado;
+	}
 }

@@ -60,8 +60,8 @@ class InventarioController extends Controller
             $Inventario->id_producto=$id_producto;
             $Inventario->tipo_movimiento=$tipo_movimiento;
             $Inventario->cantidad=$cantidad;
-            
-            $Inventario->precio=$presio['precio_compra'];
+            $precioredonde=round($presio['precio_compra'] * 100) / 100; 
+            $Inventario->precio=$precioredonde;
             if(!is_null($opciones) && !is_null($descripcion) ) {
                 $Inventario->descripcion=$opciones." : ".$descripcion ;
             }else{
@@ -90,7 +90,8 @@ class InventarioController extends Controller
             $costoactualizado=(($stockactual *$precioctual)-($cantidad*$presio['precio_compra']))/($stockactual-$cantidad);
             
         }
-        $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['precio_compra'=>$costoactualizado]);
+        $costoredondeado=round($costoactualizado * 100) / 100; 
+        $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['precio_compra'=>$costoredondeado]);
         $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['stock'=>$resultado]);
 
 
@@ -157,14 +158,16 @@ class InventarioController extends Controller
                         $otrocostoactualizado=($otrostockactual *$otroprecioctual+$cantidad*$presio['precio_compra'])/($otrostockactual+$cantidad);
                         $otro_movimiento=2;
                     }
-                    $detalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->update(['precio_compra'=>$otrocostoactualizado]);
+                    $otrocostoredondeado=round($otrocostoactualizado * 100) / 100; 
+                    $detalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->update(['precio_compra'=>$otrocostoredondeado]);
                     $detalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->update(['stock'=>$otroresultado]);
                 }
             $otroinventario=new Inventario();
             $otroinventario->id_almacen=$escoja;
             $otroinventario->id_producto=$id_producto;
             $otroinventario->cantidad=$cantidad;
-            $otroinventario->precio=$presio['precio_compra'];
+            $otropecioredondeado=round($presio['precio_compra'] * 100) / 100; 
+            $otroinventario->precio=$otropecioredondeado;
 
             if(!is_null($opciones) && !is_null($descripcion)) {
                 $otroinventario->descripcion=$opciones.' : ' .$descripcion ;
