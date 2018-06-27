@@ -16,11 +16,15 @@ class TipoDocumentoController extends Controller
     	return  response()->json($documentos);
     }
     public function getDocumenPersona(){
-        $persona=TipoDocumento::where('operacion','=','Personal')->get();
+        $persona=TipoDocumento::where('operacion','=','Personal')
+                                ->where('estado','=',true)
+                                ->get();
         return response()->json($persona);
     }
     public function getDocumenComprobante(){
-        $comprobante=TipoDocumento::where('operacion','=','Comprobante')->get();
+        $comprobante=TipoDocumento::where('operacion','=','Comprobante')
+                                    ->where('estado','=',true)
+                                    ->get();
         return response()->json($comprobante);
     }
 
