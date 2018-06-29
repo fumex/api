@@ -16,8 +16,6 @@ use Illuminate\Http\Request;
 Route::post('auth/login','AuthenticateController@login');
 Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
-
-
 Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
@@ -156,6 +154,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 
 	Route::get('fecha','orden_depedidocontroler@fecha');
 	Route::get('prueba','InventarioController@prueba');
+	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 
 
 
@@ -170,6 +169,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('cliente-delete/{id}','ClienteController@deleteCliente');
 
 	//-----------------------------------------------------------------
+	
 });
 
 
