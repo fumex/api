@@ -142,7 +142,6 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('sucursal-delete/{id}','SucursalController@deleteSucursal' );
 	Route::post('sucursal-add','SucursalController@addSucursal');
 	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
-	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
 	Route::get('sucursales-list','SucursalController@listSucursales');
 
 	//---------------------------Usuario ---------------------------------------/
@@ -157,6 +156,20 @@ Route::middleware(['jwt.auth'])->group(function(){
 
 	Route::get('fecha','orden_depedidocontroler@fecha');
 	Route::get('prueba','InventarioController@prueba');
+
+
+
+	//--------------------------Ventas-------------------------------
+	//-----------------------Empresa--------------------------------
+	Route::post('empresa-add','EmpresaController@addEmpresa');
+	//------------clientes-----------------------------------------
+	Route::get('clientes','ClienteController@getClientes');
+	Route::get('cliente/{id}','ClienteController@getCliente');
+	Route::post('cliente-add','ClienteController@addCliente');
+	Route::post('cliente-update/{id}','ClienteController@updateCliente');
+	Route::get('cliente-delete/{id}','ClienteController@deleteCliente');
+
+	//-----------------------------------------------------------------
 });
 
 
