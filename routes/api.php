@@ -18,6 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
+
 Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
@@ -157,6 +158,21 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('fecha','orden_depedidocontroler@fecha');
 	Route::get('prueba','InventarioController@prueba');
 
+
+
+	//--------------------------Ventas-------------------------------
+	//-----------------------Empresa--------------------------------
+	Route::post('empresa-add','EmpresaController@addEmpresa');
+	//------------clientes-----------------------------------------
+	Route::get('clientes','ClienteController@getClientes');
+	Route::get('cliente/{id}','ClienteController@getCliente');
+	Route::post('cliente-add','ClienteController@addCliente');
+	Route::post('cliente-update/{id}','ClienteController@updateCliente');
+	Route::get('cliente-delete/{id}','ClienteController@deleteCliente');
+
+
+	
+	//-----------------------------------------------------------------
 	route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 	route::post('imagenes','UserController@upimagenes');
 	route::get('imagenes/{name}','UserController@getimages');
