@@ -18,7 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-//Route::middleware(['jwt.auth'])->group(function(){
+Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -142,7 +142,6 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('sucursal-delete/{id}','SucursalController@deleteSucursal' );
 	Route::post('sucursal-add','SucursalController@addSucursal');
 	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
-	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
 	Route::get('sucursales-list','SucursalController@listSucursales');
 
 	//---------------------------Usuario ---------------------------------------/
@@ -159,7 +158,9 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('prueba','InventarioController@prueba');
 
 	route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
-//});
+	route::post('imagenes','UserController@upimagenes');
+	route::get('imagenes/{name}','UserController@getimages');
+});
 
 
 

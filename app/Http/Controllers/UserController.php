@@ -7,6 +7,9 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Hash;
 use DB;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class UserController extends Controller
 {
@@ -149,4 +152,28 @@ class UserController extends Controller
 
 
     }
+    public function upimagenes(Request $request){
+        $file = $request->photo;
+        
+        if ($request->hasFile('photo')) {
+            $file = $request->photo;
+            $image=$request->file('photo');
+            $path=$image->getClientOriginalExtension();
+            if(Storage::disk('images')->search($request->dni.'.'.$image->getClientOriginalExtension())){
+                return 1;
+            }else{
+                return 2;
+            }
+            /*\Storage::disk('images')->put($request->dni.".".$path,\File::get($image));
+            //$path = $request->photo->store('images');
+            return response()->json($request->dni);*/
+        } 
+        return 12;
+    }
+    public function getimages($name){
+        
+        $file =Storage::disk('images')->get($name);
+        return new Response($file,200);
+    }
+
 }

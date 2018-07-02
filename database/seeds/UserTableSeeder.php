@@ -22,7 +22,9 @@ class UserTableSeeder extends Seeder
             'rol'=>'admin',
             'email'=>'admin@gmail.com',
             'estado'=>true,
-            'strd'=>'1305'
+            'strd'=>'1305',
+            'imagen'=>'http://localhost:8000/api/imagenes/2.jpg'
+            
         ]);
     }
 }
