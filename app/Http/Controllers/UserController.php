@@ -67,6 +67,7 @@ class UserController extends Controller
         $rol=(!is_null($json) && isset($params->rol)) ? $params->rol : null;
         $email=(!is_null($json) && isset($params->email)) ? $params->email : null;
         $password=(!is_null($json) && isset($params->password)) ? $params->password : null;
+        $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;
 
             $d_user=new User();
             $d_user->name=$name;
@@ -79,6 +80,7 @@ class UserController extends Controller
             $d_user->rol=$rol;
             $d_user->email=$email;
             $d_user->password=bcrypt($password);
+            $d_user->imagen=$imagen;
             
             $d_user->estado=true;
             if($d_user->rol=='admin'){
@@ -152,28 +154,49 @@ class UserController extends Controller
 
 
     }
-    public function upimagenes(Request $request){
-        $file = $request->photo;
+    public function getimages($name){
         
+        $file =Storage::disk('usuarios')->get($name);
+        return new Response($file,200);
+    }
+    public function upimagenes(Request $request){
+
         if ($request->hasFile('photo')) {
             $file = $request->photo;
             $image=$request->file('photo');
             $path=$image->getClientOriginalExtension();
-            if(Storage::disk('images')->search($request->dni.'.'.$image->getClientOriginalExtension())){
-                return 1;
-            }else{
-                return 2;
-            }
-            /*\Storage::disk('images')->put($request->dni.".".$path,\File::get($image));
+            $now = new \DateTime();
+            \Storage::disk('usuarios')->put($now->format('d_m_Y_H_i_s').$request->dni.".".$path,\File::get($image));
             //$path = $request->photo->store('images');
-            return response()->json($request->dni);*/
+            $data =array(
+                'status'=>'succes',
+                'code'=>200,
+                'mensage'=>'registrado',
+                'name'=>$now->format('d_m_Y_H_i_s'),
+                'extencion'=>$path
+            );
+            return response()->json($data,200);
         } 
-        return 12;
+        $data =array(
+            'status'=>'error',
+            'code'=>404,
+            'mensage'=>'no se guardo la imagen',
+        );
+        return response()->json($data,200);
     }
-    public function getimages($name){
+   public function updateimages($id, Request $request){
+        $json=$request->input('json',null);
+        $params=json_decode($json);
+
+        $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;
+        $User= User::where('id',$id)->update(['imagen'=>$imagen,]);
+        $data =array(
+            'status'=>'se guardo',
+            'code'=>200,
+            'mensage'=>'Actualizado'
+        );
         
-        $file =Storage::disk('images')->get($name);
-        return new Response($file,200);
-    }
+        return response()->json($data,200);
+   }
 
 }

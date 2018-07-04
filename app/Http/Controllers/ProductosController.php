@@ -7,6 +7,8 @@ use App\Productos;
 use App\Categoria;
 use App\Unidad;
 use DB;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductosController extends Controller
 {
@@ -30,6 +32,7 @@ class ProductosController extends Controller
         $id_unidad=(!is_null($json) && isset($params->id_unidad)) ? $params->id_unidad : null;
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
+        $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;
 
         if(!is_null($nombre_producto)  && !is_null($cantidad) && !is_null($id_categoria)){
             $Productos=new Productos();
@@ -40,6 +43,7 @@ class ProductosController extends Controller
             $Productos->id_unidad=$id_unidad;
             $Productos->cantidad=$cantidad;
             $Productos->estado=true;
+            $Productos->imagen=$imagen;
             $Productos->id_user=$id_user;
 
           
@@ -73,7 +77,8 @@ class ProductosController extends Controller
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_unidad=(!is_null($json) && isset($params->id_unidad)) ? $params->id_unidad : null;
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
-         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
+        $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
+        $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;  
            
               //guardar
                 $Productos= Productos::where('id',$iden)->update(['nombre_producto'=>$nombre_producto,
@@ -81,7 +86,8 @@ class ProductosController extends Controller
                     'descripcion'=>$descripcion,
                     'id_unidad'=>$id_unidad,
                     'cantidad'=>$cantidad,
-                    'id_user'=>$id_user]);
+                    'id_user'=>$id_user,
+                    'imagen'=>$imagen]);
 
                 $data =array(
                     'status'=>'succes',
@@ -121,9 +127,42 @@ class ProductosController extends Controller
         $productos=DB::table('productos')
                       ->join('categorias','productos.id_categoria','=','categorias.id')
                       ->join('unidades','productos.id_unidad','=','unidades.id')
-                      ->select('productos.id','categorias.nombre','unidades.unidad','productos.nombre_producto','productos.descripcion')
+                      ->select('productos.id','categorias.nombre','unidades.unidad','productos.nombre_producto','productos.descripcion','productos.imagen')
                       ->get();
         return response()->json($productos);
 
     }
+
+
+    public function getimages($name){
+        
+        $file =Storage::disk('productos')->get($name);
+        return new Response($file,200);
+    }
+    public function upimagenes(Request $request){
+        
+        if ($request->hasFile('photo')) {
+            $file = $request->photo;
+            $image=$request->file('photo');
+            $path=$image->getClientOriginalExtension();
+            $now = new \DateTime();
+            \Storage::disk('productos')->put($now->format('d_m_Y_H_i_s').".".$path,\File::get($image));
+            //$path = $request->photo->store('images');
+            $data =array(
+                'status'=>'succes',
+                'code'=>200,
+                'mensage'=>'registrado',
+                'name'=>$now->format('d_m_Y_H_i_s'),
+                'extencion'=>$path
+            );
+            return response()->json($data,200);
+        } 
+        $data =array(
+            'status'=>'error',
+            'code'=>404,
+            'mensage'=>'no se guardo la imagen',
+        );
+        return response()->json($data,200);
+    }
+   
 }
