@@ -169,9 +169,28 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('cliente-add','ClienteController@addCliente');
 	Route::post('cliente-update/{id}','ClienteController@updateCliente');
 	Route::get('cliente-delete/{id}','ClienteController@deleteCliente');
+	//----------------Impuesto-------------------------------------------
+	Route::get('impuestos','ImpuestoController@getImpuestos');
+	Route::get('impuesto/{id}','ImpuestoController@getImpuesto');
+	Route::post('impuesto-add','ImpuestoController@addImpuesto');
+	Route::post('impuesto-update/{id}','ImpuestoController@updateImpuesto');
+	Route::get('impuesto-delete/{id}','ImpuestoController@deleteImpuesto');
+	//------------------------Monedas------------------------------------------------
+	Route::get('monedas','MonedaController@getMonedas');
+	Route::get('moneda/{id}','MonedaController@getMoneda');
+	Route::post('moneda-add','MonedaController@addMoneda');
+	Route::post('moneda-update/{id}','MonedaController@updateMoneda');
+	Route::get('moneda-delete/{id}','MonedaController@deleteMoneda');
+	//------------------------TipoPago----------------------------------------------
+	Route::get('tipo_pagos','TipoPagoController@getTipoPagos');
+	Route::get('tipo_pago/{id}','TipoPagoController@getTipoPago');
+	Route::post('tipo_pago-add','TipoPagoController@addTipoPago');
+	Route::post('tipo_pago-update/{id}','TipoPagoController@updateTipoPago');
+	Route::get('tipo_pago-delete/{id}','TipoPagoController@deleteTipoPago');
 
 
-	
+
+
 	//-----------------------------------------------------------------
 	route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 	route::post('imagenes','UserController@upimagenes');

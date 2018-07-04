@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateClientesTable extends Migration
+class CreateImpuestosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,12 @@ class CreateClientesTable extends Migration
      */
     public function up()
     {
-        Schema::create('clientes', function (Blueprint $table) {
+        Schema::create('impuestos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nombre');
-            $table->string('apellido');
-            $table->Integer('id_documento');
-            $table->string('nro_documento')->unique();
-            $table->string('direccion');
-            $table->string('email');
-            $table->string('telefono')->nullable();
-            $table->string('telefono2')->nullable();;
+            $table->String('nombre');
+            $table->Integer('porcentaje');
+            $table->String('descripcion');
+            $table->String('tipo');
             $table->boolean('estado')->nullable()->default(true);
             $table->Integer('id_user');
             $table->timestamps();
@@ -36,6 +32,6 @@ class CreateClientesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('clientes');
+        Schema::dropIfExists('impuestos');
     }
 }
