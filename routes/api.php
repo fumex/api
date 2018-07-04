@@ -19,7 +19,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 
 
 
-Route::middleware(['jwt.auth'])->group(function(){
+//Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -91,6 +91,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('/productos/{iden}','ProductosController@modificar')->where(['id' => '[0-9]+']);
 	Route::get('/productos/buscar/{name}','ProductosController@buscar');
 	Route::get('/productos-get','ProductosController@getProductos');
+	Route::post('modificarimagenproductos/{id}','ProductosController@updateimages')->where(['id' => '[0-9]+']);
 
 	//***Unidades de almacenes*******
 	Route::get('almacenes','AlmacenesController@ver' );
@@ -150,6 +151,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('mantenimientousuario','UserController@insertar');
 	Route::post('mantenimientousuario/{id}','UserController@modificar')->where(['id' => '[0-9]+']);
 	Route::post('modificarpas/{id}','UserController@modificarcontra')->where(['id' => '[0-9]+']);
+	Route::post('modificarimagen/{id}','UserController@updateimages')->where(['id' => '[0-9]+']);
 
 	Route::get('usuario/{id}','UserController@getusuario')->where(['id' => '[0-9]+']);
 	Route::get('usuario','UserController@ver');
@@ -194,8 +196,8 @@ Route::middleware(['jwt.auth'])->group(function(){
 	//-----------------------------------------------------------------
 	route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 	route::post('imagenes','UserController@upimagenes');
+	route::post('imagenesproductos','ProductosController@upimagenes');
+//});
 	route::get('imagenes/{name}','UserController@getimages');
-});
-
-
+	route::get('imagenesproductos/{name}','ProductosController@getimages');
 

@@ -22,6 +22,7 @@ class CreateProductosTable extends Migration
             $table->Integer('cantidad');
             $table->boolean('estado');
             $table->Integer('id_user');
+            $table->string('imagen');
             $table->timestamps();
         });
     }
