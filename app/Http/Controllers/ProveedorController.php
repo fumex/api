@@ -9,7 +9,7 @@ class ProveedorController extends Controller
     public function getProveedores(){
     	$proveedores=DB::table('proveedors')
                         ->join('tipo_proveedors','proveedors.tipo_proveedor','=','tipo_proveedors.id')
-                        ->select('proveedors.id','proveedors.nombre_proveedor','proveedors.ruc','proveedors.direccion','proveedors.telefono','proveedors.email','tipo_proveedors.tipo','tipo_proveedors.operacion')
+                        ->select('proveedors.id','proveedors.nombre_proveedor','proveedors.ruc','proveedors.direccion','proveedors.telefono','proveedors.telefono2','proveedors.email','tipo_proveedors.tipo','tipo_proveedors.operacion')
                         ->where('proveedors.estado','=',true)
                         ->get();
     	return $proveedores;
@@ -27,7 +27,6 @@ class ProveedorController extends Controller
 
     public function getProveedor($id){
         $proveedor=Proveedor::find($id);
-        
         return response()->json($proveedor);
     }
 

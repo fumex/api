@@ -31,7 +31,7 @@ class ClienteController extends Controller
     public function getClientes(){
     	$clientes=DB::table('clientes')
                         ->join('tipo_documentos','clientes.id_documento','=','tipo_documentos.id')
-                        ->select('clientes.id','clientes.nombre','clientes.apellido','tipo_documentos.documento','clientes.nro_documento','clientes.direccion','clientes.email','clientes.telefono')
+                        ->select('clientes.id','clientes.nombre','clientes.apellido','tipo_documentos.documento','clientes.nro_documento','clientes.direccion','clientes.email','clientes.telefono','clientes.telefono2')
                         ->where('clientes.estado','=',true)
                         ->get();
         return response()->json($clientes);

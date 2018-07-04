@@ -165,6 +165,7 @@ class UserController extends Controller
             $file = $request->photo;
             $image=$request->file('photo');
             $path=$image->getClientOriginalExtension();
+
             $now = new \DateTime();
             \Storage::disk('usuarios')->put($now->format('d_m_Y_H_i_s').$request->dni.".".$path,\File::get($image));
             //$path = $request->photo->store('images');
@@ -176,6 +177,7 @@ class UserController extends Controller
                 'extencion'=>$path
             );
             return response()->json($data,200);
+
         } 
         $data =array(
             'status'=>'error',

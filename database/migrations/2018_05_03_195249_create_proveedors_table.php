@@ -19,6 +19,7 @@ class CreateProveedorsTable extends Migration
             $table->string('ruc')->unique();
             $table->string('direccion')->nullable();
             $table->string('telefono')->nullable();
+            $table->string('telefono2')->nullable();
             $table->string('email');
             $table->Integer('tipo_proveedor')->nullable();
             $table->boolean('estado')->nullable()->default(true);
