@@ -21,10 +21,13 @@ class CreateEmpresasTable extends Migration
             $table->string('departamento');
             $table->string('provincia');
             $table->string('distrito');
-            $table->string('telefono');
+            $table->string('telefono1');
+            $table->string('telefono2');
             $table->string('web');
             $table->string('email');
-            $table->string('logo');
+            $table->string('imagen')->nullable();
+            $table->boolean('estado')->nullable()->default(true);
+            $table->Integer('id_user');
             $table->timestamps();
         });
     }

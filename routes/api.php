@@ -19,7 +19,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 
 
 
-//Route::middleware(['jwt.auth'])->group(function(){
+Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -165,6 +165,11 @@ Route::get('auth/logout','AuthenticateController@logout');
 	//--------------------------Ventas-------------------------------
 	//-----------------------Empresa--------------------------------
 	Route::post('empresa-add','EmpresaController@addEmpresa');
+	Route::get('empresa/{id}','EmpresaController@getEmpresa');
+	Route::post('empresa-update','EmpresaController@updateEmpresa');
+	Route::get('empresa-delete','EmpresaController@deleteEmpresa');
+	Route::get('empresas','EmpresaController@getEmpresas');
+	Route::post('imagen-up','EmpresaController@upImagen');
 	//------------clientes-----------------------------------------
 	Route::get('clientes','ClienteController@getClientes');
 	Route::get('cliente/{id}','ClienteController@getCliente');
@@ -194,10 +199,15 @@ Route::get('auth/logout','AuthenticateController@logout');
 
 
 	//-----------------------------------------------------------------
-	route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
-	route::post('imagenes','UserController@upimagenes');
-	route::post('imagenesproductos','ProductosController@upimagenes');
-//});
-	route::get('imagenes/{name}','UserController@getimages');
-	route::get('imagenesproductos/{name}','ProductosController@getimages');
+	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
+	Route::post('imagenes','UserController@upimagenes');
+	Route::post('imagenesproductos','ProductosController@upimagenes');
+});
+	//-----------Imagenes-----------------------------------------
+	//--------------Empresa---------------------------------------
+	Route::get('empresa-img/{name}','EmpresaController@getImagen');
+	//------------------------------------------------------------
+	Route::get('imagenes/{name}','UserController@getimages');
+	Route::get('imagenesproductos/{name}','ProductosController@getimages');
+
 
