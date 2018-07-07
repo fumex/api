@@ -177,6 +177,10 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('impuesto-add','ImpuestoController@addImpuesto');
 	Route::post('impuesto-update/{id}','ImpuestoController@updateImpuesto');
 	Route::get('impuesto-delete/{id}','ImpuestoController@deleteImpuesto');
+
+	Route::get('igv','ImpuestoController@getigv');
+	Route::get('otro','ImpuestoController@getotro');
+
 	//------------------------Monedas------------------------------------------------
 	Route::get('monedas','MonedaController@getMonedas');
 	Route::get('moneda/{id}','MonedaController@getMoneda');
@@ -190,8 +194,13 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('tipo_pago-update/{id}','TipoPagoController@updateTipoPago');
 	Route::get('tipo_pago-delete/{id}','TipoPagoController@deleteTipoPago');
 
+	Route::get('detalleimpuestosigv/{id}','detalle_impuestoController@verigv')->where(['id' => '[0-9]+']);
+	Route::get('detalleimpuestosotro/{id}','detalle_impuestoController@verotro')->where(['id' => '[0-9]+']);
+	Route::post('editdetalleimpuestosigv','detalle_impuestoController@modificarigv');
+	Route::post('editdetalleimpuestosotro','detalle_impuestoController@modificarotro');
+	Route::post('detalleimpuestos','detalle_impuestoController@insertar');
 
-
+	
 
 	//-----------------------------------------------------------------
 	route::get('redonde/{cantidad}','PagoDetalleController@redondeo');

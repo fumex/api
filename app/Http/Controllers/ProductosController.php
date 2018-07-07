@@ -17,6 +17,7 @@ class ProductosController extends Controller
         ->join('unidades','productos.id_unidad','=','unidades.id')
         ->select('productos.id','nombre_producto','categorias.nombre','descripcion','productos.cantidad','unidades.abreviacion')
         ->where('estado',true)
+        ->orderBy('productos.id')
         ->get();
         //return $listar=Productos::all();
         return $listar2;

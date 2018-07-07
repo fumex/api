@@ -32,4 +32,12 @@ class ImpuestoController extends Controller
     	$impuestos=Impuesto::where('estado','=',true)->get();
     	return  response()->json($impuestos);
     }
+    public function getigv(){
+    	$impuesto=Impuesto::all()->where('tipo','IGV')->where('estado','=',true);
+        return $impuesto;
+    }
+    public function getotro(){
+        $impuesto=Impuesto::where('tipo','OTRO')->where('estado','=',true)->get();
+        return response()->json($impuesto);
+    }
 }
