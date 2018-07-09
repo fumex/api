@@ -37,7 +37,7 @@ class EmpresaController extends Controller
             $path=$image->getClientOriginalExtension();
 
             $now =new \DateTime();
-            \Storage::disk('empresa')->put($now->format('d_m_Y_H_i_s').$request->ruc.".".$path,\File::get($image));
+            \Storage::disk('empresa')->put($request->ruc.".".$path,\File::get($image));
             return response()->json($request->ruc);
         } 
         else{
@@ -47,5 +47,9 @@ class EmpresaController extends Controller
     public function getImagen($name){
         $file=Storage::disk('usuarios')->get($name);
         return new Response($file,200);
+    }
+    public function dataEmpresa(){
+        $empresa=Empresa::get()->last();
+        return response()->json($empresa);
     }
 }

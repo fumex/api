@@ -166,6 +166,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	//-----------------------Empresa--------------------------------
 	Route::post('empresa-add','EmpresaController@addEmpresa');
 	Route::get('empresa/{id}','EmpresaController@getEmpresa');
+	Route::get('empresa','EmpresaController@dataEmpresa');
 	Route::post('empresa-update','EmpresaController@updateEmpresa');
 	Route::get('empresa-delete','EmpresaController@deleteEmpresa');
 	Route::get('empresas','EmpresaController@getEmpresas');
@@ -198,7 +199,6 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('tipo_pago-add','TipoPagoController@addTipoPago');
 	Route::post('tipo_pago-update/{id}','TipoPagoController@updateTipoPago');
 	Route::get('tipo_pago-delete/{id}','TipoPagoController@deleteTipoPago');
-
 	Route::get('detalleimpuestosigv/{id}','detalle_impuestoController@verigv')->where(['id' => '[0-9]+']);
 	Route::get('detalleimpuestosotro/{id}','detalle_impuestoController@verotro')->where(['id' => '[0-9]+']);
 	Route::post('editdetalleimpuestosigv','detalle_impuestoController@modificarigv');
@@ -216,7 +216,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 	Route::post('imagenes','UserController@upimagenes');
 	Route::post('imagenesproductos','ProductosController@upimagenes');
-//+});
+//});
 	//-----------Imagenes-----------------------------------------
 	//--------------Empresa---------------------------------------
 	Route::get('empresa-img/{name}','EmpresaController@getImagen');
