@@ -17,6 +17,7 @@ class CreateDetalleImpuestosTable extends Migration
             $table->increments('id');
             $table->Integer('id_producto');
             $table->Integer('id_impuesto');
+            $table->boolean('estado');
             $table->timestamps();
         });
     }
