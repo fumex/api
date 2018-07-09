@@ -51,7 +51,7 @@ public function modificarotro(Request $request){
         
     $id_impuesto=(!is_null($json) && isset($params->id_impuesto)) ? $params->id_impuesto : null;
     $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
-    $estado=(!is_null($json) && isset($params->permiso)) ? $params->permiso : null;
+    $estado=(!is_null($json) && isset($params->estado)) ? $params->estado : null;
     $indice=detalle_impuesto::where('id_producto','=',$id_producto)->where('id_impuesto','=',$id_impuesto)->first();
         if(@count($indice)==0){
             $detalle_impuestos=new detalle_impuesto();
@@ -67,7 +67,9 @@ public function modificarotro(Request $request){
                 'mensage'=>'guardado'
             );
         }else{
-            $detalle_impuestos= detalle_impuesto::where('id_producto','=',$id_producto)->where('id_impuesto','=',$id_impuesto)->update(['estado'=>$estado]);
+            $detalle_impuestos= detalle_impuesto::where('id_producto','=',$id_producto)
+            ->where('id_impuesto','=',$id_impuesto)
+            ->update(['estado'=>$estado]);
             $data =array(
                 'status'=>'succes',
                 'code'=>200,

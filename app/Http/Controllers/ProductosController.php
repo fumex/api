@@ -36,26 +36,36 @@ class ProductosController extends Controller
         $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;
 
         if(!is_null($nombre_producto)  && !is_null($cantidad) && !is_null($id_categoria)){
-            $Productos=new Productos();
-           
-            $Productos->nombre_producto=$nombre_producto;
-            $Productos->id_categoria=$id_categoria;
-            $Productos->descripcion=$descripcion;
-            $Productos->id_unidad=$id_unidad;
-            $Productos->cantidad=$cantidad;
-            $Productos->estado=true;
-            $Productos->imagen=$imagen;
-            $Productos->id_user=$id_user;
+            $isset_pro=Productos::where('nombre_producto','=',$nombre_producto)->where('estado',true)->first();
+            if(@count($isset_pro)==0){
+                $Productos=new Productos();
+                $Productos->nombre_producto=$nombre_producto;
+                $Productos->id_categoria=$id_categoria;
+                $Productos->descripcion=$descripcion;
+                $Productos->id_unidad=$id_unidad;
+                $Productos->cantidad=$cantidad;
+                $Productos->estado=true;
+                $Productos->imagen=$imagen;
+                $Productos->id_user=$id_user;
 
-          
-                //guardar
-            $Productos->save();
+            
+                    //guardar
+                $Productos->save();
 
-            $data =array(
-                'status'=>'succes',
-                'code'=>200,
-                'mensage'=>'registrado'
-            );        
+                $data =array(
+                    'status'=>'succes',
+                    'code'=>200,
+                    'mensage'=>'registrado'
+                ); 
+            }else{
+
+                $data =array(
+                    'status'=>'error',
+                    'code'=>300,
+                    'mensage'=>'ya existe',
+                );
+            }
+                   
         }else{
             $data =array(
                 'status'=>'error',
@@ -80,8 +90,9 @@ class ProductosController extends Controller
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
         $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;  
-           
-              //guardar
+        
+        $isset_pro=Productos::whereNotIn('id',[$id])->where('nombre_producto','=',$nombre_producto)->where('estado',true)->first();
+            if(@count($isset_pro)==0){
                 $Productos= Productos::where('id',$iden)->update(['nombre_producto'=>$nombre_producto,
                     'id_categoria'=>$id_categoria,
                     'descripcion'=>$descripcion,
@@ -95,6 +106,14 @@ class ProductosController extends Controller
                     'code'=>200,
                     'mensage'=>'registrado'
                 );
+            }else{
+                $data =array(
+                    'status'=>'error',
+                    'code'=>300,
+                    'mensage'=>'ya existe',
+                );
+            }
+                
             
         return response()->json($data,200);
         /*$Productos=Productos::find($id);

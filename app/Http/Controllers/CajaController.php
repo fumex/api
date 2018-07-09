@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Almacenes;
+use App\cajas;
 
-class AlmacenesController extends Controller
+
+class CajaController extends Controller
 {
     public function ver(){
-        return $listar=Almacenes::where('estado',true)->get();
+        return $listar=cajas::join('sucursals','cajas.id_sucursal','=','sucursals.id')
+        ->join('users','cajas.responsable','=','users.id')
+        ->select('cajas.id','cajas.nombre','users.name','sucursals.nombre_sucursal','cajas.descripcion')
+        ->where('cajas.estado',true)
+        ->orderBy('cajas.id')
+        ->get();
     }
-    public function veralmacen($id){
 
-        return $listar=Almacenes::whereNotIn('id',[$id])->where('estado',true)->get();
-        
-    }
-    public function almacenusuario($id){
+    /*public function cajausuario($id){
  
         $almacen=Almacenes::join('sucursals','almacenes.id','=','sucursals.id_almacen')
         ->join('detalle_usuarios','sucursals.id','=',  'detalle_usuarios.id_sucursal')
@@ -27,7 +29,7 @@ class AlmacenesController extends Controller
         ->get();
 
         return $almacen;
-    }   
+    }  */
 
 
 
@@ -38,23 +40,23 @@ class AlmacenesController extends Controller
         
         $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
-        $direccion=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
-        $telefono=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
+        $id_sucursal=(!is_null($json) && isset($params->id_sucursal)) ? $params->id_sucursal : null;
+        $responsable=(!is_null($json) && isset($params->responsable)) ? $params->responsable : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
 
         if(!is_null($nombre)){
-            $isset_alm=Almacenes::where('nombre','=',$nombre)->where('estado',true)->first();
-            if(@count($isset_alm)==0){
-                $Almacenes=new Almacenes();
+            $isset_caj=cajas::where('nombre','=',$nombre)->where('estado',true)->first();
+            if(@count($isset_caj)==0){
+                $cajas=new cajas();
 
-                $Almacenes->nombre=$nombre;
-                $Almacenes->descripcion=$descripcion;
-                $Almacenes->direccion=$direccion;
-                $Almacenes->telefono=$telefono;
-                $Almacenes->id_user=$id_user;
-                $Almacenes->estado=true;
+                $cajas->nombre=$nombre;
+                $cajas->descripcion=$descripcion;
+                $cajas->id_sucursal=$id_sucursal;
+                $cajas->responsable=$responsable;
+                $cajas->id_user=$id_user;
+                $cajas->estado=true;
     
-                $Almacenes->save();
+                $cajas->save();
                 $data =array(
                     'status'=>'succes',
                     'code'=>200,
@@ -85,16 +87,17 @@ class AlmacenesController extends Controller
         $params=json_decode($json);
         
         $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
-        $descripcion	=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
-        $direccion	=(!is_null($json) && isset($params->direccion)) ? $params->direccion : null;
-        $telefono	=(!is_null($json) && isset($params->telefono)) ? $params->telefono : null;
+        $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
+        $id_sucursal=(!is_null($json) && isset($params->id_sucursal)) ? $params->id_sucursal : null;
+        $responsable=(!is_null($json) && isset($params->responsable)) ? $params->responsable : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
-        $isset_alm=Almacenes::whereNotIn('id',[$id])->where('nombre','=',$nombre)->where('estado',true)->first();
-            if(@count($isset_alm)==0){
-                $Almacenes= Almacenes::where('id',$id)->update(['nombre'=>$nombre,
+
+        $isset_caj=cajas::whereNotIn('id',[$id])->where('nombre','=',$nombre)->where('estado',true)->first();
+            if(@count($isset_caj)==0){
+                $cajas= cajas::where('id',$id)->update(['nombre'=>$nombre,
                 'descripcion'=>$descripcion,
-                'direccion'=>$direccion,
-                'telefono'=>$telefono,
+                'id_sucursal'=>$id_sucursal,
+                'responsable'=>$responsable,
                 'id_user'=>$id_user]);
 
                 $data =array(
@@ -116,16 +119,14 @@ class AlmacenesController extends Controller
        }
 
        public function seleccionar($id){
-       
-        $Almacenes=Almacenes::find($id);
-        return $Almacenes;
+        $cajas=cajas::find($id);
+        return $cajas;
        }
 
     public function eliminar($id){
         $cambio=false;
-        $Almacenes=Almacenes::where('id',$id)->update(['estado'=>$cambio]);
-    	return $Almacenes;
+        $cajas=cajas::where('id',$id)->update(['estado'=>$cambio]);
+    	return $cajas;
        }
-
 
 }

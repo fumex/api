@@ -19,7 +19,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 
 
 
-Route::middleware(['jwt.auth'])->group(function(){
+//Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -205,13 +205,18 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('editdetalleimpuestosotro','detalle_impuestoController@modificarotro');
 	Route::post('detalleimpuestos','detalle_impuestoController@insertar');
 
-	
+	//--------------cajas---------------------------------------------------------------------
+	Route::get('cajas','CajaController@ver' );
+	Route::get('cajas/{id}','CajaController@seleccionar' )->where(['id' => '[0-9]+']);
+	Route::get('cajas/eliminar/{id}','CajaController@eliminar' )->where(['id' => '[0-9]+']);
+	Route::post('cajas','CajaController@insertar');
+	Route::post('cajas/{id}','CajaController@modificar')->where(['id' => '[0-9]+']);
 
 	//-----------------------------------------------------------------
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 	Route::post('imagenes','UserController@upimagenes');
 	Route::post('imagenesproductos','ProductosController@upimagenes');
-});
+//+});
 	//-----------Imagenes-----------------------------------------
 	//--------------Empresa---------------------------------------
 	Route::get('empresa-img/{name}','EmpresaController@getImagen');

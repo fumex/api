@@ -56,7 +56,7 @@ class UserController extends Controller
     public function insertar(Request $request){
         $json=$request->input('json',null);
         $params=json_decode($json);
-
+        
         $name=(!is_null($json) && isset($params->name)) ? $params->name : null;
         $apellidos=(!is_null($json) && isset($params->apellidos)) ? $params->apellidos : null;
         $id_documento=(!is_null($json) && isset($params->id_documento)) ? $params->id_documento : null;
@@ -69,33 +69,45 @@ class UserController extends Controller
         $password=(!is_null($json) && isset($params->password)) ? $params->password : null;
         $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;
 
-            $d_user=new User();
-            $d_user->name=$name;
-            $d_user->apellidos=$apellidos;
-            $d_user->id_documento=$id_documento;
-            $d_user->numero_documento= $numero_documento;
-            $d_user->direccion= $direccion;
-            $d_user->telefono= $telefono;
-            $d_user->nacimiento= $nacimiento;
-            $d_user->rol=$rol;
-            $d_user->email=$email;
-            $d_user->password=bcrypt($password);
-            $d_user->imagen=$imagen;
-            
-            $d_user->estado=true;
-            if($d_user->rol=='admin'){
-                $d_user->strd=1305;
-                $d_user->save();
+        $isset_user=User::where('email','=',$email)->where('estado',true)->first();
+            if(@count($isset_user)==0){
+                $d_user=new User();
+                $d_user->name=$name;
+                $d_user->apellidos=$apellidos;
+                $d_user->id_documento=$id_documento;
+                $d_user->numero_documento= $numero_documento;
+                $d_user->direccion= $direccion;
+                $d_user->telefono= $telefono;
+                $d_user->nacimiento= $nacimiento;
+                $d_user->rol=$rol;
+                $d_user->email=$email;
+                $d_user->password=bcrypt($password);
+                $d_user->imagen=$imagen;
+                
+                $d_user->estado=true;
+                
+                if($d_user->rol=='admin'){
+                    $d_user->strd=1305;
+                    $d_user->save();
+                    }
+                if($d_user->rol=='empleado'){
+                    $d_user->strd=20;
+                    $d_user->save();
                 }
-            if($d_user->rol=='empleado'){
-                $d_user->strd=20;
-                $d_user->save();
+                $data =array(
+                'status'=>'succes',
+                    'code'=>200,
+                    'mensage'=>'sew incerto'
+                );
+            }else{
+                $data =array(
+                    'status'=>'error',
+                    'code'=>300,
+                    'mensage'=>'ya existe',
+                );
             }
-            $data =array(
-               'status'=>'succes',
-                'code'=>200,
-                'mensage'=>'sew incerto'
-            );
+
+            
         return response()->json($data,200);
     }
        
