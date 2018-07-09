@@ -207,8 +207,6 @@ Route::middleware(['jwt.auth'])->group(function(){
 
 	//-----------------------------------------------------------------
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
-	Route::post('imagenes','UserController@upimagenes');
-	Route::post('imagenesproductos','ProductosController@upimagenes');
 });
 	//-----------Imagenes-----------------------------------------
 	//--------------Empresa---------------------------------------
