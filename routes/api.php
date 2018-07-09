@@ -166,6 +166,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	//-----------------------Empresa--------------------------------
 	Route::post('empresa-add','EmpresaController@addEmpresa');
 	Route::get('empresa/{id}','EmpresaController@getEmpresa');
+	Route::get('empresa','EmpresaController@dataEmpresa');
 	Route::post('empresa-update','EmpresaController@updateEmpresa');
 	Route::get('empresa-delete','EmpresaController@deleteEmpresa');
 	Route::get('empresas','EmpresaController@getEmpresas');
@@ -194,9 +195,6 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('tipo_pago-add','TipoPagoController@addTipoPago');
 	Route::post('tipo_pago-update/{id}','TipoPagoController@updateTipoPago');
 	Route::get('tipo_pago-delete/{id}','TipoPagoController@deleteTipoPago');
-
-
-
 
 	//-----------------------------------------------------------------
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
