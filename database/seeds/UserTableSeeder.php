@@ -17,7 +17,7 @@ class UserTableSeeder extends Seeder
             'id_documento'=>'1',
             'numero_documento'=>'12345678',
             'direccion'=>'calle',
-            'telefono'=>'12312312',
+            'telefono'=>'940808080',
             'nacimiento'=>'1994/12/12',
             'rol'=>'admin',
             'email'=>'admin@gmail.com',

@@ -18,7 +18,6 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-
 Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
@@ -167,7 +166,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('empresa-add','EmpresaController@addEmpresa');
 	Route::get('empresa/{id}','EmpresaController@getEmpresa');
 	Route::get('empresa','EmpresaController@dataEmpresa');
-	Route::post('empresa-update','EmpresaController@updateEmpresa');
+	Route::post('empresa-update/{id}','EmpresaController@updateEmpresa');
 	Route::get('empresa-delete','EmpresaController@deleteEmpresa');
 	Route::get('empresas','EmpresaController@getEmpresas');
 	Route::post('imagen-up','EmpresaController@upImagen');
@@ -205,14 +204,22 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('editdetalleimpuestosotro','detalle_impuestoController@modificarotro');
 	Route::post('detalleimpuestos','detalle_impuestoController@insertar');
 
+	//--------------cajas---------------------------------------------------------------------
+	Route::get('cajas','CajaController@ver' );
+	Route::get('cajas/{id}','CajaController@seleccionar' )->where(['id' => '[0-9]+']);
+	Route::get('cajas/eliminar/{id}','CajaController@eliminar' )->where(['id' => '[0-9]+']);
+	Route::post('cajas','CajaController@insertar');
+	Route::post('cajas/{id}','CajaController@modificar')->where(['id' => '[0-9]+']);
+
 	//-----------------------------------------------------------------
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
+
 });
+	Route::post('imagenes','UserController@upimagenes');
+	Route::post('imagenesproductos','ProductosController@upimagenes');
 	//-----------Imagenes-----------------------------------------
 	//--------------Empresa---------------------------------------
 	Route::get('empresa-img/{name}','EmpresaController@getImagen');
 	//------------------------------------------------------------
 	Route::get('imagenes/{name}','UserController@getimages');
 	Route::get('imagenesproductos/{name}','ProductosController@getimages');
-
-
