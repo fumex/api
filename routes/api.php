@@ -55,6 +55,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/pagos-code','PagoController@code');
 	Route::get('auth/proveedor-list','PagoController@getProveedores');
 	Route::get('auth/productos-listas','ProductosController@listaProductos');
+	Route::get('auth/producto-detalle/{id}','ProductosController@listDetalleProducto');
 	Route::get('auth/pagos-list/{id}','PagoController@listPagos');
 	//--------Anulacion de Pagos----------------------------
 	Route::get('auth/compra-get/{code}','PagoController@getCompra');
