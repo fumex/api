@@ -150,7 +150,15 @@ class ProductosController extends Controller
                       ->select('productos.id','categorias.nombre','unidades.unidad','productos.nombre_producto','productos.descripcion','productos.imagen')
                       ->get();
         return response()->json($productos);
-
+    }
+    public function listDetalleProducto($id){
+        $producto=DB::table('productos')
+                      ->join('detalle_impuestos','productos.id','=','detalle_impuestos.id_producto')
+                      ->join('impuestos','detalle_impuestos.id_impuesto','=','impuestos.id')
+                      ->select('productos.id','productos.nombre_producto','impuestos.nombre','impuestos.porcentaje','impuestos.tipo')
+                      ->where('productos.id','=',$id)
+                      ->get();
+        return response()->json($producto);
     }
 
 

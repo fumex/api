@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Empresa;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 class EmpresaController extends Controller
 {
     public function addEmpresa(Request $request){
@@ -12,7 +14,7 @@ class EmpresaController extends Controller
     } 
     public function getEmpresa($id){
         $empresa=Empresa::find($id);
-        return response()->jso($empresa);
+        return response()->json($empresa);
     }
     public function updateEmpresa($id,Request $request){
         $edit=Empresa::find($id)->update($request->all());
@@ -45,7 +47,7 @@ class EmpresaController extends Controller
         }   	
     }
     public function getImagen($name){
-        $file=Storage::disk('usuarios')->get($name);
+        $file=Storage::disk('empresa')->get($name);
         return new Response($file,200);
     }
     public function dataEmpresa(){

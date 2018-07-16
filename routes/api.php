@@ -18,8 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-
-//Route::middleware(['jwt.auth'])->group(function(){
+Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -56,6 +55,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('auth/pagos-code','PagoController@code');
 	Route::get('auth/proveedor-list','PagoController@getProveedores');
 	Route::get('auth/productos-listas','ProductosController@listaProductos');
+	Route::get('auth/producto-detalle/{id}','ProductosController@listDetalleProducto');
 	Route::get('auth/pagos-list/{id}','PagoController@listPagos');
 	//--------Anulacion de Pagos----------------------------
 	Route::get('auth/compra-get/{code}','PagoController@getCompra');
@@ -170,7 +170,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('empresa-add','EmpresaController@addEmpresa');
 	Route::get('empresa/{id}','EmpresaController@getEmpresa');
 	Route::get('empresa','EmpresaController@dataEmpresa');
-	Route::post('empresa-update','EmpresaController@updateEmpresa');
+	Route::post('empresa-update/{id}','EmpresaController@updateEmpresa');
 	Route::get('empresa-delete','EmpresaController@deleteEmpresa');
 	Route::get('empresas','EmpresaController@getEmpresas');
 	Route::post('imagen-up','EmpresaController@upImagen');
@@ -230,14 +230,13 @@ Route::get('auth/logout','AuthenticateController@logout');
 
 	//-----------------------------------------------------------------
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
+
+});
 	Route::post('imagenes','UserController@upimagenes');
 	Route::post('imagenesproductos','ProductosController@upimagenes');
-//});
 	//-----------Imagenes-----------------------------------------
 	//--------------Empresa---------------------------------------
 	Route::get('empresa-img/{name}','EmpresaController@getImagen');
 	//------------------------------------------------------------
 	Route::get('imagenes/{name}','UserController@getimages');
 	Route::get('imagenesproductos/{name}','ProductosController@getimages');
-
-
