@@ -10,8 +10,8 @@ class CajaController extends Controller
 {
     public function ver(){
         return $listar=cajas::join('sucursals','cajas.id_sucursal','=','sucursals.id')
-        ->join('users','cajas.responsable','=','users.id')
-        ->select('cajas.id','cajas.nombre','users.name','sucursals.nombre_sucursal','cajas.descripcion')
+        //->leftJoin('users','cajas.responsable','=','users.id')
+        ->select('cajas.id','cajas.nombre'/*,'users.name'*/,'sucursals.nombre_sucursal','cajas.descripcion','sucursals.direccion')
         ->where('cajas.estado',true)
         ->orderBy('cajas.id')
         ->get();
@@ -41,8 +41,8 @@ class CajaController extends Controller
         $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_sucursal=(!is_null($json) && isset($params->id_sucursal)) ? $params->id_sucursal : null;
-        $responsable=(!is_null($json) && isset($params->responsable)) ? $params->responsable : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
+        //$responsable=(!is_null($json) && isset($params->responsable)) ? $params->responsable : null;
 
         if(!is_null($nombre)){
             $isset_caj=cajas::where('nombre','=',$nombre)->where('estado',true)->first();
@@ -52,8 +52,9 @@ class CajaController extends Controller
                 $cajas->nombre=$nombre;
                 $cajas->descripcion=$descripcion;
                 $cajas->id_sucursal=$id_sucursal;
-                $cajas->responsable=$responsable;
                 $cajas->id_user=$id_user;
+                //$cajas->responsable=$responsable;
+                
                 $cajas->estado=true;
     
                 $cajas->save();
@@ -89,15 +90,15 @@ class CajaController extends Controller
         $nombre	=(!is_null($json) && isset($params->nombre)) ? $params->nombre : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_sucursal=(!is_null($json) && isset($params->id_sucursal)) ? $params->id_sucursal : null;
-        $responsable=(!is_null($json) && isset($params->responsable)) ? $params->responsable : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
+        //$responsable=(!is_null($json) && isset($params->responsable)) ? $params->responsable : null;
 
         $isset_caj=cajas::whereNotIn('id',[$id])->where('nombre','=',$nombre)->where('estado',true)->first();
             if(@count($isset_caj)==0){
                 $cajas= cajas::where('id',$id)->update(['nombre'=>$nombre,
                 'descripcion'=>$descripcion,
                 'id_sucursal'=>$id_sucursal,
-                'responsable'=>$responsable,
+                //'responsable'=>$responsable,
                 'id_user'=>$id_user]);
 
                 $data =array(

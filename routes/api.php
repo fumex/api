@@ -111,12 +111,13 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('productosalmacen/{id}','InventarioController@mostrarproductos' )->where(['id' => '[0-9]+']);
 	Route::post('inventariopagos','InventarioController@insertardepagos');
 
-	//***Udetalles_de almacen*******
+	//***detalles_de almacen*******
 	Route::get('mostrarlamacen/{id}','DetalleAlmacenController@ver' );
 	Route::get('almacen/{id}','DetalleAlmacenController@seleccionar' )->where(['id' => '[0-9]+']);
 	Route::get('almacen/eliminar/{id}','DetalleAlmacenController@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('almacen','DetalleAlmacenController@insertar');
 	Route::post('almacen/{id}','DetalleAlmacenController@modificar')->where(['id' => '[0-9]+']);
+	Route::get('seleccionarporcaja/{id}','DetalleAlmacenController@seleccionarporcaja')->where(['id' => '[0-9]+']);
 
 	//***Orden de pedido */
 	Route::get('OrdenPedidos','orden_depedidocontroler@ver' );
@@ -138,6 +139,8 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('user/rol/{id}','UserController@rol');
 	Route::post('modificardetalleusuario','Dettalle_UsuarioController@modificar');
 	Route::get('detalleusuario/{id}','Dettalle_UsuarioController@getdetalleudsuario')->where(['id' => '[0-9]+']);
+	Route::get('detalleusersucursal/{id}','Dettalle_UsuarioController@getdetalleudsuariosucursal')->where(['id' => '[0-9]+']);
+	
 	/*-----------------------------------------sucursal ------------------------------------------*/
 	Route::get('sucursales','SucursalController@getSucursales' );
 	Route::get('sucursal/{id}','SucursalController@getSucursal' );
@@ -199,8 +202,10 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('tipo_pago-add','TipoPagoController@addTipoPago');
 	Route::post('tipo_pago-update/{id}','TipoPagoController@updateTipoPago');
 	Route::get('tipo_pago-delete/{id}','TipoPagoController@deleteTipoPago');
+	//--------------------detalle impuestos---------------------------------------
 	Route::get('detalleimpuestosigv/{id}','detalle_impuestoController@verigv')->where(['id' => '[0-9]+']);
 	Route::get('detalleimpuestosotro/{id}','detalle_impuestoController@verotro')->where(['id' => '[0-9]+']);
+	Route::get('detalleimpuestos/{id}','detalle_impuestoController@verimpuestos')->where(['id' => '[0-9]+']);
 	Route::post('editdetalleimpuestosigv','detalle_impuestoController@modificarigv');
 	Route::post('editdetalleimpuestosotro','detalle_impuestoController@modificarotro');
 	Route::post('detalleimpuestos','detalle_impuestoController@insertar');
@@ -211,6 +216,17 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('cajas/eliminar/{id}','CajaController@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('cajas','CajaController@insertar');
 	Route::post('cajas/{id}','CajaController@modificar')->where(['id' => '[0-9]+']);
+	//---------------DETALLE CAJAS-----------------------------------------------------------
+
+	Route::post('apertura','Detalle_cajaController@apertura');
+	Route::post('cierre','Detalle_cajaController@cierre');
+
+	//---------------DETALLECAJAS USUARIOS-----------------------------------------
+	
+	Route::get('detalle_caja_usuarios/{id}','Detalle_caja_usuarioController@getusuariosporcaja' )->where(['id' => '[0-9]+']);
+	Route::get('getcajasporusuario/{id}','Detalle_caja_usuarioController@getcajasporusuario' )->where(['id' => '[0-9]+']);
+	Route::post('detalle_caja_usuarios','Detalle_caja_usuarioController@insertar');
+	Route::post('editar_detalle_caja_usuarios','Detalle_caja_usuarioController@modificar');
 
 	//-----------------------------------------------------------------
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');

@@ -68,4 +68,16 @@ class Dettalle_UsuarioController extends Controller
         
         return response()->json($Detalle_usuario);
     }
+    public function getdetalleudsuariosucursal($id){
+        $Detalle_usuario=Detalle_usuario::join('users','detalle_usuarios.id_user','=','users.id')
+        //->leftjoin('detalle_caja_usuarios','detalle_caja_usuarios.id_usuario','=','detalle_usuarios.id_user')
+        ->where('id_sucursal',$id)
+        //->where('detalle_caja_usuarios.estado',false)
+        //->whereNull('detalle_usuarios.id_user')
+        ->where('detalle_usuarios.permiso',true)
+        ->select('users.id','users.name','users.apellidos','users.rol','users.numero_documento')
+        ->get();
+        
+        return response()->json($Detalle_usuario);
+    }
 }
