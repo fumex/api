@@ -169,7 +169,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	//-----------------------Empresa--------------------------------
 	Route::post('empresa-add','EmpresaController@addEmpresa');
 	Route::get('empresa/{id}','EmpresaController@getEmpresa');
-	Route::get('empresa','EmpresaController@dataEmpresa');
+	Route::get('empresa-data','EmpresaController@dataEmpresa');
 	Route::post('empresa-update/{id}','EmpresaController@updateEmpresa');
 	Route::get('empresa-delete','EmpresaController@deleteEmpresa');
 	Route::get('empresas','EmpresaController@getEmpresas');
