@@ -50,7 +50,7 @@ class PagoController extends Controller
                     ->join('almacenes','pagos.id_almacen','=','almacenes.id')
                     ->join('sucursals','almacenes.id','=','sucursals.id_almacen')
                     ->join('detalle_usuarios','sucursals.id','=','detalle_usuarios.id_sucursal')
-                    ->select('pagos.id','pagos.code','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.isc','pagos.otro','pagos.created_at')
+                    ->select('pagos.id','pagos.code','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.otro','pagos.created_at')
                     ->where('detalle_usuarios.id_user','=',$id)
                     ->where('detalle_usuarios.permiso','=',true)
                     ->where('pagos.estado','=',true)
