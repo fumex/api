@@ -37,7 +37,7 @@ class PagoDetalleController extends Controller
 			$stockactual=$d_almace['stock'];
         	$precioctual=$d_almace['precio_compra'];
 			$costoactualizado=(($stockactual *$precioctual)+($cantidad*$pre_comp))/($stockactual+$cantidad);
-			$costoguardado=redondeo($costoactualizado);
+			$costoguardado=round($costoactualizado,2,PHP_ROUND_HALF_UP);
 			$d_almace->precio_compra=$costoguardado;
 //-----------------------------------------------------------------------------------------------------------
 
