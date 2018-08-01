@@ -229,6 +229,14 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('editar_detalle_caja_usuarios','Detalle_caja_usuarioController@modificar');
 
 	//-----------------------------------------------------------------
+	//----------------Ventas--------------------------------------------------------
+	Route::get('documentosdeventas','VentaController@getdocumento' );
+	Route::post('guardarventa','VentaController@insertar');
+
+	//----------------Detalle de ventas--------------------------------------------------------
+	Route::post('guardardetalleventa','DetalleVentaController@insertar');	
+	Route::post('guardariym','DetalleVentaController@insertarmoveinv');	
+
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 
 //});

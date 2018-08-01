@@ -30,14 +30,15 @@ class PagoDetalleController extends Controller
 		$pre_vent=$request->precio_venta;
     	$d_almace=detalle_almacen::where('id_almacen','=',$id)
                                    ->where('id_producto','=',$id_pro)
-                                   ->where('vendible','=',$vendible)
+								   ->where('vendible','=',$vendible)
+								   ->where('codigo','=',$codigo)
                                    ->first();
     	if(@count($d_almace)>=1){
 //actualizacion de precio de detalle_almacen---------------------------------------------------------------------
 			$stockactual=$d_almace['stock'];
         	$precioctual=$d_almace['precio_compra'];
 			$costoactualizado=(($stockactual *$precioctual)+($cantidad*$pre_comp))/($stockactual+$cantidad);
-			$costoguardado=redondeo($costoactualizado);
+			$costoguardado=round($costoactualizado*100)/100;
 			$d_almace->precio_compra=$costoguardado;
 //-----------------------------------------------------------------------------------------------------------
 

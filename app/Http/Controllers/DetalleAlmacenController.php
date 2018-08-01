@@ -91,7 +91,8 @@ class DetalleAlmacenController extends Controller
         ->join('unidades','productos.id_unidad','=','unidades.id')
         ->join('categorias','productos.id_categoria','=','categorias.id')
         ->where('cajas.id',$id)
-        ->select('productos.id','productos.descripcion','unidades.unidad','categorias.nombre','productos.nombre_producto','productos.imagen','detalle_almacen.precio_venta','detalle_almacen.stock')
+        ->where('detalle_almacen.vendible',true)
+        ->select('productos.id','productos.descripcion','unidades.unidad','categorias.nombre','productos.nombre_producto','productos.imagen','detalle_almacen.precio_venta','detalle_almacen.stock','detalle_almacen.codigo')
         ->get();
         return $detalle_almacen;
     }

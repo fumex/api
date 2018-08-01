@@ -15,11 +15,13 @@ class CreateVentasTable extends Migration
     {
         Schema::create('ventas', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('tipo_venta');
+            $table->string('serie_venta');
+            $table->string('tarjeta')->nullable();
             $table->integer('id_caja');
+            $table->integer('id_cliente');
             $table->Decimal('total');
             $table->Decimal('pago_efectivo');
-            $table->Decimal('pago_targeta');
+            $table->Decimal('pago_tarjeta');
             $table->boolean('estado');
             $table->timestamps();
         });
