@@ -42,7 +42,7 @@ class PagoController extends Controller
                          ->get();
         return response()->json($proveedores);
     }
-
+//-------------------------------Lista de  pagos por usuarios----------------------------------------
     public function listPagos($id){
        $pagos=DB::table('pagos')
                     ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
@@ -50,25 +50,27 @@ class PagoController extends Controller
                     ->join('almacenes','pagos.id_almacen','=','almacenes.id')
                     ->join('sucursals','almacenes.id','=','sucursals.id_almacen')
                     ->join('detalle_usuarios','sucursals.id','=','detalle_usuarios.id_sucursal')
-                    ->select('pagos.id','pagos.code','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.isc','pagos.otro','pagos.created_at')
+                    ->select('pagos.id','pagos.code','pagos.id_proveedor','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.exonerados','pagos.gravados','pagos.otro','pagos.created_at')
                     ->where('detalle_usuarios.id_user','=',$id)
                     ->where('detalle_usuarios.permiso','=',true)
                     ->where('pagos.estado','=',true)
                     ->get();
         return response()->json($pagos);
     }
-
+//-------------------------------------------------Pago detalles--------------------------------------------
     public function getPagoDetalle($code){
         $pago_d=DB::table('pago_detalles')
                     ->join('pagos','pago_detalles.id_pago','=','pagos.code')
                     ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
                     ->join('productos','pago_detalles.id_producto','=','productos.id')
+                    ->join('unidades','productos.id_unidad','=','unidades.id')
                     ->join('almacenes','pagos.id_almacen','=','almacenes.id')
-                    ->select('pago_detalles.id','pago_detalles.id_pago','pago_detalles.id_producto','productos.nombre_producto','pagos.id_almacen','almacenes.nombre','pago_detalles.cantidad','pago_detalles.precio_unitario')
+                    ->select('pago_detalles.id','pago_detalles.id_pago','pago_detalles.id_producto','productos.nombre_producto','pagos.id_almacen','almacenes.nombre','pago_detalles.cantidad','pago_detalles.precio_unitario','unidades.unidad')
                     ->where('pago_detalles.id_pago','=',$code)->where('pago_detalles.estado','=',true)
                     ->get();
         return response()->json($pago_d);
     }
+//----------------------------------------------------------------------------------------------------------
     public function getCompra($code){
         $compra=Pago::where('code','=',$code)->first();
         $id_pago=$compra['id'];

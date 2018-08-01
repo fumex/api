@@ -18,7 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-//Route::middleware(['jwt.auth'])->group(function(){
+Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -238,8 +238,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('guardariym','DetalleVentaController@insertarmoveinv');	
 
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
-
-//});
+});
 	Route::post('imagenes','UserController@upimagenes');
 	Route::post('imagenesproductos','ProductosController@upimagenes');
 	//-----------Imagenes-----------------------------------------

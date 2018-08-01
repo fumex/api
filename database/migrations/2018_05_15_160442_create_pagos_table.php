@@ -23,7 +23,8 @@ class CreatePagosTable extends Migration
             $table->string('tipoPago');
             $table->float('subtotal');
             $table->float('igv');
-            $table->float('isc');
+            $table->float('exonerados');
+            $table->float('gravados');
             $table->float('otro');
             $table->boolean('estado')->nullable()->default(true);
             $table->timestamps();
