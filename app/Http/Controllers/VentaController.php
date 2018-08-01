@@ -14,6 +14,7 @@ class VentaController extends Controller
         $k=1;
         $resb="";
         $resf="";
+        $total=0;
         $boleta=Venta::where('serie_venta', 'like', '%' . 'B' . '%')->get()->last();
         $factura=Venta::where('serie_venta', 'like', '%' . 'F' . '%')->get()->last();
        
@@ -29,12 +30,12 @@ class VentaController extends Controller
             $resb="B001-000001";
         }else{
             
-            while ($i <= count($boletarr)) {
+            while ($i < count($boletarr)) {
                 $boletanueva=$boletanueva.$boletarr[$i];
                 $i++; 
             }
             while($k<=3){
-                $serie.=$boletarr[$i];
+                $serie.=$boletarr[$k];
                 $k++;
             }
 

@@ -14,7 +14,6 @@ use App\Productos;
 
 class DetalleVentaController extends Controller
 {
-    
     public function insertar(Request $request){
         $json=$request->input('json',null);
         $params=json_decode($json);
@@ -22,12 +21,11 @@ class DetalleVentaController extends Controller
 
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
 		$precio_unitario=(!is_null($json) && isset($params->precio_unitario)) ? $params->precio_unitario : null;
-		$impuestos=(!is_null($json) && isset($params->impuestos)) ? $params->impuestos : null;
         $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
         $codigo=(!is_null($json) && isset($params->codigo)) ? $params->codigo : null;
-        /*$igv=(!is_null($json) && isset($params->igv)) ? $params->igv : null;
+        $igv=(!is_null($json) && isset($params->igv)) ? $params->igv : null;
         $isc=(!is_null($json) && isset($params->isc)) ? $params->isc : null;
-        $otro=(!is_null($json) && isset($params->otro)) ? $params->otro : null;*/
+        $otro=(!is_null($json) && isset($params->otro)) ? $params->otro : null;
         $id_venta=Venta::get()->last();
 
         $detalle_Ventas=new detalle_Ventas();
@@ -35,11 +33,10 @@ class DetalleVentaController extends Controller
         $detalle_Ventas->id_venta=$id_venta['id'];
         $detalle_Ventas->cantidad=$cantidad;
         $detalle_Ventas->precio_unitario=$precio_unitario;
-        $detalle_Ventas->impuestos=$impuestos;
         $detalle_Ventas->id_producto=$id_producto;
-        /*$detalle_Ventas->igv=$igv;
+        $detalle_Ventas->igv=$igv;
         $detalle_Ventas->isc=$isc;
-        $detalle_Ventas->otro=$otro;*/
+        $detalle_Ventas->otro=$otro;
         $detalle_Ventas->estado=true;
         $detalle_Ventas->save();
 
@@ -66,9 +63,9 @@ class DetalleVentaController extends Controller
         $detalle_almacen=detalle_almacen::where('id','=',$tock['id'])->update(['stock'=>$total,'precio_compra'=>$costoactualredondeado]);
         //-----------------------------------------------------------------------------------------------
         //-------------------------actualizacionb monto caja actual---------------------------
-        /*$detalle_caja=detalle_cajas::where('id_caja',$id_venta['id_caja'])->where('abierta',true)->get()->last();
+        $detalle_caja=detalle_cajas::where('id_caja',$id_venta['id_caja'])->where('abierta',true)->get()->last();
         $total=$detalle_caja['monto_actual']+($cantidad*$precio_unitario);
-        $actualizar_caja=detalle_cajas::where('id',$detalle_caja['id'])->update(['monto_actual'=>$total]);*/
+        $actualizar_caja=detalle_cajas::where('id',$detalle_caja['id'])->update(['monto_actual'=>$total]);
         //-------------------------------------------------------------------------------------
         $data =array(
             'status'=>'succes',
