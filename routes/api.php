@@ -18,7 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-Route::middleware(['jwt.auth'])->group(function(){
+//Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -220,6 +220,8 @@ Route::middleware(['jwt.auth'])->group(function(){
 
 	Route::post('apertura','Detalle_cajaController@apertura');
 	Route::post('cierre','Detalle_cajaController@cierre');
+	Route::get('obtenermontoapertura/{id}','Detalle_cajaController@montoapertura' );
+	Route::get('buscarusuarioencaja/{id}','Detalle_cajaController@inicio')->where(['id' => '[0-9]+']);
 
 	//---------------DETALLECAJAS USUARIOS-----------------------------------------
 	
@@ -238,7 +240,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('guardariym','DetalleVentaController@insertarmoveinv');	
 
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
-});
+//});
 	Route::post('imagenes','UserController@upimagenes');
 	Route::post('imagenesproductos','ProductosController@upimagenes');
 	//-----------Imagenes-----------------------------------------
