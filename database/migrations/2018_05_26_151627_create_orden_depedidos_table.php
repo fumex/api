@@ -19,7 +19,7 @@ class CreateOrdenDepedidosTable extends Migration
             $table->Integer('id_proveedor');
             $table->date('fecha_estimada_entrega');
             $table->string('terminos')->nullable();
-            $table->boolean('estado');
+            $table->boolean('estado')->nullable()->default(true);
             $table->timestamps();
         });
     }

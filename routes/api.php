@@ -18,7 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-//Route::middleware(['jwt.auth'])->group(function(){
+Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -125,6 +125,8 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('OrdenPedidos/eliminar/{id}','orden_depedidocontroler@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('OrdenPedidos','orden_depedidocontroler@insertar');
 	Route::post('OrdenPedidos/{id}','orden_depedidocontroler@modificar')->where(['id' => '[0-9]+']);
+	Route::get('orden/code','orden_depedidocontroler@code' );
+	Route::get('orden-list/{id}','orden_depedidocontroler@getOrdenPedido' );
 
 	//***de talle de Orden de pedido */
 	Route::get('detalleordenselect/{id}','detalle_orden_depedidocontroler@ver' );
@@ -240,7 +242,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('guardariym','DetalleVentaController@insertarmoveinv');	
 
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
-//});
+});
 	Route::post('imagenes','UserController@upimagenes');
 	Route::post('imagenesproductos','ProductosController@upimagenes');
 	//-----------Imagenes-----------------------------------------

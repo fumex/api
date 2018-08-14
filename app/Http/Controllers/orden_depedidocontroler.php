@@ -17,42 +17,11 @@ class orden_depedidocontroler extends Controller
         ->get();
         return $listar2;
 
-       }
+    }
 
     public function insertar(Request $request){
-        $json=$request->input('json',null);
-        $params=json_decode($json);
-
-        $id_proveedor=(!is_null($json) && isset($params->id_proveedor)) ? $params->id_proveedor : null;
-        $id_almacen	=(!is_null($json) && isset($params->id_almacen)) ? $params->id_almacen : null;
-        $fecha_estimada_entrega=(!is_null($json) && isset($params->fecha_estimada_entrega)) ? $params->fecha_estimada_entrega : null;
-        $terminos=(!is_null($json) && isset($params->terminos)) ? $params->terminos : null;
-
-        if(!is_null($id_almacen)){
-            $orden_depedido=new orden_depedido();
-
-            $orden_depedido->id_almacen=$id_almacen;
-            $orden_depedido->id_proveedor=$id_proveedor;
-            $orden_depedido->fecha_estimada_entrega=$fecha_estimada_entrega;
-            $orden_depedido->terminos=$terminos;
-            $orden_depedido->estado=true;
-
-            $orden_depedido->save();
-            $data =array(
-                'status'=>'succes',
-                'code'=>200,
-                'mensage'=>'registrado'
-            );
-        }else{
-            $data =array(
-                'status'=>'error',
-                'code'=>400,
-                'mensage'=>'faltan datos'
-            );
-        }
-        return response()->json($data,200);
-        /*$categoria=Categoria::create($request->all());
-        return $categoria;*/
+       $create=orden_depedido::create($request->all());
+        return response()->json($create);
     }
        
     public function modificar($id,Request $request){
@@ -77,7 +46,7 @@ class orden_depedidocontroler extends Controller
             
         return response()->json($data,200);
 
-       }
+    }
 
     public function seleccionar($id){   
         $orden_depedido=orden_depedido::join('proveedors','orden_depedidos.id_proveedor','=','proveedors.id')
@@ -99,4 +68,27 @@ class orden_depedidocontroler extends Controller
         );
         return response()->json($data,200);
     }
+
+    public function code(){
+        $max = orden_depedido::count();
+        if ($max > 0) {
+            $row = explode('-',orden_depedido::max('code'), 2);
+            $cod = $row[1];
+            $sig = $cod+1;
+            $Strsig = (string)$sig;
+            $formato = "O-".str_pad($Strsig, "5", "0", STR_PAD_LEFT);
+            
+        } 
+        else {
+            $sig = 1;
+            $Strsig = (string)$sig;
+            $formato = "O-".str_pad($Strsig,"5","0",STR_PAD_LEFT);
+        }
+        
+        return response()->json($formato);
+    }
+    public function getOrdenPedido($id){
+        $pedido=orden_depedido::find($id);
+        return response()->json($pedido);
+    }   
 }

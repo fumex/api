@@ -28,10 +28,6 @@ class AlmacenesController extends Controller
 
         return $almacen;
     }   
-
-
-
-
     public function insertar(Request $request){
         $json=$request->input('json',null);
         $params=json_decode($json);
