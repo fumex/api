@@ -20,6 +20,7 @@ class CreateDetalleAlmacensTable extends Migration
             $table->boolean('vendible');
             $table->Integer('id_producto');
             $table->Integer('stock')->default(0);
+            $table->float('descuento_maximo')->nullable();
             $table->decimal('precio_compra')->nullable()->default(0);
             $table->decimal('precio_venta')->nullable()->default(0);
             $table->timestamps();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Detalle_usuario;
+use App\detalle_caja_usuario;
 use App\User;
 
 class Dettalle_UsuarioController extends Controller
@@ -69,11 +70,26 @@ class Dettalle_UsuarioController extends Controller
         return response()->json($Detalle_usuario);
     }
     public function getdetalleudsuariosucursal($id){
+        //$detalle=detalle_caja_usuario::where('estado',true)->get();
         $Detalle_usuario=Detalle_usuario::join('users','detalle_usuarios.id_user','=','users.id')
-        //->leftjoin('detalle_caja_usuarios','detalle_caja_usuarios.id_usuario','=','detalle_usuarios.id_user')
+        ->leftjoin('detalle_caja_usuarios','detalle_caja_usuarios.id_usuario','=','detalle_usuarios.id_user')
+        ->where('detalle_caja_usuarios.id_usuario',null)
+        //->whereNotIn('users.id',[$detalle['id_usuario']])
+        //->where('detalle_caja_usuarios.estado',true)
         ->where('id_sucursal',$id)
-        //->where('detalle_caja_usuarios.estado',false)
-        //->whereNull('detalle_usuarios.id_user')
+        ->where('detalle_usuarios.permiso',true)
+        ->select('users.id','users.name','users.apellidos','users.rol','users.numero_documento')
+        ->get();
+        
+        return response()->json($Detalle_usuario);
+    }
+    public function getdetalleudsuarioactual($id){
+        //$detalle=detalle_caja_usuario::where('estado',true)->get();
+        $Detalle_usuario=Detalle_usuario::join('users','detalle_usuarios.id_user','=','users.id')
+        ->join('detalle_caja_usuarios','detalle_caja_usuarios.id_usuario','=','detalle_usuarios.id_user')
+        ->where('detalle_caja_usuarios.id_caja',$id)
+        //->whereNotIn('users.id',[$detalle['id_usuario']])
+        //->where('detalle_caja_usuarios.estado',true)
         ->where('detalle_usuarios.permiso',true)
         ->select('users.id','users.name','users.apellidos','users.rol','users.numero_documento')
         ->get();

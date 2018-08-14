@@ -20,6 +20,7 @@ class AlmacenesController extends Controller
         $almacen=Almacenes::join('sucursals','almacenes.id','=','sucursals.id_almacen')
         ->join('detalle_usuarios','sucursals.id','=',  'detalle_usuarios.id_sucursal')
         ->where('detalle_usuarios.id_user','=',$id)
+        ->where('detalle_usuarios.permiso',true)
         ->where('permiso','=',true)
         ->where('almacenes.estado',true)
         ->select('almacenes.id','almacenes.nombre','almacenes.descripcion','almacenes.direccion','almacenes.telefono','almacenes.id_user')

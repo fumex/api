@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Venta;
 use App\productos;
+use App\detalle_caja; 
 
 class VentaController extends Controller
 {
@@ -29,28 +30,34 @@ class VentaController extends Controller
         if(@count($boleta) < 1){
             $resb="B001-000001";
         }else{
-            
             while ($i < count($boletarr)) {
                 $boletanueva=$boletanueva.$boletarr[$i];
                 $i++; 
             }
             while($k<=3){
                 $serie.=$boletarr[$k];
+                $resb=$boletarr[0];
+                $k++;
+            }
+            $k=0;
+            while($k<3-strlen(intval($serie)+1)){
+                $resb.="0";
                 $k++;
             }
 
             if($boletanueva=="999999"){
-                $resb=intval($serie)+1;
+                $resb.=intval($serie)+1;
+                $resb.="-000001";
             }else{
-                $resb=$serie;
+                $resb.=(intval($serie))."-";
+                $total=intval($boletanueva)+1;
+                while($j < (strlen($boletanueva)-strlen($total))){
+                    $resb.="0";
+                    $j++;
+                }
+                $resb=$resb.($total);
             }
-            $resb.="-";
-            $total=intval($boletanueva)+1;
-            while($j < (strlen($boletanueva)-strlen($total))){
-                $resb.="0";
-                $j++;
-            }
-            $resb=$resb.($total);
+            
         }
         $i=5;
         $j=0;
@@ -65,18 +72,22 @@ class VentaController extends Controller
             }
             while($k<=3){
                 $serie.=$facturarr[$k];
-                $resf= $resf.$facturarr[$k-1];
+                $resf= $facturarr[0];
                 $k++;
             }
-
+            $k=0;
+            while($k<3-strlen(intval($serie)+1)){
+                $resf.="0";
+                $k++;
+            }
             if($facturanueva=="999999"){
-                $resf="F00".(intval($serie)+1);
-                $resF=$resf."-000001";
+                $resf.=(intval($serie)+1);
+                $resf.="-000001";
             }else{
-                $resf=$resf.$facturarr[3]."-";
+                $resf.=(intval($serie))."-";
                 $total=intval($facturanueva)+1;
                 while($j < (strlen($facturanueva)-strlen($total))){
-                    $resf=$resf."0";
+                    $resf.="0";
                     $j++;
                 }
                 $resf=$resf.($total);
@@ -87,7 +98,7 @@ class VentaController extends Controller
             'factura'=>@count($factura),
             'b'=> $resb,
             'f'=> $resf,
-            'x'=>strlen($boletanueva)-strlen($total)
+            'x'=>$serie,
         );
         return response()->json($data,200);
         /*$i=0;
@@ -127,7 +138,10 @@ class VentaController extends Controller
         $Venta->estado=true;
         $Venta->save();
 
-        
+        $detalle_caja=detalle_caja::where('id_caja',$id_venta['id_caja'])->where('abierta',true)->get()->last();
+        $total=$detalle_caja['monto_actual']+$total;
+        $actualizar_caja=detalle_caja::where('id',$detalle_caja['id'])->update(['monto_actual'=>$total]);
+
         $data =array(
             'status'=>'succes',
             'code'=>200,

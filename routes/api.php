@@ -142,7 +142,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('modificardetalleusuario','Dettalle_UsuarioController@modificar');
 	Route::get('detalleusuario/{id}','Dettalle_UsuarioController@getdetalleudsuario')->where(['id' => '[0-9]+']);
 	Route::get('detalleusersucursal/{id}','Dettalle_UsuarioController@getdetalleudsuariosucursal')->where(['id' => '[0-9]+']);
-	
+	Route::get('detalleuseractual/{id}','Dettalle_UsuarioController@getdetalleudsuarioactual')->where(['id' => '[0-9]+']);
 	/*-----------------------------------------sucursal ------------------------------------------*/
 	Route::get('sucursales','SucursalController@getSucursales' );
 	Route::get('sucursal/{id}','SucursalController@getSucursal' );
@@ -150,6 +150,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::post('sucursal-add','SucursalController@addSucursal');
 	Route::post('sucursal-update/{id}','SucursalController@updateSucursal');
 	Route::get('sucursales-list','SucursalController@listSucursales');
+	Route::get('getsucursalporusuario/{id}','SucursalController@getsucursalporusuario')->where(['id' => '[0-9]+']);
 
 	//---------------------------Usuario ---------------------------------------/
 	//***Usuario */
@@ -216,14 +217,18 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('cajas','CajaController@ver' );
 	Route::get('cajas/{id}','CajaController@seleccionar' )->where(['id' => '[0-9]+']);
 	Route::get('cajas/eliminar/{id}','CajaController@eliminar' )->where(['id' => '[0-9]+']);
+	Route::get('cajasporsucursal/{id}','CajaController@getcajasporsucursal' )->where(['id' => '[0-9]+']);
 	Route::post('cajas','CajaController@insertar');
 	Route::post('cajas/{id}','CajaController@modificar')->where(['id' => '[0-9]+']);
 	//---------------DETALLE CAJAS-----------------------------------------------------------
 
 	Route::post('apertura','Detalle_cajaController@apertura');
 	Route::post('cierre','Detalle_cajaController@cierre');
-	Route::get('obtenermontoapertura/{id}','Detalle_cajaController@montoapertura' );
+	Route::get('obtenermontoapertura/{id}','Detalle_cajaController@montoapertura' )->where(['id' => '[0-9]+']);
 	Route::get('buscarusuarioencaja/{id}','Detalle_cajaController@inicio')->where(['id' => '[0-9]+']);
+	Route::get('buscarventas/{id}','Detalle_cajaController@mostrarventas')->where(['id' => '[0-9]+']);
+	Route::get('buscarventasporsucursal/{id}','Detalle_cajaController@mostrarventasporsucursal')->where(['id' => '[0-9]+']);
+	Route::get('getdetallecajas/{id}','Detalle_cajaController@getdetallecajas')->where(['id' => '[0-9]+']);
 
 	//---------------DETALLECAJAS USUARIOS-----------------------------------------
 	
@@ -231,6 +236,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('getcajasporusuario/{id}','Detalle_caja_usuarioController@getcajasporusuario' )->where(['id' => '[0-9]+']);
 	Route::post('detalle_caja_usuarios','Detalle_caja_usuarioController@insertar');
 	Route::post('editar_detalle_caja_usuarios','Detalle_caja_usuarioController@modificar');
+	Route::get('eliminarusuariosporcaja/{id}','Detalle_caja_usuarioController@eliminartodacaja' )->where(['id' => '[0-9]+']);
 
 	//-----------------------------------------------------------------
 	//----------------Ventas--------------------------------------------------------
@@ -240,6 +246,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	//----------------Detalle de ventas--------------------------------------------------------
 	Route::post('guardardetalleventa','DetalleVentaController@insertar');	
 	Route::post('guardariym','DetalleVentaController@insertarmoveinv');	
+	Route::get('getdetalleventas/{id}','DetalleVentaController@getdetalleventas' )->where(['id' => '[0-9]+']);
 
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 });

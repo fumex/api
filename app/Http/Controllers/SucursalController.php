@@ -42,4 +42,13 @@ class SucursalController extends Controller
             return $sucursal;
         }
     }
+    public function getsucursalporusuario($id){
+        $sucursales=Sucursal::join('detalle_usuarios','sucursals.id','=', 'detalle_usuarios.id_sucursal')
+        ->where('detalle_usuarios.id_user','=',$id)
+        ->where('detalle_usuarios.permiso',true)
+        ->where('sucursals.estado','=',true)
+        ->select('sucursals.id','sucursals.nombre_sucursal','direccion','telefono') 
+        ->get();
+        return $sucursales;
+    }
 }

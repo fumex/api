@@ -17,7 +17,6 @@ class CreateDetalleCajaUsuariosTable extends Migration
             $table->increments('id');
             $table->integer('id_usuario');
             $table->integer('id_caja');
-            $table->boolean('estado');
             $table->timestamps();
         });
     }
