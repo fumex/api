@@ -34,7 +34,7 @@ class ImpuestoController extends Controller
     }
     public function getigv(){
     	$impuesto=Impuesto::all()->where('tipo','IGV')->where('estado','=',true);
-        return $impuesto;
+        return response()->json($impuesto);
     }
     public function getotro(){
         $impuesto=Impuesto::where('tipo','OTRO')->where('estado','=',true)->get();
