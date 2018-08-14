@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;            
 use App\detalle_almacen;
 use App\Detalle_usuario;
+use Illuminate\Support\Facades\DB;
+use App\movimientos_detalle_almacen;
 
 class DetalleAlmacenController extends Controller
 {
@@ -12,7 +14,7 @@ class DetalleAlmacenController extends Controller
         $detalle_almacen=detalle_almacen::join('almacenes','detalle_almacen.id_almacen','almacenes.id')
         ->join('productos','detalle_almacen.id_producto','productos.id')
         ->where('id_almacen',$id)
-        ->select('detalle_almacen.id','detalle_almacen.precio_compra','detalle_almacen.precio_venta','detalle_almacen.stock','almacenes.nombre','productos.nombre_producto')
+        ->select('detalle_almacen.id','detalle_almacen.precio_compra','detalle_almacen.precio_venta','detalle_almacen.stock','almacenes.nombre','productos.nombre_producto','detalle_almacen.descuento_maximo')
         ->get();
         return $detalle_almacen;
     }
@@ -40,6 +42,8 @@ class DetalleAlmacenController extends Controller
             $detalle_almacen->stock=$stock;
             $detalle_almacen->precio_compra=$precio_compra;
             $detalle_almacen->precio_venta=$precio_venta;
+            $detalle_almacen->descuento_maximo=0;
+
 
             $detalle_almacen->save();
             $data =array(
@@ -62,11 +66,32 @@ class DetalleAlmacenController extends Controller
     public function modificar($id,Request $request){
         $json=$request->input('json',null);
         $params=json_decode($json);
-        
+        $descuento_maximo=(!is_null($json) && isset($params->descuento_maximo)) ? $params->descuento_maximo : null;
         $precio_venta=(!is_null($json) && isset($params->precio_venta)) ? $params->precio_venta : null;
+        
+        $movimiento=detalle_almacen::where('id',$id)->get()->last();
+        
+        $mantenimiento=new movimientos_detalle_almacen();
+        $mantenimiento->id_detalle_almacen=$id;
+        if($movimiento['descuento_maximo']==null){
+            $mantenimiento->descuento_anterior=0;
+            $mantenimiento->descuento_actual=$descuento_maximo*1;
+        }else{
+            $mantenimiento->descuento_anterior=$movimiento['descuento_maximo'];
+            $mantenimiento->descuento_actual=$descuento_maximo*1;
+        }
+        if($movimiento['precio_venta']==null){
+            $mantenimiento->precio_anterior=0;
+            $mantenimiento->precio_actual=$precio_venta;
+        }else{
+            $mantenimiento->precio_anterior=$movimiento['precio_venta'];
+            $mantenimiento->precio_actual=$precio_venta;
+        }
+        
+        $mantenimiento->save();
 
               //guardar
-                $detalle_almacen= detalle_almacen::where('id',$id)->update(['precio_venta'=> $precio_venta]);
+            $detalle_almacen= detalle_almacen::where('id',$id)->update(['precio_venta'=> $precio_venta,'descuento_maximo'=>$descuento_maximo]);
 
                 $data =array(
                     'status'=>'succes',
@@ -92,7 +117,7 @@ class DetalleAlmacenController extends Controller
         ->join('categorias','productos.id_categoria','=','categorias.id')
         ->where('cajas.id',$id)
         ->where('detalle_almacen.vendible',true)
-        ->select('productos.id','productos.descripcion','unidades.unidad','categorias.nombre','productos.nombre_producto','productos.imagen','detalle_almacen.precio_venta','detalle_almacen.stock','detalle_almacen.codigo')
+        ->select('productos.id','productos.descripcion','unidades.abreviacion','categorias.nombre','productos.nombre_producto','productos.imagen','detalle_almacen.precio_venta','detalle_almacen.stock','detalle_almacen.codigo','detalle_almacen.descuento_maximo')
         ->get();
         return $detalle_almacen;
     }

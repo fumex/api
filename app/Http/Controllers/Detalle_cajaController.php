@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\detalle_caja;
+use App\Venta;
 
 class Detalle_cajaController extends Controller
 {
@@ -52,94 +53,21 @@ class Detalle_cajaController extends Controller
         return response()->json($data,200);
     }
 
-    public function montoapertura($id){
-        //$idapetura=detalle_caja::where('id_caja',$id)->where('abierta',true)->get()->last();
-        //$codigo=$idapetura['monto_apertura'];
-        $arraytipo=array();
-        $arraycantidad=array();
-        $separador="";  
-        $validador="";
-        $cantidadfinal=0;
-        $j=0;
-        $arraymonto=str_split($id);
-        for ($i = 0; $i < count($arraymonto); $i++) {
-            if($arraymonto[$i]==='|'){
-                $j++;
-                if(($j % 2)==0){
-                    array_push($arraycantidad,$separador);
-                }else{
-                    array_push($arraytipo,$separador);
-                }
-                
-                $separador="";
-            }else{
-                $separador.=$arraymonto[$i];  
-            }
-           
-        }
-        for ($j = 0; $j < count($arraytipo); $j++){
-            $validador=$arraytipo[$j];
-            switch ($validador) {
-                case "c10":
-                $cantidadfinal+=$arraycantidad[$j]*0.1;
-                    break;
-                case "c20":
-                $cantidadfinal+=$arraycantidad[$j]*0.2;
-                    break;
-                case "c50":
-                $cantidadfinal+=$arraycantidad[$j]*0.5;
-                    break;
-                case "m01":
-                $cantidadfinal+=$arraycantidad[$j]*1;
-                    break;
-                case "m02":
-                $cantidadfinal+=$arraycantidad[$j]*2;
-                    break;
-                case "m05":
-                $cantidadfinal+=$arraycantidad[$j]*5;
-                    break;
-                case "b10":
-                $cantidadfinal+=$arraycantidad[$j]*10;
-                    break;
-                case "b20":
-                $cantidadfinal+=$arraycantidad[$j]*20;
-                    break;
-                case "b50":
-                $cantidadfinal+=$arraycantidad[$j]*50;
-                    break;
-                case "c01":
-                $cantidadfinal+=$arraycantidad[$j]*100;
-                    break;
-                case "c02":
-                $cantidadfinal+=$arraycantidad[$j]*200;
-                    break;
-            }
-        }
-        $data =array(
-            'tipo'=>$arraytipo,
-            'code'=>200,
-            'monto'=>$arraycantidad,
-            'total'=>$cantidadfinal 
-        );
-        return response()->json($data,200);
-
-    }
     public function cierre(Request $request){
         $json=$request->input('json',null);
         $params=json_decode($json);
         $id_caja=(!is_null($json) && isset($params->id_caja)) ? $params->id_caja : null;
         $id_usuario=(!is_null($json) && isset($params->id_usuario)) ? $params->id_usuario : null;
-        $monto_cierre=(!is_null($json) && isset($params->monto_cierre)) ? $params->monto_cierre : null;
-        $monto_actual=(!is_null($json) && isset($params->monto_actual)) ? $params->monto_actual : null;
+        $monto_cierre_efectivo=(!is_null($json) && isset($params->monto_cierre_efectivo)) ? $params->monto_cierre_efectivo : null;
+        $monto_cierre_tarjeta=(!is_null($json) && isset($params->monto_cierre_tarjeta)) ? $params->monto_cierre_tarjeta : null;
         
-            if(is_null($monto_cierre)){
-                $monto_cierre=0;
+            if(is_null($monto_cierre_efectivo)){
+                $monto_cierre_efectivo=0;
             }
-        $idapetura=detalle_caja::where('id_caja',$id_caja)->where('id_usuario',$id_usuario)->get()->last();
-            
+        $idapetura=detalle_caja::where('id_caja',$id_caja)->where('id_usuario',$id_usuario)->where('abierta',true)->get()->last();
             $modificar=detalle_caja::where('id',$idapetura['id'])->update([
-            'monto_cierre'=> $monto_cierre,
-            'monto_actual'=>$monto_actual,
+            'monto_cierre_efectivo'=> $monto_cierre_efectivo,
+            'monto_cierre_tarjeta'=>$monto_cierre_tarjeta,
             'abierta'=>false
             ]);
 
@@ -150,7 +78,7 @@ class Detalle_cajaController extends Controller
             );
         return response()->json($data,200);
     }
-   public function inicio($id){
+    public function inicio($id){
         $idapetura=detalle_caja::where('id_usuario',$id)->where('abierta',true)->get()->last();
         if(@count($idapetura)>0){
             $data =array(
@@ -165,6 +93,50 @@ class Detalle_cajaController extends Controller
             );
         }
         return response()->json($data,200);
-   }
+    }
 
+    public function mostrarventas($id){
+        $i=0;
+        $ultventas=array();
+        $consulta="";
+        $idapetura=detalle_caja::where('id',$id)->where('abierta',true)->get()->last();
+        $ventas=Venta::join('clientes','ventas.id_cliente','clientes.id')
+        ->whereBetween('ventas.created_at',[$idapetura['created_at'],$idapetura['updated_at']])
+        ->where('id_caja',$idapetura['id_caja'])
+        ->select('ventas.id','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at')
+        ->get();
+        /*while ( $i < 2){
+            echo $ventas['id']-$i;                                                                                      
+            $consulta=Venta::where('id',$ventas['id']-$i)->get();
+            array_push($ultventas,$consulta);
+            $i++;
+        }*/
+        return $ventas;
+    }
+
+    public function mostrarventasporsucursal($id){
+        $i=0;
+        $ultventas=array();
+        $consulta="";
+        $ventas=Venta::join('cajas','ventas.id_caja','cajas.id')
+        ->join('sucursals','cajas.id_sucursal','sucursals.id')
+        ->join('clientes','ventas.id_cliente','clientes.id')
+        ->where('sucursals.id',$id)
+        ->select('ventas.id','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at')
+        ->orderBy('ventas.created_at','DESC')
+        ->get();
+        /*while ( $i < 2){
+            echo $ventas['id']-$i;                                                                                      
+            $consulta=Venta::where('id',$ventas['id']-$i)->get();
+            array_push($ultventas,$consulta);
+            $i++;
+        }*/
+        return $ventas;
+    }
+    public function getdetallecajas($id){
+        return $consulta=detalle_caja::join('cajas','detalle_cajas.id_caja','cajas.id')
+        ->where('detalle_cajas.id',$id)
+        ->select('detalle_cajas.id','detalle_cajas.id_caja','detalle_cajas.abierta','detalle_cajas.created_at','detalle_cajas.id_usuario','detalle_cajas.monto_actual','detalle_cajas.monto_apertura','detalle_cajas.monto_cierre_efectivo','detalle_cajas.monto_cierre_tarjeta','detalle_cajas.updated_at','cajas.nombre')
+        ->get();
+    }
 }

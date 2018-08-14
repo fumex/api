@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\detalle_Ventas;
 use App\Venta;
 use App\detalle_almacen;
-use App\detalle_cajas;    
+use App\detalle_caja;    
 use App\Inventario;
 use App\Movimiento;
 use App\Almacenes;
@@ -38,7 +38,7 @@ class DetalleVentaController extends Controller
         $detalle_Ventas->isc=$isc;
         $detalle_Ventas->otro=$otro;
         $detalle_Ventas->estado=true;
-        $detalle_Ventas->save();
+        $detalle_Ventas->save(); 
 
         //--------------------actualizacion de detalle_almacen --------------------------------------
         $tock=0;
@@ -63,9 +63,7 @@ class DetalleVentaController extends Controller
         $detalle_almacen=detalle_almacen::where('id','=',$tock['id'])->update(['stock'=>$total,'precio_compra'=>$costoactualredondeado]);
         //-----------------------------------------------------------------------------------------------
         //-------------------------actualizacionb monto caja actual---------------------------
-        $detalle_caja=detalle_cajas::where('id_caja',$id_venta['id_caja'])->where('abierta',true)->get()->last();
-        $total=$detalle_caja['monto_actual']+($cantidad*$precio_unitario);
-        $actualizar_caja=detalle_cajas::where('id',$detalle_caja['id'])->update(['monto_actual'=>$total]);
+        
         //-------------------------------------------------------------------------------------
         $data =array(
             'status'=>'succes',
@@ -83,7 +81,7 @@ class DetalleVentaController extends Controller
 
         $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
-        $precio_unitario=(!is_null($json) && isset($params->precio_unitario)) ? $params->precio_unitario : null;
+        $precio=(!is_null($json) && isset($params->precio)) ? $params->precio : null;
         $codigo=(!is_null($json) && isset($params->codigo)) ? $params->codigo : null;
         $usuario=(!is_null($json) && isset($params->usuario)) ? $params->usuario : null;
 
@@ -110,7 +108,7 @@ class DetalleVentaController extends Controller
 		$Inventario->descripcion="Ventas ".$tipodeventa." N° ".$Venta['serie_venta'];
 		$Inventario->tipo_movimiento=1;
 		$Inventario->cantidad=$cantidad;
-		$Inventario->precio=$precio_unitario;
+		$Inventario->precio=$precio;
         $Inventario->save();
 
 
@@ -144,5 +142,13 @@ class DetalleVentaController extends Controller
         );
         
         return response()->json($data,200);
-    }  
+    } 
+    public function getdetalleventas($id){
+        $detalle_Ventas=detalle_Ventas::join('productos','detalle_ventas.id_producto','productos.id')
+        ->where('id_venta','=',$id)
+        ->where('detalle_ventas.estado','=',true)
+        ->select('detalle_ventas.id','detalle_ventas.cantidad','detalle_ventas.id_venta','detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','productos.nombre_producto')
+        ->get();
+        return $detalle_Ventas;
+    } 
 }

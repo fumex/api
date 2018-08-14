@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\cajas;
-
+use Illuminate\Support\Facades\DB;
+use App\detalle_caja;
 
 class CajaController extends Controller
 {
@@ -127,7 +128,32 @@ class CajaController extends Controller
     public function eliminar($id){
         $cambio=false;
         $cajas=cajas::where('id',$id)->update(['estado'=>$cambio]);
-    	return $cajas;
+        $data =array(
+            'status'=>'succes',
+            'code'=>200,
+            'mensage'=>'eliminado'
+        );
+        return response()->json($data,200);
        }
+    public function getcajasporsucursal($id){
+        $mostar=array();
+        $consulta="";
+         $listar=DB::select(DB::raw('Select  t1.id
+         From cajas as t Inner join sucursals ON t.id_sucursal = sucursals.id
+        Inner Join (Select  Max(id) as id,id_caja
+                                      From detalle_cajas Group By id_caja ) as t1
+             on (t.id=t1.id_caja)
+              where t.estado=true and
+               sucursals.id='.$id.' ORDER BY t1.id_caja ASC'))
+               ;
+        foreach ($listar as $l) { 
+            $consulta=detalle_caja::join('cajas','detalle_cajas.id_caja','cajas.id')
+            ->where('detalle_cajas.id',$l->id)
+            ->select('detalle_cajas.id','detalle_cajas.id_caja','detalle_cajas.abierta','detalle_cajas.created_at','detalle_cajas.id_usuario','detalle_cajas.monto_actual','detalle_cajas.monto_apertura','detalle_cajas.monto_cierre_efectivo','detalle_cajas.monto_cierre_tarjeta','detalle_cajas.updated_at','cajas.nombre')
+            ->get();
+            array_push($mostar,$consulta);
+        } 
+         return $mostar;   
+    }
 
 }
