@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Venta;
 use App\productos;
 use App\detalle_caja; 
+use App\detalle_almacen; 
 
 class VentaController extends Controller
 {
@@ -138,7 +139,7 @@ class VentaController extends Controller
         $Venta->estado=true;
         $Venta->save();
 
-        $detalle_caja=detalle_caja::where('id_caja',$id_venta['id_caja'])->where('abierta',true)->get()->last();
+        $detalle_caja=detalle_caja::where('id_caja',$id_caja)->where('abierta',true)->get()->last();
         $total=$detalle_caja['monto_actual']+$total;
         $actualizar_caja=detalle_caja::where('id',$detalle_caja['id'])->update(['monto_actual'=>$total]);
 
@@ -149,5 +150,31 @@ class VentaController extends Controller
         );
 
         return response()->json($data,200);
+    }
+    public function anular($id){
+        $getventa=Venta::where('id',$id)->get()->last();
+        //$venta=Venta::where('id',$id)->update(['estado'=>false]);
+        //falkta actualizar el detalle almacen el precio de comra(prome. ponder. variante)
+        return $detalle_almacen=Venta::join('cajas','ventas.id_caja','cajas.id')
+        ->join('sucursals','cajas.id_sucursal','sucursals.id')
+        ->join('almacenes','sucursals.id_almacen','almacenes.id')
+        ->join('detalle_almacen','almacenes.id','detalle_almacen.id_almacen')
+        ->where('ventas.id',$id)
+        ->select('detalle_almacen.id','detalle_almacen.stock')->get();
+  
+        /*$detalle_caja=detalle_caja::where('id_caja',$getventa['id_caja'])
+        ->where('detalle_cajas.updated_at','>=',$getventa['created_at'])
+        ->where('detalle_cajas.created_at','<',$getventa['created_at'])->get()->last();
+        return $detalle_caja['monto_actual']-$getventa['total'];*/
+
+        //actualizacion  de detalle_cajas
+       /* $updatecaja=detalle_caja::where('id_caja',$getventa['id_caja'])
+        ->where('detalle_cajas.updated_at','>=',$getventa['created_at'])
+        ->where('detalle_cajas.created_at','<',$getventa['created_at'])
+        ->update('monto_actual',$detalle_caja['monto_actual']-$getventa['total']);*/
+
+
+
+
     }
 }

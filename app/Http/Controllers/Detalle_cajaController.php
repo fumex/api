@@ -100,6 +100,7 @@ class Detalle_cajaController extends Controller
         $ultventas=array();
         $consulta="";
         $idapetura=detalle_caja::where('id',$id)->where('abierta',true)->get()->last();
+        
         $ventas=Venta::join('clientes','ventas.id_cliente','clientes.id')
         ->whereBetween('ventas.created_at',[$idapetura['created_at'],$idapetura['updated_at']])
         ->where('id_caja',$idapetura['id_caja'])

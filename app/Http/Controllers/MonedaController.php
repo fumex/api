@@ -13,7 +13,7 @@ class MonedaController extends Controller
     }
 
     public function getMonedas(){
-    	$monedas=Moneda::where('estado','=',true)->get();
+    	$monedas=Moneda::where('estado','=',true)->orderby('id')->get();
     	return  response()->json($monedas);
     }
 

@@ -16,6 +16,8 @@ class CreateMonedasTable extends Migration
         Schema::create('monedas', function (Blueprint $table) {
             $table->increments('id');
             $table->String('moneda');
+            $table->String('codigo_sunat');
+            $table->String('pais_referencia');
             $table->float('tasa');
             $table->boolean('estado')->nullable()->default(true);
             $table->Integer('id_user');

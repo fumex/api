@@ -20,6 +20,8 @@ class CreateMovimientosDetalleAlmacensTable extends Migration
             $table->float('descuento_actual');
             $table->float('precio_anterior');
             $table->float('precio_actual');
+            $table->float('precio_compra_anterior');
+            $table->float('precio_compra_actual');
             $table->timestamps();
         });
     }
