@@ -37,6 +37,7 @@ class InventarioController extends Controller
 
         $presio=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->get()->last();
         $isset_dettalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->first();
+        
         if(@count($isset_dettalle)==0){
 
             $d_almacen=new detalle_almacen();

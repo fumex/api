@@ -75,6 +75,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('auth/unidad/{id}','UnidadController@seleccionar' )->where(['id' => '[0-9]+']);
 	Route::post('auth/unidad','UnidadController@insertar');
 	Route::post('auth/unidad/{id}','UnidadController@modificar')->where(['id' => '[0-9]+']);
+	Route::post('auth/eliminarunidad/{id}','UnidadController@eliminar')->where(['id' => '[0-9]+']);
 
 	//***categorias*******
 	Route::get('categorias','CategoriaController@ver' );
@@ -240,11 +241,18 @@ Route::get('auth/logout','AuthenticateController@logout');
 	//----------------Ventas--------------------------------------------------------
 	Route::get('documentosdeventas','VentaController@getdocumento' );
 	Route::post('guardarventa','VentaController@insertar');
+	Route::get('anularventa/{id}','VentaController@anular' )->where(['id' => '[0-9]+']);
 
 	//----------------Detalle de ventas--------------------------------------------------------
 	Route::post('guardardetalleventa','DetalleVentaController@insertar');	
 	Route::post('guardariym','DetalleVentaController@insertarmoveinv');	
 	Route::get('getdetalleventas/{id}','DetalleVentaController@getdetalleventas' )->where(['id' => '[0-9]+']);
+	//------------------------Entidad Financiera----------------------------------------------
+	Route::get('Entidades','entidad_finacieraController@getentidad');
+	Route::get('getentidad/{id}','entidad_finacieraController@seleccionar')->where(['id' => '[0-9]+']);
+	Route::post('addentidad','entidad_finacieraController@insertar');
+	Route::post('editentidad/{id}','entidad_finacieraController@modificar')->where(['id' => '[0-9]+']);
+	Route::get('deleteentidad/{id}','entidad_finacieraController@eliminar')->where(['id' => '[0-9]+']);
 
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 //});

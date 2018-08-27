@@ -17,7 +17,7 @@ class UnidadController extends Controller
     	return response()->json($create);
     }
     public function getUnidad(){
-    	$unidad=Unidad::all();
+    	$unidad=Unidad::where('estado',true)->get();;
     	return $unidad;
 	}
     public function insertar(Request $request){
@@ -27,7 +27,7 @@ class UnidadController extends Controller
 		$unidad	=(!is_null($json) && isset($params->unidad)) ? $params->unidad : null;
 		$abreviacion=(!is_null($json) && isset($params->abreviacion)) ? $params->abreviacion : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
-        
+        $codigo_sunat=(!is_null($json) && isset($params->codigo_sunat)) ? $params->codigo_sunat : null;
 
         if(!is_null($unidad)){
             $Unidad=new Unidad();
@@ -35,6 +35,8 @@ class UnidadController extends Controller
             $Unidad->unidad=$unidad;
             $Unidad->abreviacion=$abreviacion;
             $Unidad->id_user=$id_user;
+            $Unidad->codigo_sunat=$codigo_sunat;
+            $Unidad->estado=true;
 
             $isset_cate=Unidad::where('abreviacion','=',$abreviacion)->first();
             if(@count($isset_cate)==0){
@@ -74,11 +76,15 @@ class UnidadController extends Controller
         $unidad	=(!is_null($json) && isset($params->unidad)) ? $params->unidad : null;
 		$abreviacion=(!is_null($json) && isset($params->abreviacion)) ? $params->abreviacion : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
+        $codigo_sunat=(!is_null($json) && isset($params->codigo_sunat)) ? $params->codigo_sunat : null;
      
         if(!is_null($unidad)){
             $isset_cate=Unidad::whereNotIn('id',[$id])->where('abreviacion','=',$abreviacion)->first();
             if(@count($isset_cate)==0){
-                $Unidad= Unidad::where('id','=',$id)->update(['unidad'=>$unidad,'abreviacion'=>$abreviacion,'id_user'=>$id_user]);
+                $Unidad= Unidad::where('id','=',$id)->update(['unidad'=>$unidad,
+                'abreviacion'=>$abreviacion,
+                'codigo_sunat'=>$codigo_sunat,
+                'id_user'=>$id_user]);
 
                 $data =array(
                 'status'=>'succes',
@@ -103,10 +109,14 @@ class UnidadController extends Controller
         }
             
         return response()->json($data,200);
-       }
-
-       public function seleccionar($id){
+    }
+    public function eliminar($id){
+        $cambio=false;
+        $Unidad= Unidad::where('id','=',$id)->update(['estado'=>$cambio]);
+        return $Unidad;
+    }
+    public function seleccionar($id){
         $Unidad=Unidad::find($id);
         return $Unidad;
-       }
+   }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTipoPagosTable extends Migration
+class CreateEntidadFinancierasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateTipoPagosTable extends Migration
      */
     public function up()
     {
-        Schema::create('tipo_pagos', function (Blueprint $table) {
+        Schema::create('entidad_financieras', function (Blueprint $table) {
             $table->increments('id');
-            $table->String('codigo_sunat');
-            $table->String('descripcion');
-            $table->String('tipo');
-            $table->string('estado')->nullable()->default(true);
-            $table->Integer('id_user');
+            $table->string('descripcion');
+            $table->string('codigo_sunat');
+            $table->boolean('estado');
+            $table->integer('id_user');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateTipoPagosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo_pagos');
+        Schema::dropIfExists('entidad_financieras');
     }
 }

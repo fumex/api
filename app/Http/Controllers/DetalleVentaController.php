@@ -131,8 +131,8 @@ class DetalleVentaController extends Controller
 		$movimiento->almacen_nombre=$almacen_nombre['nombre'];
 		$movimiento->productos_nombre=$productos_nombre['nombre_producto'];
 		$movimiento->id_usuario=$usuario;
-		$movimiento->valor=$d_almace['stock']-$cantidad;
-		$movimiento->valor_antiguo=$d_almace['stock'];
+		$movimiento->valor=$d_almace['stock'];
+		$movimiento->valor_antiguo=$d_almace['stock']+$cantidad;
         $movimiento->save();
         
         $data =array(

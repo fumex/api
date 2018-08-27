@@ -22,7 +22,9 @@ class CreateVentasTable extends Migration
             $table->Decimal('total');
             $table->Decimal('pago_efectivo');
             $table->Decimal('pago_tarjeta');
+            $table->boolean('resultado')->nullable();
             $table->boolean('estado');
+            $table->string('id_usuario');
             $table->timestamps();
         });
     }

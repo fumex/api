@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTipoPagosTable extends Migration
+class CreateAnularVentasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateTipoPagosTable extends Migration
      */
     public function up()
     {
-        Schema::create('tipo_pagos', function (Blueprint $table) {
+        Schema::create('anular_ventas', function (Blueprint $table) {
             $table->increments('id');
-            $table->String('codigo_sunat');
-            $table->String('descripcion');
-            $table->String('tipo');
-            $table->string('estado')->nullable()->default(true);
-            $table->Integer('id_user');
+            $table->integer('id_venta');
+            $table->string('razon');
+            $table->boolean('respuesta');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateTipoPagosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo_pagos');
+        Schema::dropIfExists('anular_ventas');
     }
 }

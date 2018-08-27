@@ -18,6 +18,8 @@ class CreateUnidadesTable extends Migration
             $table->string('unidad')->unique();
             $table->string('abreviacion');
             $table->Integer('id_user');
+            $table->string('codigo_sunat');
+            $table->boolean('estado');
             $table->timestamps();
         });
     }
