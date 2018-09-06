@@ -15,7 +15,7 @@ class CreateDetalleCajaUsuariosTable extends Migration
     {
         Schema::create('detalle_caja_usuarios', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_usuario');
+            $table->integer('id_vendedor');
             $table->integer('id_caja');
             $table->timestamps();
         });

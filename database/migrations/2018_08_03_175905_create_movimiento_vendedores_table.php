@@ -16,6 +16,7 @@ class CreateMovimientoVendedoresTable extends Migration
         Schema::create('movimiento_vendedores', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('id_usuario');
+            $table->integer('id_vendedor');
             $table->integer('id_caja');
             $table->string('estado');
             $table->timestamps();

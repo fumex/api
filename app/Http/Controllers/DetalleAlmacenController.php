@@ -70,7 +70,7 @@ class DetalleAlmacenController extends Controller
         $precio_venta=(!is_null($json) && isset($params->precio_venta)) ? $params->precio_venta : null;
         
         $movimiento=detalle_almacen::where('id',$id)->get()->last();
-        
+        $verultimomov=movimientos_detalle_almacen::where('id_detalle_almacen',$id)->get()->last();
         $mantenimiento=new movimientos_detalle_almacen();
         $mantenimiento->id_detalle_almacen=$id;
         if($movimiento['descuento_maximo']==null){
@@ -80,14 +80,15 @@ class DetalleAlmacenController extends Controller
             $mantenimiento->descuento_anterior=$movimiento['descuento_maximo'];
             $mantenimiento->descuento_actual=$descuento_maximo*1;
         }
-        if($movimiento['precio_venta']==null){
+        if($movimiento['precio_venta']==null){  
             $mantenimiento->precio_anterior=0;
             $mantenimiento->precio_actual=$precio_venta;
         }else{
             $mantenimiento->precio_anterior=$movimiento['precio_venta'];
             $mantenimiento->precio_actual=$precio_venta;
         }
-        
+        $mantenimiento->precio_compra_actual=$verultimomov['precio_compra_actual'];
+        $mantenimiento->precio_compra_anterior=$verultimomov['precio_compra_anterior'];
         $mantenimiento->save();
 
               //guardar

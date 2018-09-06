@@ -16,19 +16,20 @@ class Detalle_caja_usuarioController extends Controller
         
      
         $id_usuario=(!is_null($json) && isset($params->id_usuario)) ? $params->id_usuario : null;
-        
+        $id_vendedor=(!is_null($json) && isset($params->id_vendedor)) ? $params->id_vendedor : null;
 
         $id_caja=cajas::get()->last();
 
 
             $detalle_caja_usuario=new detalle_caja_usuario();
 
-            $detalle_caja_usuario->id_usuario=$id_usuario;
+            $detalle_caja_usuario->id_vendedor=$id_vendedor;
             $detalle_caja_usuario->id_caja=$id_caja['id'];
                 //guardar
             $detalle_caja_usuario->save();
         
         $movimiento_vendedores=new movimiento_vendedores();
+        $movimiento_vendedores->id_vendedor=$id_vendedor;
         $movimiento_vendedores->id_usuario=$id_usuario;
         $movimiento_vendedores->id_caja=$id_caja['id'];
         $movimiento_vendedores->estado="habilitado";
@@ -49,19 +50,21 @@ class Detalle_caja_usuarioController extends Controller
         $id_usuario=(!is_null($json) && isset($params->id_usuario)) ? $params->id_usuario : null;
         $id_caja=(!is_null($json) && isset($params->id_caja)) ? $params->id_caja : null;
         $estado=(!is_null($json) && isset($params->estado)) ? $params->estado : null;
+        $id_vendedor=(!is_null($json) && isset($params->id_vendedor)) ? $params->id_vendedor : null;
 
         $movimiento_vendedores=new movimiento_vendedores();
+        $movimiento_vendedores->id_vendedor=$id_vendedor;
         $movimiento_vendedores->id_usuario=$id_usuario;
         $movimiento_vendedores->id_caja=$id_caja;
         
         $validar=true;
 
-        $indice=detalle_caja_usuario::where('id_usuario','=',$id_usuario)->where('id_caja','=',$id_caja)->first();
+        $indice=detalle_caja_usuario::where('id_usuario','=',$id_vendedor)->where('id_caja','=',$id_caja)->first();
         if(@count($indice)==0){
             if($estado==true){
                 $detalle_caja_usuario=new detalle_caja_usuario();
 
-                $detalle_caja_usuario->id_usuario=$id_usuario;
+                $detalle_caja_usuario->id_vendedor=$id_vendedor;
                 $detalle_caja_usuario->id_caja=$id_caja;
                     //guardar
                 $detalle_caja_usuario->save();
@@ -81,7 +84,7 @@ class Detalle_caja_usuarioController extends Controller
             /*$detalle_caja_usuario= detalle_caja_usuario::where('id_usuario','=',$id_usuario)->where('id_caja','=',$id_caja)
             ->update(['estado'=>$estado]);*/
             if($estado==false){
-                $detalle_caja_usuario= detalle_caja_usuario::where('id_usuario','=',$id_usuario)->where('id_caja','=',$id_caja)->delete();
+                $detalle_caja_usuario= detalle_caja_usuario::where('id_usuario','=',$id_vendedor)->where('id_caja','=',$id_caja)->delete();
                 $movimiento_vendedores->estado="deshabilitado";
                 $data =array(
                     'status'=>'succes',
@@ -110,7 +113,7 @@ class Detalle_caja_usuarioController extends Controller
         $detalle_caja_usuario=detalle_caja_usuario::join('cajas','detalle_caja_usuarios.id_caja','=','cajas.id')
         ->join('sucursals','cajas.id_sucursal','=','sucursals.id')
         ->where('cajas.estado',true)
-        ->where('detalle_caja_usuarios.id_usuario',$id)
+        ->where('detalle_caja_usuarios.id_vendedor',$id)
         ->select('cajas.id','cajas.nombre','cajas.descripcion','sucursals.nombre_sucursal')
         ->get();
         

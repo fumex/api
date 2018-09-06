@@ -11,6 +11,7 @@ use App\Productos;
 use App\Pago;
 use App\TipoDocumento;
 use Illuminate\Support\Facades\DB;
+use App\movimientos_detalle_almacen;
 
 class InventarioController extends Controller
 {
@@ -80,7 +81,7 @@ class InventarioController extends Controller
         $numero=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->value('stock');
         $stockactual=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->value('stock');
         $precioctual=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->value('precio_compra');
-        
+        $detalle_almacen=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->get()->last();
         if($tipo_movimiento!='1')
         {
             $resultado=$numero+$cantidad;
@@ -92,6 +93,20 @@ class InventarioController extends Controller
             
         }
         $costoredondeado=round($costoactualizado * 100) / 100; 
+        $m_d_a_ultimo=movimientos_detalle_almacen::where('id_detalle_almacen',$detalle_almacen['id'])->get()->last();
+
+        if($costoredondeado!=$detalle_almacen['precio_compra']){
+            $m_d_almacen=new movimientos_detalle_almacen();
+            $m_d_almacen->id_detalle_almacen=$detalle_almacen['id'];
+            $m_d_almacen->descuento_anterior=$m_d_a_ultimo['descuento_anterior'];
+            $m_d_almacen->descuento_actual=$m_d_a_ultimo['descuento_actual'];
+            $m_d_almacen->precio_anterior=$m_d_a_ultimo['precio_anterior'];
+            $m_d_almacen->precio_actual=$m_d_a_ultimo['precio_actual'];
+            $m_d_almacen->precio_compra_actual=$costoredondeado;
+            $m_d_almacen->precio_compra_anterior=$detalle_almacen['precio_compra'];
+            $m_d_almacen->save();
+        }
+
         $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['precio_compra'=>$costoredondeado]);
         $detalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->update(['stock'=>$resultado]);
 
@@ -126,11 +141,13 @@ class InventarioController extends Controller
                     'mensage'=>'faltan datos'
                 );
             }
-         if(!is_null($escoja) && $opciones=='tranferencia entre almacenes' ){
+        $m_d_a_ultimootro=null;
+        if(!is_null($escoja) && $opciones=='tranferencia entre almacenes' ){
             $otro_movimiento=2;
             $otronumero=0;
             $otroresultado=0;
-            $isset_dettalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->first();
+            
+            $detalle_almacenotro=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->get()->last();
                 if(@count($isset_dettalle)==0){
                     $d_almacen=new detalle_almacen();
 
@@ -141,12 +158,26 @@ class InventarioController extends Controller
                     $d_almacen->precio_compra=$presio['precio_compra'];
                     $d_almacen->precio_venta=0;
                     $d_almacen->save();
+
+                    $detallealmacenactual=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->first();
+//------------------------------------------guardar m_detalle_almacen------------------------------------------------------------
+                    $m_d_almacen=new movimientos_detalle_almacen();
+                    $m_d_almacen->id_detalle_almacen=$detallealmacenactual['id'];
+                    $m_d_almacen->descuento_anterior=0;
+                    $m_d_almacen->descuento_actual=0;
+                    $m_d_almacen->precio_anterior=0;
+                    $m_d_almacen->precio_actual=0;
+                    $m_d_almacen->precio_compra_actual=$detallealmacenactual['precio_compra'];
+                    $m_d_almacen->precio_compra_anterior=0;
+                    $m_d_almacen->save();
+//---------------------------------------------------------------------------------------------------------------------------------
                     $data2 =array(
                         'status'=>'echo'
                      );
                 }else{
                     $otronumero=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->value('stock');
                     $otrostockactual=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->value('stock');
+                    $isset_dettalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->first();
                     $otroprecioctual=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->value('precio_compra');
                     $presio2=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->get()->last();
                     
@@ -160,6 +191,20 @@ class InventarioController extends Controller
                         $otro_movimiento=2;
                     }
                     $otrocostoredondeado=round($otrocostoactualizado * 100) / 100; 
+                    $m_d_a_ultimootro=movimientos_detalle_almacen::where('id_detalle_almacen',$detalle_almacenotro['id'])->get()->last();
+
+                    if($otrocostoredondeado!=$detalle_almacenotro['precio_compra']){
+                        $m_d_almacen=new movimientos_detalle_almacen();
+                        $m_d_almacen->id_detalle_almacen=$detalle_almacenotro['id'];
+                        $m_d_almacen->descuento_anterior=$m_d_a_ultimootro['descuento_anterior'];
+                        $m_d_almacen->descuento_actual=$m_d_a_ultimootro['descuento_actual'];
+                        $m_d_almacen->precio_anterior=$m_d_a_ultimootro['precio_anterior'];
+                        $m_d_almacen->precio_actual=$m_d_a_ultimootro['precio_actual'];
+                        $m_d_almacen->precio_compra_actual=$otrocostoredondeado;
+                        $m_d_almacen->precio_compra_anterior=$detalle_almacenotro['precio_compra'];
+                        $m_d_almacen->save();
+                    }
+
                     $detalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->update(['precio_compra'=>$otrocostoredondeado]);
                     $detalle=detalle_almacen::where('id_almacen','=',$escoja)->where("id_producto",'=',$id_producto)->update(['stock'=>$otroresultado]);
                 }

@@ -11,6 +11,7 @@ use App\Inventario;
 use App\Movimiento;
 use App\Almacenes;
 use App\Productos;
+use App\movimientos_detalle_almacen; 
 
 class DetalleVentaController extends Controller
 {
@@ -22,7 +23,6 @@ class DetalleVentaController extends Controller
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
 		$precio_unitario=(!is_null($json) && isset($params->precio_unitario)) ? $params->precio_unitario : null;
         $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
-        $codigo=(!is_null($json) && isset($params->codigo)) ? $params->codigo : null;
         $igv=(!is_null($json) && isset($params->igv)) ? $params->igv : null;
         $isc=(!is_null($json) && isset($params->isc)) ? $params->isc : null;
         $otro=(!is_null($json) && isset($params->otro)) ? $params->otro : null;
@@ -45,22 +45,29 @@ class DetalleVentaController extends Controller
         $total=0;
         $detalle_almacen=0;
         $detalle_caja=0;
-        if(!is_null($codigo)){
-            $tock=Venta::join('cajas','ventas.id_caja','=','cajas.id')
-            ->join('sucursals','cajas.id_sucursal','=','sucursals.id')
-            ->join('detalle_almacen','sucursals.id_almacen','=','detalle_almacen.id_almacen')
-            ->where('detalle_almacen.codigo','=',$codigo)->get()->last();
-        }else{
-            $tock=Venta::join('cajas','ventas.id_caja','=','cajas.id')
-            ->join('sucursals','cajas.id_sucursal','=','sucursals.id')
-            ->join('detalle_almacen','sucursals.id_almacen','=','detalle_almacen.id_almacen')
-            ->where('detalle_almacen.id_producto','=',$id_producto)->get()->last();
+        $tock=Venta::join('cajas','ventas.id_caja','=','cajas.id')
+        ->join('sucursals','cajas.id_sucursal','=','sucursals.id')
+        ->join('detalle_almacen','sucursals.id_almacen','=','detalle_almacen.id_almacen')
+        ->where('detalle_almacen.id_producto','=',$id_producto)->get()->last();
             
-        }
         $total=$tock['stock']-$cantidad;
+        
         $costoactual=(($tock['stock'] *$tock['precio_compra'])-($cantidad*$tock['precio_compra']))/($tock['stock']-$cantidad);
         $costoactualredondeado=round($costoactual*100)/100;
+        $m_d_a_ultimo=movimientos_detalle_almacen::where('id_detalle_almacen',$detalle_almacen['id'])->get()->last();
+        if($costoactualredondeado!=$tock['precio_compra']){
+            $m_d_almacen=new movimientos_detalle_almacen();
+            $m_d_almacen->id_detalle_almacen=$tock['id'];
+            $m_d_almacen->descuento_anterior=$m_d_a_ultimo['descuento_anterior'];
+            $m_d_almacen->descuento_actual=$m_d_a_ultimo['descuento_actual'];
+            $m_d_almacen->precio_anterior=$m_d_a_ultimo['precio_anterior'];
+            $m_d_almacen->precio_actual=$m_d_a_ultimo['precio_actual'];
+            $m_d_almacen->precio_compra_actual=$costoactualredondeado;
+            $m_d_almacen->precio_compra_anterior=$tock['precio_compra'];
+            $m_d_almacen->save();
+        }
         $detalle_almacen=detalle_almacen::where('id','=',$tock['id'])->update(['stock'=>$total,'precio_compra'=>$costoactualredondeado]);
+    
         //-----------------------------------------------------------------------------------------------
         //-------------------------actualizacionb monto caja actual---------------------------
         
@@ -88,6 +95,7 @@ class DetalleVentaController extends Controller
         $Venta=Venta::join('cajas','ventas.id_caja','=','cajas.id')
         ->join('sucursals','cajas.id_sucursal','=','sucursals.id')
         ->join('detalle_almacen','sucursals.id_almacen','=','detalle_almacen.id_almacen')
+        ->orderBy('ventas.id')
         ->get()
         ->last(); 
         $tipodocumento=$Venta['serie_venta'];

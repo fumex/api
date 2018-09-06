@@ -8,6 +8,7 @@ use App\Proveedor;
 use App\PagoDetalle;
 use App\detalle_almacen;
 use DB;
+use App\movimientos_detalle_almacen;
 class PagoController extends Controller
 {
     public function addPago(Request $request){
@@ -90,6 +91,7 @@ class PagoController extends Controller
         $cantidad=$pago_d['cantidad'];
         $cod=$pago_d['id_pago'];
         $id_producto=$pago_d['id_producto'];
+
         if(@count($pago_d)>=1){
             $pago_d->estado=false;
             $pago_d->save();
@@ -106,4 +108,40 @@ class PagoController extends Controller
             }   
         }
    }
+   public function borrardealmacen($id){
+        $pago_d=PagoDetalle::find($id);
+        $cantidad=$pago_d['cantidad'];
+        $cod=$pago_d['id_pago'];
+        $id_producto=$pago_d['id_producto'];
+
+        $pago=Pago::where('code','=',$cod)->first();
+        $id_almacen=$pago['id_almacen'];
+        $almacen_d=detalle_almacen::where('id_almacen','=',$id_almacen)->where('id_producto','=',$id_producto)->first();
+        
+        $stockactual=$almacen_d['stock'];
+        $precioctual=$almacen_d['precio_compra'];
+
+        $m_d_a_ultimo=movimientos_detalle_almacen::where('id_detalle_almacen',$almacen_d['id'])->where('created_at','<',$pago['created_at'])->get()->last();
+        $pre_comp=$m_d_a_ultimo['precio_compra_actual'];
+        $costoactualizado=(($stockactual *$precioctual)-($cantidad*$pre_comp))/($stockactual-$cantidad);
+        
+        $costoguardado=round($costoactualizado,2);
+        if($costoguardado!=$almacen_d['precio_compra']){
+            
+            $m_d_almacen=new movimientos_detalle_almacen();
+            $m_d_almacen->id_detalle_almacen=$almacen_d['id'];
+            $m_d_almacen->descuento_anterior=$m_d_a_ultimo['descuento_anterior'];
+            $m_d_almacen->descuento_actual=$m_d_a_ultimo['descuento_actual'];
+            $m_d_almacen->precio_anterior=$m_d_a_ultimo['precio_anterior'];
+            $m_d_almacen->precio_actual=$m_d_a_ultimo['precio_actual'];
+            $m_d_almacen->precio_compra_actual=$costoguardado;
+            $m_d_almacen->precio_compra_anterior=$almacen_d['precio_compra'];
+            $m_d_almacen->save();
+        }
+
+        $almacen_d->precio_compra=$costoguardado;  
+        $almacen_d->save();
+        return response()->json($almacen_d);
+   }
+   
 }

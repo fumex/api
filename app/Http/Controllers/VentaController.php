@@ -7,7 +7,8 @@ use App\Venta;
 use App\productos;
 use App\detalle_caja; 
 use App\detalle_almacen; 
-
+use App\detalle_Ventas; 
+use App\movimientos_detalle_almacen; 
 class VentaController extends Controller
 {
     public function getdocumento(){
@@ -100,6 +101,7 @@ class VentaController extends Controller
             'b'=> $resb,
             'f'=> $resf,
             'x'=>$serie,
+            'code'=>200,
         );
         return response()->json($data,200);
         /*$i=0;
@@ -126,6 +128,8 @@ class VentaController extends Controller
         $total=(!is_null($json) && isset($params->total)) ? $params->total : null;
 		$pago_efectivo=(!is_null($json) && isset($params->pago_efectivo)) ? $params->pago_efectivo : null;
         $pago_tarjeta=(!is_null($json) && isset($params->pago_tarjeta)) ? $params->pago_tarjeta : null;
+        $id_usuario=(!is_null($json) && isset($params->id_usuario)) ? $params->id_usuario : null;
+        $id_vendedor=(!is_null($json) && isset($params->id_vendedor)) ? $params->id_vendedor : null;
 
         $Venta=new Venta();
             
@@ -137,6 +141,8 @@ class VentaController extends Controller
         $Venta->pago_efectivo=$pago_efectivo;
         $Venta->pago_tarjeta=$pago_tarjeta;
         $Venta->estado=true;
+        $Venta->id_usuario=$id_usuario;
+
         $Venta->save();
 
         $detalle_caja=detalle_caja::where('id_caja',$id_caja)->where('abierta',true)->get()->last();
@@ -152,15 +158,65 @@ class VentaController extends Controller
         return response()->json($data,200);
     }
     public function anular($id){
+        $i=0;
+        $total=0;
+        $costoactualizado=0;
+        $costoguardado=0;
         $getventa=Venta::where('id',$id)->get()->last();
-        //$venta=Venta::where('id',$id)->update(['estado'=>false]);
-        //falkta actualizar el detalle almacen el precio de comra(prome. ponder. variante)
-        return $detalle_almacen=Venta::join('cajas','ventas.id_caja','cajas.id')
+      
+        $detalle_caja=detalle_caja::where('id_caja',$getventa['id_caja'])->where('created_at','<',$getventa['created_at'])->where('abierta',true)->get()->last();
+        if(@count($detalle_caja) > 0){
+            $getventa->estado=false;
+            $getventa->save();
+            $total=$detalle_caja['monto_actual']-$getventa['total'];
+            $actualizar_caja=detalle_caja::where('id',$detalle_caja['id'])->update(['monto_actual'=>$total]);
+            
+            $detalle_Ventas=detalle_Ventas::where('id_venta',$id)->get();
+
+            while($i<@count($detalle_Ventas)){
+                 $detalle_Ventas[$i];
+                
+                
+    
+                $detalle_almacen=Venta::join('cajas','ventas.id_caja','cajas.id')
+                ->join('sucursals','cajas.id_sucursal','sucursals.id')
+                ->join('almacenes','sucursals.id_almacen','almacenes.id')
+                ->join('detalle_almacen','almacenes.id','detalle_almacen.id_almacen')
+                ->where('cajas.id',$getventa['id_caja'])
+                ->where('detalle_almacen.id_producto',$detalle_Ventas[$i]->id_producto)
+                ->select('detalle_almacen.id','detalle_almacen.stock','detalle_almacen.precio_compra','detalle_almacen.id_producto','detalle_almacen.precio_venta')->get()->last();
+               
+                $m_d_a_ultimo=movimientos_detalle_almacen::where('id_detalle_almacen',$detalle_almacen['id'])->where('created_at','<',$getventa['created_at'])->get()->last();
+                $pre_comp=$m_d_a_ultimo['precio_compra_actual'];
+                $costoactualizado=(($detalle_almacen['stock'] *  $detalle_almacen['precio_compra'])+($detalle_Ventas[$i]->cantidad*$pre_comp))/($detalle_almacen['stock']-$detalle_Ventas[$i]->cantidad);
+                $costoguardado=round($costoactualizado,2);
+                $actualizaralmacen=detalle_almacen::where('id',$detalle_almacen['id'])  
+                ->update(['stock'=>$detalle_almacen['stock']+$detalle_Ventas[$i]->cantidad,'precio_compra'=>$costoguardado]);
+                if($costoguardado!=$detalle_almacen['precio_compra']){
+                    $m_d_almacen=new movimientos_detalle_almacen();
+                    $m_d_almacen->id_detalle_almacen=$detalle_almacen['id'];
+                    $m_d_almacen->id_detalle_almacen=$detalle_almacen['id'];
+                    $m_d_almacen->descuento_anterior=$m_d_a_ultimo['descuento_anterior'];
+                    $m_d_almacen->descuento_actual=$m_d_a_ultimo['descuento_actual'];
+                    $m_d_almacen->precio_anterior=$m_d_a_ultimo['precio_anterior'];
+                    $m_d_almacen->precio_actual=$m_d_a_ultimo['precio_actual'];
+                    $m_d_almacen->precio_compra_actual=$costoguardado;
+                    $m_d_almacen->precio_compra_anterior=$detalle_almacen['precio_compra'];
+                    $m_d_almacen->save();
+                }
+    
+                $i++;
+            }
+        }else{
+            
+        }
+      
+        /*return $detalle_almacen=Venta::join('cajas','ventas.id_caja','cajas.id')
         ->join('sucursals','cajas.id_sucursal','sucursals.id')
         ->join('almacenes','sucursals.id_almacen','almacenes.id')
         ->join('detalle_almacen','almacenes.id','detalle_almacen.id_almacen')
         ->where('ventas.id',$id)
-        ->select('detalle_almacen.id','detalle_almacen.stock')->get();
+        ->select('detalle_almacen.id','detalle_almacen.stock')->get();*/
   
         /*$detalle_caja=detalle_caja::where('id_caja',$getventa['id_caja'])
         ->where('detalle_cajas.updated_at','>=',$getventa['created_at'])
@@ -168,13 +224,9 @@ class VentaController extends Controller
         return $detalle_caja['monto_actual']-$getventa['total'];*/
 
         //actualizacion  de detalle_cajas
-       /* $updatecaja=detalle_caja::where('id_caja',$getventa['id_caja'])
+       /*$updatecaja=detalle_caja::where('id_caja',$getventa['id_caja'])
         ->where('detalle_cajas.updated_at','>=',$getventa['created_at'])
         ->where('detalle_cajas.created_at','<',$getventa['created_at'])
         ->update('monto_actual',$detalle_caja['monto_actual']-$getventa['total']);*/
-
-
-
-
     }
 }

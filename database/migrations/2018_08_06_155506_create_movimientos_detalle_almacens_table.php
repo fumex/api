@@ -15,6 +15,7 @@ class CreateMovimientosDetalleAlmacensTable extends Migration
     {
         Schema::create('movimientos_detalle_almacens', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('id_usuario');
             $table->integer('id_detalle_almacen');
             $table->float('descuento_anterior');
             $table->float('descuento_actual');
