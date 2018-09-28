@@ -178,7 +178,15 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('empresa-delete','EmpresaController@deleteEmpresa');
 	Route::get('empresas','EmpresaController@getEmpresas');
 	Route::post('imagen-up','EmpresaController@upImagen');
+	//---------------------------------------------------------------
+	//     *********   Firma y Certificado Digital   ************
+	//---------------------------------------------------------------
+	Route::post('certificado-up','FirmaController@upCertificado');
+	Route::get('prueba','PruebaController@boleta');
+
+	//-------------------------------------------------------------
 	//------------clientes-----------------------------------------
+	//--------------------------------------------------------------
 	Route::get('clientes','ClienteController@getClientes');
 	Route::get('cliente/{id}','ClienteController@getCliente');
 	Route::post('cliente-add','ClienteController@addCliente');
