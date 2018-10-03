@@ -19,7 +19,7 @@ class CreateDetalleCajasTable extends Migration
             $table->integer('id_usuario');
             $table->string('monto_apertura');
             $table->boolean('abierta');
-            $table->integer('monto_actual')->nullable();
+            $table->float('monto_actual')->nullable();
             $table->string('monto_cierre_efectivo')->nullable();
             $table->float('monto_cierre_tarjeta')->nullable();
             $table->timestamps();

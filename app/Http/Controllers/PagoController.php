@@ -143,5 +143,12 @@ class PagoController extends Controller
         $almacen_d->save();
         return response()->json($almacen_d);
    }
+   public function getpagosconusuario($id){
+       return $pago=Pago::join('movimientos','pagos.id','=','movimientos.id_tabla')
+       ->join('users','movimientos.id_usuario','=','users.id')
+       ->where('tabla_nombre','Pagos')
+       ->select('users.id','users.name','users.apellidos')
+       ->get();
+   }
    
 }

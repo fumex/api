@@ -99,12 +99,14 @@ class Detalle_cajaController extends Controller
         $i=0;
         $ultventas=array();
         $consulta="";
-        $idapetura=detalle_caja::where('id',$id)->where('abierta',true)->get()->last();
+        $idapetura=detalle_caja::where('id',$id)->get()->last();
         
         $ventas=Venta::join('clientes','ventas.id_cliente','clientes.id')
+        ->join('users','ventas.id_usuario','=','users.id')
         ->whereBetween('ventas.created_at',[$idapetura['created_at'],$idapetura['updated_at']])
         ->where('id_caja',$idapetura['id_caja'])
-        ->select('ventas.id','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at')
+        ->select('users.name','users.apellidos','ventas.id','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at')
+        ->orderby('ventas.id')
         ->get();
         /*while ( $i < 2){
             echo $ventas['id']-$i;                                                                                      
@@ -134,9 +136,34 @@ class Detalle_cajaController extends Controller
         }*/
         return $ventas;
     }
+    public function mostrarventasanular($id){
+        $i=0;
+        $ultventas=array();
+        $consulta="";
+        $ventas=Venta::join('cajas','ventas.id_caja','cajas.id')
+        ->join('sucursals','cajas.id_sucursal','sucursals.id')
+        ->join('clientes','ventas.id_cliente','clientes.id')
+        ->where('sucursals.id',$id)
+        ->select('ventas.id','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at')
+        ->orderBy('ventas.created_at','DESC')
+        ->get();
+        /*while ( $i < 2){
+            echo $ventas['id']-$i;                                                                                      
+            $consulta=Venta::where('id',$ventas['id']-$i)->get();
+            array_push($ultventas,$consulta);
+            $i++;
+        }*/
+        return $ventas;
+    }
     public function getdetallecajas($id){
         return $consulta=detalle_caja::join('cajas','detalle_cajas.id_caja','cajas.id')
         ->where('detalle_cajas.id',$id)
+        ->select('detalle_cajas.id','detalle_cajas.id_caja','detalle_cajas.abierta','detalle_cajas.created_at','detalle_cajas.id_usuario','detalle_cajas.monto_actual','detalle_cajas.monto_apertura','detalle_cajas.monto_cierre_efectivo','detalle_cajas.monto_cierre_tarjeta','detalle_cajas.updated_at','cajas.nombre')
+        ->get();
+    }
+    public function getdetallecaja($id){
+        return  $consulta=detalle_caja::join('cajas','detalle_cajas.id_caja','cajas.id')
+        ->where('cajas.id',$id)
         ->select('detalle_cajas.id','detalle_cajas.id_caja','detalle_cajas.abierta','detalle_cajas.created_at','detalle_cajas.id_usuario','detalle_cajas.monto_actual','detalle_cajas.monto_apertura','detalle_cajas.monto_cierre_efectivo','detalle_cajas.monto_cierre_tarjeta','detalle_cajas.updated_at','cajas.nombre')
         ->get();
     }

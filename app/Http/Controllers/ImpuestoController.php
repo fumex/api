@@ -40,4 +40,8 @@ class ImpuestoController extends Controller
         $impuesto=Impuesto::where('tipo','OTRO')->where('estado','=',true)->get();
         return response()->json($impuesto);
     }
+    public function getisc(){
+        $impuesto=Impuesto::where('tipo','ISC')->where('estado','=',true)->get();
+        return response()->json($impuesto);
+    }
 }

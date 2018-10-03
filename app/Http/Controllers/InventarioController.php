@@ -308,7 +308,7 @@ class InventarioController extends Controller
         $listar2=detalle_almacen::join('productos','detalle_almacen.id_producto','=','productos.id')
         ->join('categorias','productos.id_categoria','=','categorias.id')
         ->join('unidades','productos.id_unidad','=','unidades.id')
-        ->select('productos.id','productos.nombre_producto','productos.descripcion','unidades.abreviacion','productos.cantidad','categorias.nombre','stock')
+        ->select('productos.id','productos.nombre_producto','productos.descripcion','unidades.abreviacion','categorias.nombre','stock')
         ->where('detalle_almacen.id_almacen',$id)
         ->get();
         return $listar2;

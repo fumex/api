@@ -15,7 +15,7 @@ class ProductosController extends Controller
     public function ver(){
         $listar2=productos::join('categorias','productos.id_categoria','=','categorias.id')
         ->join('unidades','productos.id_unidad','=','unidades.id')
-        ->select('productos.id','nombre_producto','categorias.nombre','descripcion','productos.cantidad','unidades.abreviacion')
+        ->select('productos.id','nombre_producto','categorias.nombre','descripcion'/*,'productos.cantidad'*/,'unidades.abreviacion')
         ->where('productos.estado',true)
         ->orderBy('productos.id')
         ->get();
@@ -28,14 +28,16 @@ class ProductosController extends Controller
         $params=json_decode($json);
         
         $nombre_producto=(!is_null($json) && isset($params->nombre_producto)) ? $params->nombre_producto : null;
+        $marca=(!is_null($json) && isset($params->marca)) ? $params->marca : null;
+        $modelo=(!is_null($json) && isset($params->modelo)) ? $params->modelo : null;
         $id_categoria=(!is_null($json) && isset($params->id_categoria)) ? $params->id_categoria : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_unidad=(!is_null($json) && isset($params->id_unidad)) ? $params->id_unidad : null;
-        $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
+        //$cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
         $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;
 
-        if(!is_null($nombre_producto)  && !is_null($cantidad) && !is_null($id_categoria)){
+        if(!is_null($nombre_producto)  /*&& !is_null($cantidad)*/ && !is_null($id_categoria)){
             $isset_pro=Productos::where('nombre_producto','=',$nombre_producto)->where('estado',true)->first();
             if(@count($isset_pro)==0){
                 $Productos=new Productos();
@@ -43,7 +45,7 @@ class ProductosController extends Controller
                 $Productos->id_categoria=$id_categoria;
                 $Productos->descripcion=$descripcion;
                 $Productos->id_unidad=$id_unidad;
-                $Productos->cantidad=$cantidad;
+                //$Productos->cantidad=$cantidad;
                 $Productos->estado=true;
                 $Productos->imagen=$imagen;
                 $Productos->id_user=$id_user;
@@ -84,10 +86,12 @@ class ProductosController extends Controller
 
         $id=(!is_null($json) && isset($params->id)) ? $params->id : null;
         $nombre_producto=(!is_null($json) && isset($params->nombre_producto)) ? $params->nombre_producto : null;
+        $marca=(!is_null($json) && isset($params->marca)) ? $params->marca : null;
+        $modelo=(!is_null($json) && isset($params->modelo)) ? $params->modelo : null;
         $id_categoria=(!is_null($json) && isset($params->id_categoria)) ? $params->id_categoria : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_unidad=(!is_null($json) && isset($params->id_unidad)) ? $params->id_unidad : null;
-        $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
+        //$cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
         $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;  
         
@@ -97,7 +101,9 @@ class ProductosController extends Controller
                     'id_categoria'=>$id_categoria,
                     'descripcion'=>$descripcion,
                     'id_unidad'=>$id_unidad,
-                    'cantidad'=>$cantidad,
+                    'marca'=>$marca,
+                    'modelo'=>$modelo,
+                    //'cantidad'=>$cantidad,
                     'id_user'=>$id_user,
                     'imagen'=>$imagen]);
 

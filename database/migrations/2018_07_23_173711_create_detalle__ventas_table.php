@@ -18,9 +18,13 @@ class CreateDetalleVentasTable extends Migration
             $table->integer('id_venta');
             $table->integer('cantidad');
             $table->decimal('precio_unitario');
+            $table->float('descuento');
             $table->float('igv')->nullable();
+            $table->integer('igv_id')->nullable();
             $table->float('isc')->nullable();
+            $table->integer('isc_id')->nullable();
             $table->float('otro')->nullable();
+            $table->integer('otro_id')->nullable();
             $table->integer('id_producto');
             $table->boolean('estado');
             $table->timestamps();

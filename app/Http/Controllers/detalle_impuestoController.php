@@ -26,6 +26,15 @@ public function verotro($id){
     ->get();
     return response()->json($listar);
 }   
+public function verisc($id){
+    $listar=detalle_impuesto::join('impuestos','detalle_impuestos.id_impuesto','=','impuestos.id')
+    ->where('id_producto',$id)
+    ->where('detalle_impuestos.estado',true)
+    ->where('impuestos.tipo','ISC')
+    ->select('detalle_impuestos.id','detalle_impuestos.id_producto','detalle_impuestos.id_impuesto','detalle_impuestos.estado')
+    ->get();
+    return response()->json($listar);
+} 
 public function insertar(Request $request){
     $json=$request->input('json',null);
     $params=json_decode($json);
@@ -121,7 +130,7 @@ public function modificarigv(Request $request){
         ->where('id_producto',$id)
         ->where('detalle_impuestos.estado',true)
         ->whereNotIn('impuestos.tipo',['ISC'])
-        ->select('impuestos.nombre','impuestos.tipo','impuestos.porcentaje')
+        ->select('impuestos.id','impuestos.nombre','impuestos.tipo','impuestos.porcentaje')
         ->get();
         return response()->json($listar);
     } 

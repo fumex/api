@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Detalle_usuario;
 use App\detalle_caja_usuario;
+use App\cajas;
 use App\User;
 
 class Dettalle_UsuarioController extends Controller
@@ -72,8 +73,8 @@ class Dettalle_UsuarioController extends Controller
     public function getdetalleudsuariosucursal($id){
         //$detalle=detalle_caja_usuario::where('estado',true)->get();
         $Detalle_usuario=Detalle_usuario::join('users','detalle_usuarios.id_user','=','users.id')
-        ->leftjoin('detalle_caja_usuarios','detalle_caja_usuarios.id_usuario','=','detalle_usuarios.id_user')
-        ->where('detalle_caja_usuarios.id_usuario',null)
+        ->leftjoin('detalle_caja_usuarios','detalle_caja_usuarios.id_vendedor','=','detalle_usuarios.id_user')
+        ->where('detalle_caja_usuarios.id_vendedor',null)
         //->whereNotIn('users.id',[$detalle['id_usuario']])
         //->where('detalle_caja_usuarios.estado',true)
         ->where('id_sucursal',$id)
@@ -86,7 +87,7 @@ class Dettalle_UsuarioController extends Controller
     public function getdetalleudsuarioactual($id){
         //$detalle=detalle_caja_usuario::where('estado',true)->get();
         $Detalle_usuario=Detalle_usuario::join('users','detalle_usuarios.id_user','=','users.id')
-        ->join('detalle_caja_usuarios','detalle_caja_usuarios.id_usuario','=','detalle_usuarios.id_user')
+        ->join('detalle_caja_usuarios','detalle_caja_usuarios.id_vendedor','=','detalle_usuarios.id_user')
         ->where('detalle_caja_usuarios.id_caja',$id)
         //->whereNotIn('users.id',[$detalle['id_usuario']])
         //->where('detalle_caja_usuarios.estado',true)
@@ -95,5 +96,15 @@ class Dettalle_UsuarioController extends Controller
         ->get();
         
         return response()->json($Detalle_usuario);
+    }
+
+    public function getcajasusuariosucursal($id){
+        $cajas=cajas::join('sucursals','cajas.id_sucursal','=','sucursals.id')
+        ->join('detalle_usuarios','sucursals.id','=','detalle_usuarios.id_sucursal')
+        ->where('detalle_usuarios.id_user',$id)
+        ->select('cajas.id','sucursals.nombre_sucursal','cajas.descripcion','cajas.nombre','sucursals.direccion')
+        ->get();
+        
+        return response()->json($cajas);
     }
 }
