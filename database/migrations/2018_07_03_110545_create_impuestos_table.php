@@ -16,7 +16,7 @@ class CreateImpuestosTable extends Migration
         Schema::create('impuestos', function (Blueprint $table) {
             $table->increments('id');
             $table->String('nombre');
-            $table->Integer('porcentaje');
+            $table->float('porcentaje');
             $table->String('descripcion');
             $table->String('tipo');
             $table->boolean('estado')->nullable()->default(true);

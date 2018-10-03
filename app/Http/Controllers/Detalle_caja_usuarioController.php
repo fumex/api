@@ -59,7 +59,7 @@ class Detalle_caja_usuarioController extends Controller
         
         $validar=true;
 
-        $indice=detalle_caja_usuario::where('id_usuario','=',$id_vendedor)->where('id_caja','=',$id_caja)->first();
+        $indice=detalle_caja_usuario::where('id_vendedor','=',$id_vendedor)->where('id_caja','=',$id_caja)->first();
         if(@count($indice)==0){
             if($estado==true){
                 $detalle_caja_usuario=new detalle_caja_usuario();
@@ -84,7 +84,7 @@ class Detalle_caja_usuarioController extends Controller
             /*$detalle_caja_usuario= detalle_caja_usuario::where('id_usuario','=',$id_usuario)->where('id_caja','=',$id_caja)
             ->update(['estado'=>$estado]);*/
             if($estado==false){
-                $detalle_caja_usuario= detalle_caja_usuario::where('id_usuario','=',$id_vendedor)->where('id_caja','=',$id_caja)->delete();
+                $detalle_caja_usuario= detalle_caja_usuario::where('id_vendedor','=',$id_vendedor)->where('id_caja','=',$id_caja)->delete();
                 $movimiento_vendedores->estado="deshabilitado";
                 $data =array(
                     'status'=>'succes',
@@ -103,7 +103,7 @@ class Detalle_caja_usuarioController extends Controller
     public function getusuariosporcaja($id){
         $detalle_caja_usuario=detalle_caja_usuario::where('id_caja',$id)
         //->where('estado',true)
-        ->orderBy('id_usuario')
+        ->orderBy('id_vendedor')
         ->get();
         
         return response()->json($detalle_caja_usuario);

@@ -21,7 +21,8 @@ class PagoDetalleController extends Controller
     public function DetalleAlmacen(Request $request){
 		$m_d_almacen=new movimientos_detalle_almacen();
     	$pago=Pago::get()->last(); //recupera el ultimo pago realizado
-    	$pago_d=PagoDetalle::get()->last();  //recupera el ultimo detalle
+		$pago_d=PagoDetalle::get()->last();  //recupera el ultimo detalle
+		$mov=Movimiento::get()->last();   //recupera el ultimo registro guiardado en mivimientos
     	$id=$pago['id_almacen'];
     	$cantidad=$pago_d['cantidad'];
         $codigo=$request->codigo;
@@ -40,14 +41,17 @@ class PagoDetalleController extends Controller
         	$precioctual=$d_almace['precio_compra'];
 			$costoactualizado=(($stockactual *$precioctual)+($cantidad*$pre_comp))/($stockactual+$cantidad);
 			$costoguardado=round($costoactualizado,2);
+			
+			
 //-------------guardar en movimiento_detalle_almacen----------------------------------------
+			
 			if($costoguardado!=$d_almace['precio_compra']){
 				$m_d_a_ultimo=movimientos_detalle_almacen::where('id_detalle_almacen',$d_almace['id'])->get()->last();
-				
+				$m_d_almacen->id_usuario=$mov['id_usuario'];
 				$m_d_almacen->id_detalle_almacen=$d_almace['id'];
 				$m_d_almacen->descuento_anterior=$m_d_a_ultimo['descuento_anterior'];
 				$m_d_almacen->descuento_actual=$m_d_a_ultimo['descuento_actual'];
-				$m_d_almacen->precio_anterior=$m_d_a_ultimo['precio_anterior'];
+				$m_d_almacen->precio_anterior=$m_d_a_ultimo['precio_actual'];
 				$m_d_almacen->precio_actual=$m_d_a_ultimo['precio_actual'];
 				$m_d_almacen->precio_compra_actual=$costoguardado;
 				$m_d_almacen->precio_compra_anterior=$d_almace['precio_compra'];
@@ -81,6 +85,7 @@ class PagoDetalleController extends Controller
 				->first();
 //-------------guardar en movimiento_detalle_almacen----------------------------------------
 				$m_d_almacen->id_detalle_almacen=$detalleactual['id'];
+				$m_d_almacen->id_usuario=$mov['id_usuario'];
 				$m_d_almacen->descuento_anterior=0;
 				$m_d_almacen->descuento_actual=0;
 				$m_d_almacen->precio_anterior=0;
@@ -94,7 +99,8 @@ class PagoDetalleController extends Controller
 
 
 	}
-	
+	//guardarmovimiento_detalle_almacen
+
 	public function redondeo($cantidad){
 		$resultado=round($cantidad * 100) / 100; 
 		return $resultado;

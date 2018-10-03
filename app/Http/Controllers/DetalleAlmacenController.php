@@ -68,11 +68,14 @@ class DetalleAlmacenController extends Controller
         $params=json_decode($json);
         $descuento_maximo=(!is_null($json) && isset($params->descuento_maximo)) ? $params->descuento_maximo : null;
         $precio_venta=(!is_null($json) && isset($params->precio_venta)) ? $params->precio_venta : null;
-        
+        $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
+
         $movimiento=detalle_almacen::where('id',$id)->get()->last();
         $verultimomov=movimientos_detalle_almacen::where('id_detalle_almacen',$id)->get()->last();
+        
         $mantenimiento=new movimientos_detalle_almacen();
         $mantenimiento->id_detalle_almacen=$id;
+        $mantenimiento->id_usuario=$id_producto;
         if($movimiento['descuento_maximo']==null){
             $mantenimiento->descuento_anterior=0;
             $mantenimiento->descuento_actual=$descuento_maximo*1;
@@ -88,8 +91,11 @@ class DetalleAlmacenController extends Controller
             $mantenimiento->precio_actual=$precio_venta;
         }
         $mantenimiento->precio_compra_actual=$verultimomov['precio_compra_actual'];
-        $mantenimiento->precio_compra_anterior=$verultimomov['precio_compra_anterior'];
-        $mantenimiento->save();
+        $mantenimiento->precio_compra_anterior=$verultimomov['precio_compra_actual'];
+        if($descuento_maximo*1!=$movimiento['descuento_maximo']||$precio_venta!=$movimiento['precio_venta']){
+            $mantenimiento->save();
+        }
+        
 
               //guardar
             $detalle_almacen= detalle_almacen::where('id',$id)->update(['precio_venta'=> $precio_venta,'descuento_maximo'=>$descuento_maximo]);
@@ -118,6 +124,8 @@ class DetalleAlmacenController extends Controller
         ->join('categorias','productos.id_categoria','=','categorias.id')
         ->where('cajas.id',$id)
         ->where('detalle_almacen.vendible',true)
+        ->where('detalle_almacen.precio_venta','>',0)
+        ->where('detalle_almacen.precio_venta','<>',null)
         ->select('productos.id','productos.descripcion','unidades.abreviacion','categorias.nombre','productos.nombre_producto','productos.imagen','detalle_almacen.precio_venta','detalle_almacen.stock','detalle_almacen.codigo','detalle_almacen.descuento_maximo')
         ->get();
         return $detalle_almacen;

@@ -17,12 +17,12 @@ class CreateMovimientosDetalleAlmacensTable extends Migration
             $table->increments('id');
             $table->integer('id_usuario');
             $table->integer('id_detalle_almacen');
-            $table->float('descuento_anterior');
-            $table->float('descuento_actual');
-            $table->float('precio_anterior');
-            $table->float('precio_actual');
-            $table->float('precio_compra_anterior');
-            $table->float('precio_compra_actual');
+            $table->float('descuento_anterior')->nullable()->default(0);
+            $table->float('descuento_actual')->nullable()->default(0);
+            $table->float('precio_anterior')->nullable()->default(0);
+            $table->float('precio_actual')->nullable()->default(0);
+            $table->float('precio_compra_anterior')->nullable()->default(0);
+            $table->float('precio_compra_actual')->nullable()->default(0);
             $table->timestamps();
         });
     }

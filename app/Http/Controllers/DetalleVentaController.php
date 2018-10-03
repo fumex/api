@@ -26,6 +26,10 @@ class DetalleVentaController extends Controller
         $igv=(!is_null($json) && isset($params->igv)) ? $params->igv : null;
         $isc=(!is_null($json) && isset($params->isc)) ? $params->isc : null;
         $otro=(!is_null($json) && isset($params->otro)) ? $params->otro : null;
+        $descuento=(!is_null($json) && isset($params->descuento)) ? $params->descuento : null;
+        $igv_id=(!is_null($json) && isset($params->igv_id)) ? $params->igv_id : null;
+        $isc_id=(!is_null($json) && isset($params->isc_id)) ? $params->isc_id : null;
+        $otro_id=(!is_null($json) && isset($params->otro_id)) ? $params->otro_id : null;
         $id_venta=Venta::get()->last();
 
         $detalle_Ventas=new detalle_Ventas();
@@ -37,6 +41,10 @@ class DetalleVentaController extends Controller
         $detalle_Ventas->igv=$igv;
         $detalle_Ventas->isc=$isc;
         $detalle_Ventas->otro=$otro;
+        $detalle_Ventas->descuento=$descuento;
+        $detalle_Ventas->igv_id=$igv_id;
+        $detalle_Ventas->isc_id=$isc_id;
+        $detalle_Ventas->otro_id=$otro_id;
         $detalle_Ventas->estado=true;
         $detalle_Ventas->save(); 
 

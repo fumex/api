@@ -7,8 +7,10 @@ use App\Venta;
 use App\productos;
 use App\detalle_caja; 
 use App\detalle_almacen; 
-use App\detalle_Ventas; 
+use App\detalle_Ventas;
+use App\Detalle_usuario; 
 use App\movimientos_detalle_almacen; 
+use App\Sucursal;
 class VentaController extends Controller
 {
     public function getdocumento(){
@@ -229,4 +231,67 @@ class VentaController extends Controller
         ->where('detalle_cajas.created_at','<',$getventa['created_at'])
         ->update('monto_actual',$detalle_caja['monto_actual']-$getventa['total']);*/
     }
+    public function getventasporfecha($fecha,$id){
+        $fechainicial=$fecha.' 00:00:00';
+        $fechafinal=$fecha.' 23:59:59';
+        return $venta=Sucursal::join('detalle_usuarios','sucursals.id','detalle_usuarios.id_sucursal')
+        ->join('cajas','sucursals.id','cajas.id_sucursal')
+        ->join('ventas','cajas.id','ventas.id_caja')
+        ->join('clientes','ventas.id_cliente','=','clientes.id')
+        ->join('users','ventas.id_usuario','=','users.id')
+        ->where('detalle_usuarios.id_user',$id)
+        ->where('detalle_usuarios.permiso',true)
+        ->whereBetween('ventas.created_at',[$fechainicial,$fechafinal])
+        ->select('ventas.id','users.apellidos','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at','users.name','ventas.id_usuario')
+        ->get();
+        /*return $venta=Venta::join('clientes','ventas.id_cliente','=','clientes.id')
+        ->join('detalle_usuarios','ventas.id_usuario','detalle_usuarios.id_user')
+        ->join('users','detalle_usuarios.id_user','=','users.id')
+        ->join('sucursals','detalle_usuarios.id_sucursal','sucursals.id')
+        ->where('users.id',$id)
+       
+        ->select('ventas.id','users.apellidos','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at','users.name','ventas.id_usuario')
+        ->get();*/
+    }
+
+    public function getventasconusuario(){
+        return $ventas=Venta::join('users','ventas.id_usuario','=','users.id')
+        ->select('users.id','users.name','users.apellidos')
+        ->get();
+    }
+    public function getventaporusuario($fecha,$id){
+        $fechainicial=$fecha.' 00:00:00';
+        $fechafinal=$fecha.' 23:59:59';
+        return $venta=Venta::join('clientes','ventas.id_cliente','=','clientes.id')
+        ->join('users','ventas.id_usuario','=','users.id')
+        ->where('ventas.id_usuario',$id)
+        ->whereBetween('ventas.created_at',[$fechainicial,$fechafinal])
+        ->select('ventas.id','users.apellidos','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at','users.name','ventas.id_usuario')
+        ->get();
+    }
+    public function getproductosvendidos($fecha,$id){
+        $fechainicial=$fecha.' 00:00:00';
+        $fechafinal=$fecha.' 23:59:59';
+        return $venta=Sucursal::join('detalle_usuarios','sucursals.id','detalle_usuarios.id_sucursal')
+        ->join('cajas','sucursals.id','cajas.id_sucursal')
+        ->join('ventas','cajas.id','ventas.id_caja')
+        ->join('detalle_ventas','ventas.id','detalle_ventas.id_venta')
+        ->join('productos','detalle_ventas.id_producto','=','productos.id')
+        ->join('categorias','productos.id_categoria','=','categorias.id')
+        ->join('unidades','productos.id_unidad','=','unidades.id')
+        ->join('clientes','ventas.id_cliente','=','clientes.id')
+        ->join('users','ventas.id_usuario','=','users.id')
+        ->where('detalle_usuarios.id_user',$id)
+        ->where('detalle_usuarios.permiso',true)
+        ->where('detalle_ventas.estado',true)
+        ->where('productos.estado',true)
+        ->where('unidades.estado',true)
+        ->whereBetween('ventas.created_at',[$fechainicial,$fechafinal])
+        ->select('detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad'
+        ,'users.apellidos','ventas.serie_venta','cajas.nombre AS nombre_caja','clientes.nombre AS nombre_cliente','ventas.total','ventas.pago_efectivo','ventas.pago_tarjeta','ventas.created_at','users.name','clientes.nro_documento','clientes.direccion'
+        ,'detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','detalle_ventas.cantidad','detalle_ventas.descuento'
+        ,'detalle_ventas.igv_id','detalle_ventas.isc_id','detalle_ventas.otro_id')
+        ->get();
+    }
+    
 }

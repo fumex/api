@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Detalle_usuario;
+use App\Sucursal;
 use Illuminate\Support\Facades\Auth;
 use Hash;
 use DB;
@@ -211,6 +213,30 @@ class UserController extends Controller
         );
         
         return response()->json($data,200);
+   }
+   public function getusersporsucursal($id){
+        $usuarios=array();
+        $consulta="";
+        /*return $users=Detalle_usuario::join('sucursals','detalle_usuarios.id_sucursal','=','sucursals.id')
+        ->join('users','users.id','detalle_usuarios.id_user')
+        //->join('tipo_documentos','users.id_documento','tipo_documentos.id')
+        ->where('users.id',$id)
+        ->select('sucursals.id','users.name')
+        //->select('users.id','users.name','users.apellidos','tipo_documentos.documento','users.numero_documento','users.telefono','users.direccion','users.imagen')
+        ->get();*/
+
+        $sucursal=Detalle_usuario::where('id_user',$id)->where('permiso',true)->get();
+       
+        foreach ($sucursal as $s) { 
+            $consulta=Detalle_usuario::join('users','detalle_usuarios.id_user','=','users.id')
+            ->join('tipo_documentos','users.id_documento','tipo_documentos.id')
+            ->where('detalle_usuarios.id_sucursal',$s->id_sucursal)
+            ->where('detalle_usuarios.permiso',true)
+            ->select('users.id','users.name','users.apellidos','tipo_documentos.documento','users.numero_documento','users.telefono','users.direccion','users.imagen')
+            ->get();
+            array_push($usuarios,$consulta);
+        } 
+        return response()->json($usuarios,200);
    }
 
 }
