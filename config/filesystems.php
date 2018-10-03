@@ -47,6 +47,8 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
+        
+        //-----------------------Public-----------------------------------
 
         'public' => [
             'driver' => 'local',
@@ -54,7 +56,6 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
-
         'usuarios' => [
             'driver' => 'local',
             'root' => storage_path('app/public/images/usuarios'),
@@ -74,6 +75,33 @@ return [
             'visibility' => 'public',
         ],
 
+        //--------------------Documentos: XML, Cache, .PEM, PFX-------- 
+        'certificado' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/document/cetificado'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        'PEM' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/document/PEM'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        'cache' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/document/cache'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        'file' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/document/file'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+
+       //---------------------------------------------------------------
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
