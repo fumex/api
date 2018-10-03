@@ -182,7 +182,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	//     *********   Firma y Certificado Digital   ************
 	//---------------------------------------------------------------
 	Route::post('certificado-up','FirmaController@upCertificado');
-	Route::get('prueba','PruebaController@boleta');
+	Route::post('prueba','PruebaController@bole');
 
 	//-------------------------------------------------------------
 	//------------clientes-----------------------------------------

@@ -12,24 +12,19 @@ use Greenter\Ws\Services\SunatEndpoints;
 use Mp\Service\Util;
 use DateTime;
 
+use App\Http\Controllers\ClienteController;
 
 class PruebaController extends Controller
 {
     //Prueba de boleta
-	public function boleta(){
-  		$util = Util::getInstance();
-
-	  	//cliente
-	  	$client = new Client();
-		$client->setTipoDoc('1')
-	    	->setNumDoc('20203030')
-	    	->setRznSocial('PERSON 1');
-	    
-	    // Venta
+	public function bole(Request $request){
+		$util = Util::getInstance();
+		$client=$this->cliente($request->id);
+		// Venta
 		$invoice = new Invoice();
 		$invoice->setTipoDoc('03')
 		    ->setSerie('B001')
-		    ->setCorrelativo('1')
+		    ->setCorrelativo('3')
 		    ->setFechaEmision(new DateTime())
 		    ->setTipoMoneda('PEN')
 		    ->setClient($client)
@@ -74,5 +69,26 @@ class PruebaController extends Controller
  		} else{
  			return $res->getError();
  		}
-  	}
+	}
+
+	public function cliente($id){
+		$_id=$id;
+		$cli = $this->lisCliente($_id);
+		$params=json_decode($cli,true);
+		$nombre=$params['nombre'];
+		$documento=$params['nro_documento'];
+		$client = new Client();
+		return 	$client->setTipoDoc('1')
+	    		->setNumDoc($documento)
+	    		->setRznSocial($nombre);
+	}
+
+	public function lisCliente($id){
+		$cli= new ClienteController();
+		return $cli->getCliente($id);
+	}
+
+	public function getFactura($id){
+		
+	}
 }

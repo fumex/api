@@ -12,7 +12,7 @@ class ClienteController extends Controller
     }
     public function getCliente($id){
     	$cliente=Cliente::find($id);
-        return response()->json($cliente);
+        return $cliente;
     }
     public function updateCliente($id,Request $request)
     {
