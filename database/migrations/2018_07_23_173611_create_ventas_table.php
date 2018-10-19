@@ -22,6 +22,10 @@ class CreateVentasTable extends Migration
             $table->Decimal('total');
             $table->Decimal('pago_efectivo');
             $table->Decimal('pago_tarjeta');
+            $table->integer('id_moneda');
+            $table->float('igv')->nullable()->default(0);
+            $table->float('isc')->nullable()->default(0);
+            $table->float('otro')->nullable()->default(0);
             $table->boolean('resultado')->nullable();
             $table->boolean('estado');
             $table->integer('id_usuario');

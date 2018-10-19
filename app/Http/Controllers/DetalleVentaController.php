@@ -30,6 +30,9 @@ class DetalleVentaController extends Controller
         $igv_id=(!is_null($json) && isset($params->igv_id)) ? $params->igv_id : null;
         $isc_id=(!is_null($json) && isset($params->isc_id)) ? $params->isc_id : null;
         $otro_id=(!is_null($json) && isset($params->otro_id)) ? $params->otro_id : null;
+        $igv_porcentage=(!is_null($json) && isset($params->igv_porcentage)) ? $params->igv_porcentage : null;
+        $isc_porcentage=(!is_null($json) && isset($params->isc_porcentage)) ? $params->isc_porcentage : null;
+        $otro_porcentage=(!is_null($json) && isset($params->otro_porcentage)) ? $params->otro_porcentage : null;
         $id_venta=Venta::get()->last();
 
         $detalle_Ventas=new detalle_Ventas();
@@ -45,6 +48,9 @@ class DetalleVentaController extends Controller
         $detalle_Ventas->igv_id=$igv_id;
         $detalle_Ventas->isc_id=$isc_id;
         $detalle_Ventas->otro_id=$otro_id;
+        $detalle_Ventas->igv_porcentage=$igv_porcentage;
+        $detalle_Ventas->isc_porcentage=$isc_porcentage;
+        $detalle_Ventas->otro_porcentage=$otro_porcentage;
         $detalle_Ventas->estado=true;
         $detalle_Ventas->save(); 
 
@@ -139,14 +145,23 @@ class DetalleVentaController extends Controller
         $id_tabla=Inventario::get()->last();
 
 		$almacen_nombre=Almacenes::where('id','=',$Venta['id_almacen'])->get()->first();
-		$productos_nombre=Productos::where('id','=',$id_producto)->get()->first();
+        $productos_nombre=Productos::where('id','=',$id_producto)->get()->first();
+        //$cantmovimiento=Movimiento::where('productos_id',$id_producto)->get()->last();
         $movimiento=new Movimiento();
         
 		$movimiento->tabla_nombre='Ventas';
 		$movimiento->id_tabla=$Venta['id'];
 		$movimiento->almacen_nombre=$almacen_nombre['nombre'];
-		$movimiento->productos_nombre=$productos_nombre['nombre_producto'];
-		$movimiento->id_usuario=$usuario;
+        $movimiento->productos_nombre=$productos_nombre['nombre_producto'];
+        //$movimiento->productos_id=$id_producto;
+        $movimiento->id_usuario=$usuario;
+        /*if(@count($cantmovimiento)==0){
+            $movimiento->valor=$cantidad;
+		    $movimiento->valor_antiguo=null;
+        }else{
+            $movimiento->valor=$cantmovimiento['valor']+$cantidad;
+		    $movimiento->valor_antiguo=$cantmovimiento['valor'];
+        }*/
 		$movimiento->valor=$d_almace['stock'];
 		$movimiento->valor_antiguo=$d_almace['stock']+$cantidad;
         $movimiento->save();
@@ -163,7 +178,7 @@ class DetalleVentaController extends Controller
         $detalle_Ventas=detalle_Ventas::join('productos','detalle_ventas.id_producto','productos.id')
         ->where('id_venta','=',$id)
         ->where('detalle_ventas.estado','=',true)
-        ->select('detalle_ventas.id','detalle_ventas.cantidad','detalle_ventas.id_venta','detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','productos.nombre_producto')
+        ->select('detalle_ventas.id','detalle_ventas.cantidad','detalle_ventas.id_venta','detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','productos.nombre_producto','productos.marca','productos.modelo','productos.observaciones')
         ->get();
         return $detalle_Ventas;
     } 

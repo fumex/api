@@ -19,6 +19,7 @@ class CreateMovimientosTable extends Migration
             $table->integer('id_tabla');
             $table->string('almacen_nombre')->nullable();
             $table->string('productos_nombre');
+            $table->integer('productos_id');
             $table->integer('id_usuario');
             $table->integer('valor')->nullable();
             $table->integer('valor_antiguo')->nullable();

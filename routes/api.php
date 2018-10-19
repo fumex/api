@@ -263,6 +263,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('getventastotales','VentaController@getventasconusuario' );
 	Route::post('guardarventa','VentaController@insertar');
 	Route::get('anularventa/{id}','VentaController@anular' )->where(['id' => '[0-9]+']);
+	Route::get('getventaporserie/{id}','VentaController@getventaporserie' );
 	Route::get('getventaporfecha/{fecha}/{id}','VentaController@getventasporfecha' )->where(['id' => '[0-9]+']);
 	Route::get('getventaporusuario/{fecha}/{id}','VentaController@getventaporusuario' )->where(['id' => '[0-9]+']);
 	Route::get('getproductosvendidos/{fecha}/{ID}','VentaController@getproductosvendidos' )->where(['id' => '[0-9]+']);
@@ -271,6 +272,8 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('guardardetalleventa','DetalleVentaController@insertar');	
 	Route::post('guardariym','DetalleVentaController@insertarmoveinv');	
 	Route::get('getdetalleventas/{id}','DetalleVentaController@getdetalleventas' )->where(['id' => '[0-9]+']);
+	//----------------Nota de Credito--------------------------------------------------------
+	Route::get('generarserienota/{id}','nota_creditoController@generarserienota');	
 	//------------------------Entidad Financiera----------------------------------------------
 	Route::get('Entidades','entidad_finacieraController@getentidad');
 	Route::get('getentidad/{id}','entidad_finacieraController@seleccionar')->where(['id' => '[0-9]+']);

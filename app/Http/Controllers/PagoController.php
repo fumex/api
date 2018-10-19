@@ -66,7 +66,7 @@ class PagoController extends Controller
                     ->join('productos','pago_detalles.id_producto','=','productos.id')
                     ->join('unidades','productos.id_unidad','=','unidades.id')
                     ->join('almacenes','pagos.id_almacen','=','almacenes.id')
-                    ->select('pago_detalles.id','pago_detalles.id_pago','pago_detalles.id_producto','productos.nombre_producto','pagos.id_almacen','almacenes.nombre','pago_detalles.cantidad','pago_detalles.precio_unitario','unidades.unidad')
+                    ->select('pago_detalles.id','pago_detalles.id_pago','pago_detalles.id_producto','productos.nombre_producto','pagos.id_almacen','almacenes.nombre','pago_detalles.cantidad','pago_detalles.precio_unitario','unidades.unidad','productos.marca','productos.modelo','productos.observaciones')
                     ->where('pago_detalles.id_pago','=',$code)->where('pago_detalles.estado','=',true)
                     ->get();
         return response()->json($pago_d);

@@ -96,6 +96,14 @@ class UserController extends Controller
                     $d_user->strd=20;
                     $d_user->save();
                 }
+                if($d_user->rol=='vendedor'){
+                    $d_user->strd=1524;
+                    $d_user->save();
+                }
+                if($d_user->rol=='Encargado de Almacen'){
+                    $d_user->strd=8450;
+                    $d_user->save();
+                }
                 $data =array(
                 'status'=>'succes',
                     'code'=>200,
