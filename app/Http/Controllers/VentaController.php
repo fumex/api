@@ -232,6 +232,10 @@ class VentaController extends Controller
         ->where('detalle_cajas.created_at','<',$getventa['created_at'])
         ->update('monto_actual',$detalle_caja['monto_actual']-$getventa['total']);*/
     }
+
+
+
+
     public function getventasporfecha($fecha,$id){
         $fechainicial=$fecha.' 00:00:00';
         $fechafinal=$fecha.' 23:59:59';
