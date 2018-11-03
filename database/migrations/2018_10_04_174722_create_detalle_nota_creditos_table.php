@@ -19,6 +19,7 @@ class CreateDetalleNotaCreditosTable extends Migration
             $table->Integer('id_detalle_venta');
             $table->string('correccion')->nullable();
             $table->float('cantidad')->nullable();
+            $table->float('precio_unitario')->nullable();
             $table->float('igv')->nullable();
             $table->float('isc')->nullable();
             $table->float('otro')->nullable();

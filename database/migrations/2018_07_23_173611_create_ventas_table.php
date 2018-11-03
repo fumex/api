@@ -29,6 +29,7 @@ class CreateVentasTable extends Migration
             $table->boolean('resultado')->nullable();
             $table->boolean('estado');
             $table->integer('id_usuario');
+            $table->sting('letrado');
             $table->timestamps();
         });
     }

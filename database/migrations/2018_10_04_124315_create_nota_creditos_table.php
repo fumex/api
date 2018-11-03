@@ -19,11 +19,13 @@ class CreateNotaCreditosTable extends Migration
             $table->string('serie_nota');
             $table->Integer('id_venta');
             $table->string('motivo');
-            $table->Integer('correccion_ruc')->nullable();
+            $table->string('email')->nullable();
+            $table->string('correccion_ruc')->nullable();
             $table->float('descuento')->nullable();
             $table->Integer('id_usuario');
             $table->Integer('id_venta_nueva')->nullable();
-            $table->Integer('estado')->nullable();
+            $table->Integer('resultado')->nullable();
+            $table->sting('letrado');
             $table->timestamps();
         });
     }

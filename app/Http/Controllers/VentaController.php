@@ -20,8 +20,8 @@ class VentaController extends Controller
         $resb="";
         $resf="";
         $total=0;
-        $boleta=Venta::where('serie_venta', 'like', '%' . 'B' . '%')->get()->last();
-        $factura=Venta::where('serie_venta', 'like', '%' . 'F' . '%')->get()->last();
+        $boleta=Venta::where('serie_venta', 'like', '%' . 'B' . '%')->orderby('id')->get()->last();
+        $factura=Venta::where('serie_venta', 'like', '%' . 'F' . '%')->orderby('id')->get()->last();
        
         
         $nombreboleta=$boleta['serie_venta'];
@@ -32,7 +32,7 @@ class VentaController extends Controller
         $facturanueva="";
         $serie="";
         if(@count($boleta) < 1){
-            $resb="B001-000001";
+            $resb="B001-1";
         }else{
             while ($i < count($boletarr)) {
                 $boletanueva=$boletanueva.$boletarr[$i];
@@ -55,10 +55,10 @@ class VentaController extends Controller
             }else{
                 $resb.=(intval($serie))."-";
                 $total=intval($boletanueva)+1;
-                while($j < (strlen($boletanueva)-strlen($total))){
+                /*while($j < (strlen($boletanueva)-strlen($total))){
                     $resb.="0";
                     $j++;
-                }
+                }*/
                 $resb=$resb.($total);
             }
             
@@ -68,7 +68,7 @@ class VentaController extends Controller
         $k=1;
         $serie="";
         if(@count($factura) < 1){
-            $resf="F001-000001";
+            $resf="F001-1";
         }else{
             while ($i < count($facturarr)) {
                 $facturanueva=$facturanueva.$facturarr[$i];
@@ -90,10 +90,10 @@ class VentaController extends Controller
             }else{
                 $resf.=(intval($serie))."-";
                 $total=intval($facturanueva)+1;
-                while($j < (strlen($facturanueva)-strlen($total))){
+                /*while($j < (strlen($facturanueva)-strlen($total))){
                     $resf.="0";
                     $j++;
-                }
+                }*/
                 $resf=$resf.($total);
             }
         }

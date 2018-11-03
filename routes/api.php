@@ -274,6 +274,12 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('getdetalleventas/{id}','DetalleVentaController@getdetalleventas' )->where(['id' => '[0-9]+']);
 	//----------------Nota de Credito--------------------------------------------------------
 	Route::get('generarserienota/{id}','nota_creditoController@generarserienota');	
+	Route::post('guardarnotacredito','nota_creditoController@insertar');
+	//------------------------detalle nota de credito----------------------------------------------	
+	Route::post('guardardetallenotacredito','detalle_notacreditoController@insertar');
+	Route::get('pruebasnota/{id}','detalle_notacreditoController@prub');	
+	Route::post('guardarmoveinvcredito','detalle_notacreditoController@movimientoseinventarionota');
+	Route::post('anulacionesydevoluciones','detalle_notacreditoController@anulacionesydevoluciones');
 	//------------------------Entidad Financiera----------------------------------------------
 	Route::get('Entidades','entidad_finacieraController@getentidad');
 	Route::get('getentidad/{id}','entidad_finacieraController@seleccionar')->where(['id' => '[0-9]+']);
