@@ -298,4 +298,8 @@ class VentaController extends Controller
         ->get();
     }
     
+    public function getVenta($id){
+        $venta=Venta::find($id);
+        return response()->json($venta);   
+   }
 }

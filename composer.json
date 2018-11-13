@@ -22,6 +22,7 @@
         "symfony/thanks": "^1.0",
         "greenter/greenter": "^2.1",
         "greenter/data": "dev-master"
+        
     },
     "autoload": {
         "classmap": [

@@ -188,7 +188,26 @@ Route::get('auth/logout','AuthenticateController@logout');
 	//     *********   Firma y Certificado Digital   ************
 	//---------------------------------------------------------------
 	Route::post('certificado-up','FirmaController@upCertificado');
-	Route::post('prueba','PruebaController@bole');
+	Route::post('prueba','PruebaController@factura');
+	Route::get('prue/{id}','PruebaController@company');
+	//***********************************************************************	//------------------------Factura---------------------------------------
+	//***********************************************************************
+	Route::post('factura','FacturaController@factura');
+	//factura con persepcion
+	Route::post('factura-percepcion','FacturaController@facturaPercepcion');
+	//factura Gratuita
+	Route::post('factura-gratuita','FacturaController@facturaGratuita');
+	//***********************************************************************	//------------------------Boleta---------------------------------------
+	//***********************************************************************
+	Route::post('boleta','BoletaController@boleta');
+	//***********************************************************************
+	//-----------------nota de credito y debito------------------------------
+	//***********************************************************************
+	Route::post('nota-credito','NotaController@notaCredito');
+	Route::post('nota-debito','NotaController@notaDebito');
+
+
+
 
 	//-------------------------------------------------------------
 	//------------clientes-----------------------------------------
