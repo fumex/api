@@ -15,7 +15,7 @@ class ProductosController extends Controller
     public function ver(){
         $listar2=productos::join('categorias','productos.id_categoria','=','categorias.id')
         ->join('unidades','productos.id_unidad','=','unidades.id')
-        ->select('productos.id','nombre_producto','categorias.nombre','descripcion'/*,'productos.cantidad'*/,'unidades.abreviacion')
+        ->select('productos.id','nombre_producto','categorias.nombre','descripcion'/*,'productos.cantidad'*/,'unidades.abreviacion','productos.marca','productos.modelo','productos.observaciones')
         ->where('productos.estado',true)
         ->orderBy('productos.id')
         ->get();
@@ -30,6 +30,7 @@ class ProductosController extends Controller
         $nombre_producto=(!is_null($json) && isset($params->nombre_producto)) ? $params->nombre_producto : null;
         $marca=(!is_null($json) && isset($params->marca)) ? $params->marca : null;
         $modelo=(!is_null($json) && isset($params->modelo)) ? $params->modelo : null;
+        $observaciones=(!is_null($json) && isset($params->observaciones)) ? $params->observaciones : null;
         $id_categoria=(!is_null($json) && isset($params->id_categoria)) ? $params->id_categoria : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_unidad=(!is_null($json) && isset($params->id_unidad)) ? $params->id_unidad : null;
@@ -42,6 +43,9 @@ class ProductosController extends Controller
             if(@count($isset_pro)==0){
                 $Productos=new Productos();
                 $Productos->nombre_producto=$nombre_producto;
+                $Productos->marca=$marca;
+                $Productos->modelo=$modelo;
+                $Productos->observaciones=$observaciones;
                 $Productos->id_categoria=$id_categoria;
                 $Productos->descripcion=$descripcion;
                 $Productos->id_unidad=$id_unidad;
@@ -88,6 +92,7 @@ class ProductosController extends Controller
         $nombre_producto=(!is_null($json) && isset($params->nombre_producto)) ? $params->nombre_producto : null;
         $marca=(!is_null($json) && isset($params->marca)) ? $params->marca : null;
         $modelo=(!is_null($json) && isset($params->modelo)) ? $params->modelo : null;
+        $observaciones=(!is_null($json) && isset($params->observaciones)) ? $params->observaciones : null;
         $id_categoria=(!is_null($json) && isset($params->id_categoria)) ? $params->id_categoria : null;
         $descripcion=(!is_null($json) && isset($params->descripcion)) ? $params->descripcion : null;
         $id_unidad=(!is_null($json) && isset($params->id_unidad)) ? $params->id_unidad : null;
@@ -103,6 +108,7 @@ class ProductosController extends Controller
                     'id_unidad'=>$id_unidad,
                     'marca'=>$marca,
                     'modelo'=>$modelo,
+                    'observaciones'=>$observaciones,
                     //'cantidad'=>$cantidad,
                     'id_user'=>$id_user,
                     'imagen'=>$imagen]);

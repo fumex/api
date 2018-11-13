@@ -20,8 +20,8 @@ class VentaController extends Controller
         $resb="";
         $resf="";
         $total=0;
-        $boleta=Venta::where('serie_venta', 'like', '%' . 'B' . '%')->get()->last();
-        $factura=Venta::where('serie_venta', 'like', '%' . 'F' . '%')->get()->last();
+        $boleta=Venta::where('serie_venta', 'like', '%' . 'B' . '%')->orderby('id')->get()->last();
+        $factura=Venta::where('serie_venta', 'like', '%' . 'F' . '%')->orderby('id')->get()->last();
        
         
         $nombreboleta=$boleta['serie_venta'];
@@ -32,7 +32,7 @@ class VentaController extends Controller
         $facturanueva="";
         $serie="";
         if(@count($boleta) < 1){
-            $resb="B001-000001";
+            $resb="B001-1";
         }else{
             while ($i < count($boletarr)) {
                 $boletanueva=$boletanueva.$boletarr[$i];
@@ -55,10 +55,10 @@ class VentaController extends Controller
             }else{
                 $resb.=(intval($serie))."-";
                 $total=intval($boletanueva)+1;
-                while($j < (strlen($boletanueva)-strlen($total))){
+                /*while($j < (strlen($boletanueva)-strlen($total))){
                     $resb.="0";
                     $j++;
-                }
+                }*/
                 $resb=$resb.($total);
             }
             
@@ -68,7 +68,7 @@ class VentaController extends Controller
         $k=1;
         $serie="";
         if(@count($factura) < 1){
-            $resf="F001-000001";
+            $resf="F001-1";
         }else{
             while ($i < count($facturarr)) {
                 $facturanueva=$facturanueva.$facturarr[$i];
@@ -90,10 +90,10 @@ class VentaController extends Controller
             }else{
                 $resf.=(intval($serie))."-";
                 $total=intval($facturanueva)+1;
-                while($j < (strlen($facturanueva)-strlen($total))){
+                /*while($j < (strlen($facturanueva)-strlen($total))){
                     $resf.="0";
                     $j++;
-                }
+                }*/
                 $resf=$resf.($total);
             }
         }
@@ -131,7 +131,7 @@ class VentaController extends Controller
 		$pago_efectivo=(!is_null($json) && isset($params->pago_efectivo)) ? $params->pago_efectivo : null;
         $pago_tarjeta=(!is_null($json) && isset($params->pago_tarjeta)) ? $params->pago_tarjeta : null;
         $id_usuario=(!is_null($json) && isset($params->id_usuario)) ? $params->id_usuario : null;
-        $id_vendedor=(!is_null($json) && isset($params->id_vendedor)) ? $params->id_vendedor : null;
+        $id_moneda=(!is_null($json) && isset($params->id_moneda)) ? $params->id_moneda : null;
 
         $Venta=new Venta();
             
@@ -144,6 +144,7 @@ class VentaController extends Controller
         $Venta->pago_tarjeta=$pago_tarjeta;
         $Venta->estado=true;
         $Venta->id_usuario=$id_usuario;
+        $Venta->id_moneda=$id_moneda;
 
         $Venta->save();
 
@@ -291,11 +292,33 @@ class VentaController extends Controller
         ->where('productos.estado',true)
         ->where('unidades.estado',true)
         ->whereBetween('ventas.created_at',[$fechainicial,$fechafinal])
-        ->select('detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad'
+        ->select('detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad','productos.marca','productos.modelo','productos.observaciones'
         ,'users.apellidos','ventas.serie_venta','cajas.nombre AS nombre_caja','clientes.nombre AS nombre_cliente','ventas.total','ventas.pago_efectivo','ventas.pago_tarjeta','ventas.created_at','users.name','clientes.nro_documento','clientes.direccion'
         ,'detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','detalle_ventas.cantidad','detalle_ventas.descuento'
-        ,'detalle_ventas.igv_id','detalle_ventas.isc_id','detalle_ventas.otro_id')
+        ,'detalle_ventas.igv_id','detalle_ventas.isc_id','detalle_ventas.otro_id','detalle_ventas.igv_porcentage','detalle_ventas.isc_porcentage','detalle_ventas.otro_porcentage')
         ->get();
+    }
+    public function getventaporserie($id){
+        $ventas=Venta::where('serie_venta',$id)->get()->last();
+        if(@count($ventas) > 0){
+            return $detalle_Ventas=detalle_Ventas::join('ventas','detalle_ventas.id_venta','ventas.id')
+            ->join('clientes','ventas.id_cliente','=','clientes.id')
+            ->join('users','ventas.id_usuario','=','users.id')
+            ->join('productos','detalle_ventas.id_producto','=','productos.id')
+            ->join('categorias','productos.id_categoria','=','categorias.id')
+            ->join('unidades','productos.id_unidad','=','unidades.id')
+            ->where('detalle_ventas.id_venta',$ventas['id'])
+            ->select('ventas.id AS id_venta','detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad','productos.marca','productos.modelo','productos.observaciones'
+            ,'users.apellidos','ventas.serie_venta','clientes.nombre AS nombre_cliente','ventas.total','ventas.pago_efectivo','ventas.pago_tarjeta','ventas.created_at','users.name','clientes.nro_documento','clientes.direccion'
+            ,'detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','detalle_ventas.cantidad','detalle_ventas.descuento'
+            ,'detalle_ventas.igv_id','detalle_ventas.isc_id','detalle_ventas.otro_id','detalle_ventas.igv_porcentage','detalle_ventas.isc_porcentage','detalle_ventas.otro_porcentage')
+            ->get();
+        }else{
+            $data =array(
+                'result'=>false
+            );
+            return response()->json($data,200);
+        }
     }
     
     public function getVenta($id){

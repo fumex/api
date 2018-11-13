@@ -129,7 +129,6 @@ public function modificarigv(Request $request){
         $listar=detalle_impuesto::join('impuestos','detalle_impuestos.id_impuesto','=','impuestos.id')
         ->where('id_producto',$id)
         ->where('detalle_impuestos.estado',true)
-        ->whereNotIn('impuestos.tipo',['ISC'])
         ->select('impuestos.id','impuestos.nombre','impuestos.tipo','impuestos.porcentaje')
         ->get();
         return response()->json($listar);

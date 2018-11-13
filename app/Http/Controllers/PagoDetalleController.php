@@ -33,7 +33,6 @@ class PagoDetalleController extends Controller
     	$d_almace=detalle_almacen::where('id_almacen','=',$id)
                                    ->where('id_producto','=',$id_pro)
 								   ->where('vendible','=',$vendible)
-								   ->where('codigo','=',$codigo)
                                    ->first();
     	if(@count($d_almace)>=1){
 //actualizacion de precio de detalle_almacen---------------------------------------------------------------------

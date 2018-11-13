@@ -19,6 +19,7 @@ class CreateProductosTable extends Migration
             $table->string('nombre_producto');
             $table->string('marca')->nullable();
             $table->string('modelo')->nullable();
+            $table->string('observaciones')->nullable();
             $table->string('descripcion')->nullable();
             $table->Integer('id_unidad')->nullable();
             //$table->Integer('cantidad');

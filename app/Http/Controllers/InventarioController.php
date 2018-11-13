@@ -308,7 +308,7 @@ class InventarioController extends Controller
         $listar2=detalle_almacen::join('productos','detalle_almacen.id_producto','=','productos.id')
         ->join('categorias','productos.id_categoria','=','categorias.id')
         ->join('unidades','productos.id_unidad','=','unidades.id')
-        ->select('productos.id','productos.nombre_producto','productos.descripcion','unidades.abreviacion','categorias.nombre','stock')
+        ->select('productos.id','productos.nombre_producto','productos.descripcion','unidades.abreviacion','categorias.nombre','stock','productos.marca','productos.modelo','productos.observaciones')
         ->where('detalle_almacen.id_almacen',$id)
         ->get();
         return $listar2;
@@ -337,14 +337,24 @@ class InventarioController extends Controller
 
         $d_almace=detalle_almacen::where('id_almacen','=',$pago['id_almacen'])->where('id_producto','=',$id_producto)->first();
         $id_tabla=Inventario::get()->last();
-		$almacen_nombre=Almacenes::where('id','=',$pago['id_almacen'])->get()->first();
-		$productos_nombre=Productos::where('id','=',$id_producto)->get()->first();
+        $almacen_nombre=Almacenes::where('id','=',$pago['id_almacen'])->get()->first();
+        $cantmovimiento=Movimiento::where('productos_id',$id_producto)->get()->last();
+        $productos_nombre=Productos::where('id','=',$id_producto)->get()->first();
+        
 		$movimiento=new Movimiento();
 		$movimiento->tabla_nombre='Pagos';
 		$movimiento->id_tabla=$pago['id'];
 		$movimiento->almacen_nombre=$almacen_nombre['nombre'];
-		$movimiento->productos_nombre=$productos_nombre['nombre_producto'];
-		$movimiento->id_usuario=$usuario;
+        $movimiento->productos_nombre=$productos_nombre['nombre_producto'];
+        //$movimiento->productos_id=$id_producto;
+        $movimiento->id_usuario=$usuario;
+        /*if(@count($cantmovimiento)==0){
+            $movimiento->valor=$cantidad;
+		    $movimiento->valor_antiguo=null;
+        }else{
+            $movimiento->valor=$cantmovimiento['valor']+$cantidad;
+		    $movimiento->valor_antiguo=$cantmovimiento['valor'];
+        }*/
 		$movimiento->valor=$d_almace['stock']+$cantidad;
 		$movimiento->valor_antiguo=$d_almace['stock'];
         $movimiento->save();
