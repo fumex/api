@@ -202,11 +202,22 @@ class detalle_notacreditoController extends Controller
         ->last(); 
 
 
-         $d_almace=detalle_almacen::where('id_almacen','=',1)->where('id_producto','=',$id_producto)->first();
+        $d_almace=detalle_almacen::where('id_almacen','=',1)->where('id_producto','=',$id_producto)->first();
         //$total=$d_almace['stock']+$detalle_venta['cantidad'];
         $precioactual=movimientos_detalle_almacen::where('created_at','<',$id_venta['created_at'])->where('id_detalle_almacen',$d_almace['id'])->get()->last();
-         $d_almace['stock'].'-'.$d_almace['precio_compra'].'-'.$cantidad.'-'.$precioactual['precio_compra_actual'];
+        $d_almace['stock'].'-'.$d_almace['precio_compra'].'-'.$cantidad.'-'.$precioactual['precio_compra_actual'];
         return $promedio = (($d_almace['stock']*$d_almace['precio_compra'])+($cantidad*$precioactual['precio_compra_actual']))/($d_almace['stock']+$cantidad);
         
+    }
+    public function getdetalleporidnota($id){
+        $detalle_notacredito=detalle_nota_credito::join('detalle_ventas','detalle_nota_creditos.id_detalle_venta','detalle_ventas.id')
+        ->join('productos','detalle_ventas.id_producto','=','productos.id')
+        ->where('detalle_nota_creditos.id_nota_credito',$id)
+        ->select('detalle_nota_creditos.id','detalle_nota_creditos.cantidad AS ncantidad','detalle_nota_creditos.correccion',
+        'detalle_nota_creditos.igv AS nigv','detalle_nota_creditos.isc AS nisc','detalle_nota_creditos.otro AS notro',
+        'productos.nombre_producto','detalle_ventas.cantidad','detalle_ventas.descuento','detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro',
+        'detalle_ventas.igv_id','detalle_ventas.isc_id','detalle_ventas.otro_id','detalle_ventas.igv_porcentage','detalle_ventas.isc_porcentage','detalle_ventas.otro_porcentage')
+        ->get();
+        return $detalle_notacredito;
     }
 }

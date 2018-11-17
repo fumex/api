@@ -284,6 +284,7 @@ class VentaController extends Controller
         ->join('productos','detalle_ventas.id_producto','=','productos.id')
         ->join('categorias','productos.id_categoria','=','categorias.id')
         ->join('unidades','productos.id_unidad','=','unidades.id')
+        ->join('monedas','ventas.id_moneda','monedas.id')
         ->join('clientes','ventas.id_cliente','=','clientes.id')
         ->join('users','ventas.id_usuario','=','users.id')
         ->where('detalle_usuarios.id_user',$id)
@@ -292,7 +293,7 @@ class VentaController extends Controller
         ->where('productos.estado',true)
         ->where('unidades.estado',true)
         ->whereBetween('ventas.created_at',[$fechainicial,$fechafinal])
-        ->select('detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad','productos.marca','productos.modelo','productos.observaciones'
+        ->select('monedas.moneda','detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad','productos.marca','productos.modelo','productos.observaciones'
         ,'users.apellidos','ventas.serie_venta','cajas.nombre AS nombre_caja','clientes.nombre AS nombre_cliente','ventas.total','ventas.pago_efectivo','ventas.pago_tarjeta','ventas.created_at','users.name','clientes.nro_documento','clientes.direccion'
         ,'detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','detalle_ventas.cantidad','detalle_ventas.descuento'
         ,'detalle_ventas.igv_id','detalle_ventas.isc_id','detalle_ventas.otro_id','detalle_ventas.igv_porcentage','detalle_ventas.isc_porcentage','detalle_ventas.otro_porcentage')
@@ -303,12 +304,13 @@ class VentaController extends Controller
         if(@count($ventas) > 0){
             return $detalle_Ventas=detalle_Ventas::join('ventas','detalle_ventas.id_venta','ventas.id')
             ->join('clientes','ventas.id_cliente','=','clientes.id')
+            ->join('monedas','ventas.id_moneda','monedas.id')
             ->join('users','ventas.id_usuario','=','users.id')
             ->join('productos','detalle_ventas.id_producto','=','productos.id')
             ->join('categorias','productos.id_categoria','=','categorias.id')
             ->join('unidades','productos.id_unidad','=','unidades.id')
             ->where('detalle_ventas.id_venta',$ventas['id'])
-            ->select('ventas.id AS id_venta','detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad','productos.marca','productos.modelo','productos.observaciones'
+            ->select('monedas.moneda','ventas.id AS id_venta','detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad','productos.marca','productos.modelo','productos.observaciones'
             ,'users.apellidos','ventas.serie_venta','clientes.nombre AS nombre_cliente','ventas.total','ventas.pago_efectivo','ventas.pago_tarjeta','ventas.created_at','users.name','clientes.nro_documento','clientes.direccion'
             ,'detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','detalle_ventas.cantidad','detalle_ventas.descuento'
             ,'detalle_ventas.igv_id','detalle_ventas.isc_id','detalle_ventas.otro_id','detalle_ventas.igv_porcentage','detalle_ventas.isc_porcentage','detalle_ventas.otro_porcentage')
@@ -319,6 +321,14 @@ class VentaController extends Controller
             );
             return response()->json($data,200);
         }
+    }
+    public function getventaporid($id){
+        return $Ventas=Venta::join('clientes','ventas.id_cliente','=','clientes.id')
+        ->join('users','ventas.id_usuario','=','users.id')
+        ->join('monedas','ventas.id_moneda','monedas.id')
+        ->where('ventas.id',$id)
+        ->select('ventas.serie_venta','monedas.moneda','ventas.id','users.apellidos','ventas.serie_venta','clientes.nombre AS nombre_cliente','ventas.total','ventas.pago_efectivo','ventas.pago_tarjeta','ventas.created_at','users.name','clientes.nro_documento','clientes.direccion')
+        ->get();
     }
     
 }

@@ -112,7 +112,7 @@ class nota_creditoController extends Controller
         //$n_credito->letrado=$letrado;
 
         $seriesdelanota=nota_credito::where('serie_nota',$serie_nota)->first();
-        if($tipo_nota=="01" || !is_null($descuento) || !is_null($correccion_ruc) || $tipo_nota=="03" || $tipo_nota=="05" || $tipo_nota=="06" || $tipo_nota=="07"){
+        if($tipo_nota!="02" || !is_null($correccion_ruc) ){
             if(@count($isset_alm)==0){
                 $n_credito->save();
                 if($tipo_nota=='02'){
@@ -151,5 +151,9 @@ class nota_creditoController extends Controller
             'ultimo'=>$ulñtimanota_credito['serie_nota']
         );
         return response()->json($data,200);
+    }
+    public function getidnota(){
+        $id=nota_credito::orderby('id')->get()->last();
+        return $id['id'];
     }
 }
