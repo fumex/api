@@ -7,6 +7,7 @@ use App\detalle_almacen;
 use App\Detalle_usuario;
 use Illuminate\Support\Facades\DB;
 use App\movimientos_detalle_almacen;
+use App\codigo_producto;
 
 class DetalleAlmacenController extends Controller
 {
@@ -115,20 +116,59 @@ class DetalleAlmacenController extends Controller
         return $detalle_almacen;
     }
 
-    public function seleccionarporcaja($id){
-        $detalle_almacen=detalle_almacen::join('almacenes','detalle_almacen.id_almacen','almacenes.id')
+    public function seleccionarporcaja($id){ 
+        $productos=array();
+        $i=0;
+        $j=0;
+        $valida=-1;
+        $consulta="";
+        $codigo_producto=codigo_producto::join('detalle_almacen','codigo_productos.id_detalle_almacen','detalle_almacen.id')
+        ->join('almacenes','detalle_almacen.id_almacen','almacenes.id')
         ->join('productos','detalle_almacen.id_producto','productos.id')
-        ->join('sucursals','almacenes.id','=','sucursals.id_almacen')
-        ->join('cajas','sucursals.id','=','cajas.id_sucursal')
         ->join('unidades','productos.id_unidad','=','unidades.id')
         ->join('categorias','productos.id_categoria','=','categorias.id')
+        ->join('sucursals','almacenes.id','=','sucursals.id_almacen')
+        ->join('cajas','sucursals.id','=','cajas.id_sucursal')
         ->where('cajas.id',$id)
         ->where('detalle_almacen.vendible',true)
         ->where('detalle_almacen.precio_venta','>',0)
         ->where('detalle_almacen.precio_venta','<>',null)
-        ->select('productos.id','productos.descripcion','unidades.abreviacion','categorias.nombre','productos.nombre_producto','productos.imagen','detalle_almacen.precio_venta','detalle_almacen.stock','detalle_almacen.codigo','detalle_almacen.descuento_maximo')
+        ->where('detalle_almacen.stock','>',0)
+        ->where('codigo_productos.estado',true)
+        ->orderby('codigo_productos.id')
+
+        ->select('codigo_productos.id AS id_codigo','productos.id','detalle_almacen.id AS id_detalle_almacen'
+        ,'productos.descripcion','unidades.abreviacion','categorias.nombre','productos.nombre_producto'
+        ,'productos.imagen','detalle_almacen.precio_venta','productos.codigo','detalle_almacen.descuento_maximo'
+        ,'codigo_productos.id_detalle_almacen','codigo_productos.numero_de_serie','codigo_productos.codigo_interno'
+        ,'codigo_productos.fecha_vencimiento','detalle_almacen.stock')
         ->get();
-        return $detalle_almacen;
+
+        while($i<count($codigo_producto)){
+            if(count($productos)==0){
+                $codigo_producto[$i]->stock=1;
+                array_push($productos,$codigo_producto[$i]);
+            }else{
+                while($j<count($productos)){
+                    if($codigo_producto[$i]->codigo_interno==$productos[$j]->codigo_interno && $codigo_producto[$i]->numero_de_serie==$productos[$j]->numero_de_serie && $codigo_producto[$i]->id_detalle_almacen==$productos[$j]->id_detalle_almacen){
+                        $valida=$j;
+                    }
+                    $j++;
+                }
+                
+                if($valida==-1){
+                    $codigo_producto[$i]->stock=1;
+                    array_push($productos,$codigo_producto[$i]);
+                }else{
+                    $productos[$valida]->stock+=1;
+                    //array_push($productos,$codigo_producto[$i]);
+                }
+            }
+            $valida=-1;
+            $j=0;
+            $i++;
+        }
+        return $productos;
     }
 
 }

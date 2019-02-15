@@ -38,7 +38,7 @@ class InventarioController extends Controller
 
         $presio=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->get()->last();
         $isset_dettalle=detalle_almacen::where('id_almacen','=',$id_almacen)->where("id_producto",'=',$id_producto)->first();
-        
+        $cantmovimiento=Movimiento::where('productos_id',$id_producto)->get()->last();
         if(@count($isset_dettalle)==0){
 
             $d_almacen=new detalle_almacen();
@@ -122,8 +122,14 @@ class InventarioController extends Controller
         $movimiento->almacen_nombre=$almacen_nombre['nombre'];
         $movimiento->productos_nombre=$productos_nombre['nombre_producto'];
         $movimiento->id_usuario=$usuario;
-        $movimiento->valor=$resultado;
-        $movimiento->valor_antiguo=$stockactual;
+        $movimiento->id_usuario=$usuario;
+        if(@count($cantmovimiento)==0){
+            $movimiento->valor=$cantidad;
+            $movimiento->valor_antiguo=null;
+        }else{
+            $movimiento->valor=$cantmovimiento['valor']+$cantidad;
+            $movimiento->valor_antiguo=$cantmovimiento['valor'];
+        }
         $movimiento->save();
 //----------movimientos--------------------------------//-----------------------------------------------------------------------------------------------
 //----------movimientos--------------------------------//-----------------------------------------------------------------------------------------------
@@ -232,6 +238,7 @@ class InventarioController extends Controller
 
 //----------------------------movimiento si ay tranferencia entyre almacnes---------------------------------------------------------------------------
 //----------------------------movimiento si ay tranferencia entyre almacnes---------------------------------------------------------------------------
+            
             $id_otratabla=Inventario::get()->last();
             $otro_almacen=Almacenes::where('id','=',$escoja)->get()->first();
             $otromovimiento=new Movimiento();
@@ -240,8 +247,14 @@ class InventarioController extends Controller
             $otromovimiento->almacen_nombre=$otro_almacen['nombre'];
             $otromovimiento->productos_nombre=$productos_nombre['nombre_producto'];
             $otromovimiento->id_usuario=$usuario;
-            $otromovimiento->valor=$otroresultado;
-            $otromovimiento->valor_antiguo=$otronumero;
+            $otromovimiento->productos_id=$id_producto;
+            if(@count($cantmovimiento)==0){
+                $otromovimiento->valor=$cantidad;
+                $otromovimiento->valor_antiguo=null;
+            }else{
+                $otromovimiento->valor=$cantmovimiento['valor']+$cantidad;
+                $otromovimiento->valor_antiguo=$cantmovimiento['valor'];
+            }
             $otromovimiento->save();
 //----------------------------movimiento si ay tranferencia entyre almacnes---------------------------------------------------------------------------
 //----------------------------movimiento si ay tranferencia entyre almacnes---------------------------------------------------------------------------
@@ -346,17 +359,15 @@ class InventarioController extends Controller
 		$movimiento->id_tabla=$pago['id'];
 		$movimiento->almacen_nombre=$almacen_nombre['nombre'];
         $movimiento->productos_nombre=$productos_nombre['nombre_producto'];
-        //$movimiento->productos_id=$id_producto;
+        $movimiento->productos_id=$id_producto;
         $movimiento->id_usuario=$usuario;
-        /*if(@count($cantmovimiento)==0){
+        if(@count($cantmovimiento)==0){
             $movimiento->valor=$cantidad;
 		    $movimiento->valor_antiguo=null;
         }else{
             $movimiento->valor=$cantmovimiento['valor']+$cantidad;
 		    $movimiento->valor_antiguo=$cantmovimiento['valor'];
-        }*/
-		$movimiento->valor=$d_almace['stock']+$cantidad;
-		$movimiento->valor_antiguo=$d_almace['stock'];
+        }
         $movimiento->save();
         
         $data =array(

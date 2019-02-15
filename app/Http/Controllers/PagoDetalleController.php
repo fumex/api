@@ -12,6 +12,7 @@ use App\Almacenes;
 use App\Productos;
 use App\TipoDocumento;
 use App\movimientos_detalle_almacen;
+
 class PagoDetalleController extends Controller
 {
     public function addPagoDetalle(Request $request){
@@ -22,16 +23,15 @@ class PagoDetalleController extends Controller
 		$m_d_almacen=new movimientos_detalle_almacen();
     	$pago=Pago::get()->last(); //recupera el ultimo pago realizado
 		$pago_d=PagoDetalle::get()->last();  //recupera el ultimo detalle
-		$mov=Movimiento::get()->last();   //recupera el ultimo registro guiardado en mivimientos
+		$mov=Movimiento::get()->last();   //recupera el ultimo registro guiardado en movimientos
     	$id=$pago['id_almacen'];
     	$cantidad=$pago_d['cantidad'];
-        $codigo=$request->codigo;
         $vendible=$request->vendible;
     	$id_pro=$request->id_producto;
     	$pre_comp=$request->precio_compra;
 		$pre_vent=$request->precio_venta;
     	$d_almace=detalle_almacen::where('id_almacen','=',$id)
-                                   ->where('id_producto','=',$id_pro)
+								   ->where('id_producto','=',$id_pro)
 								   ->where('vendible','=',$vendible)
                                    ->first();
     	if(@count($d_almace)>=1){
@@ -63,13 +63,16 @@ class PagoDetalleController extends Controller
 
 			$d_almace->stock=$d_almace['stock']+$cantidad;
 			$d_almace->update();
-
-			return response()->json($d_almace);
-    	}
-    	else{
+			
+			$data =array(
+				'status'=>'succes',
+				'code'=>200,
+				'mensage'=>'actualizado',
+			);
+			return response()->json($data,200);
+    	}else{
     		$detalle_almacen= new detalle_almacen();
 	    	$detalle_almacen->id_almacen=$id;
-            $detalle_almacen->codigo=$codigo;
             $detalle_almacen->vendible=$vendible;
 	    	$detalle_almacen->id_producto=$id_pro;
 	    	$detalle_almacen->stock=$cantidad ;
@@ -80,7 +83,6 @@ class PagoDetalleController extends Controller
 			$detalleactual=detalle_almacen::where('id_almacen','=',$id)
 				->where('id_producto','=',$id_pro)
 				->where('vendible','=',$vendible)
-				->where('codigo','=',$codigo)
 				->first();
 //-------------guardar en movimiento_detalle_almacen----------------------------------------
 				$m_d_almacen->id_detalle_almacen=$detalleactual['id'];
@@ -93,7 +95,12 @@ class PagoDetalleController extends Controller
 				$m_d_almacen->precio_compra_anterior=0;
 				$m_d_almacen->save();
 //---------------------------------------------------------------------------------------------------------
-	    	return response()->json($detalle_almacen);
+				$data =array(
+					'status'=>'succes',
+					'code'=>200,
+					'mensage'=>'guardado',
+				);
+				return response()->json($data,200);
 		}
 
 

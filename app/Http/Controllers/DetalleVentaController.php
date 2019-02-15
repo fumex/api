@@ -18,7 +18,6 @@ class DetalleVentaController extends Controller
     public function insertar(Request $request){
         $json=$request->input('json',null);
         $params=json_decode($json);
-        
 
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
 		$precio_unitario=(!is_null($json) && isset($params->precio_unitario)) ? $params->precio_unitario : null;
@@ -33,6 +32,10 @@ class DetalleVentaController extends Controller
         $igv_porcentage=(!is_null($json) && isset($params->igv_porcentage)) ? $params->igv_porcentage : null;
         $isc_porcentage=(!is_null($json) && isset($params->isc_porcentage)) ? $params->isc_porcentage : null;
         $otro_porcentage=(!is_null($json) && isset($params->otro_porcentage)) ? $params->otro_porcentage : null;
+
+        $nombre_prodcuto=Productos::join('unidades','productos.id_unidad','unidades.id')->where('productos.id',$id_producto)
+        ->select('unidades.abreviacion','productos.nombre_producto')
+        ->get()->first();
         $id_venta=Venta::get()->last();
 
         $detalle_Ventas=new detalle_Ventas();
@@ -51,6 +54,8 @@ class DetalleVentaController extends Controller
         $detalle_Ventas->igv_porcentage=$igv_porcentage;
         $detalle_Ventas->isc_porcentage=$isc_porcentage;
         $detalle_Ventas->otro_porcentage=$otro_porcentage;
+        $detalle_Ventas->nombre_producto=$nombre_prodcuto['nombre_producto'];
+        $detalle_Ventas->unidad_medida=$nombre_prodcuto['abreviacion'];
         $detalle_Ventas->estado=true;
         $detalle_Ventas->save(); 
 
@@ -103,7 +108,6 @@ class DetalleVentaController extends Controller
         $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
         $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
         $precio=(!is_null($json) && isset($params->precio)) ? $params->precio : null;
-        $codigo=(!is_null($json) && isset($params->codigo)) ? $params->codigo : null;
         $usuario=(!is_null($json) && isset($params->usuario)) ? $params->usuario : null;
 
         $Venta=Venta::join('cajas','ventas.id_caja','=','cajas.id')
@@ -136,34 +140,29 @@ class DetalleVentaController extends Controller
 
         $d_almace=0;
 
-        if(!is_null($codigo)){
-            $d_almace=detalle_almacen::where('id_almacen','=',$Venta['id_almacen'])->where('codigo','=',$codigo)->first();
-        }else{
-            $d_almace=detalle_almacen::where('id_almacen','=',$Venta['id_almacen'])->where('id_producto','=',$id_producto)->first();
-        }
+        $d_almace=detalle_almacen::where('id_almacen','=',$Venta['id_almacen'])->where('id_producto','=',$id_producto)->first();
+    
         
         $id_tabla=Inventario::get()->last();
 
 		$almacen_nombre=Almacenes::where('id','=',$Venta['id_almacen'])->get()->first();
         $productos_nombre=Productos::where('id','=',$id_producto)->get()->first();
-        //$cantmovimiento=Movimiento::where('productos_id',$id_producto)->get()->last();
+        $cantmovimiento=Movimiento::where('productos_id',$id_producto)->get()->last();
         $movimiento=new Movimiento();
         
 		$movimiento->tabla_nombre='Ventas';
 		$movimiento->id_tabla=$Venta['id'];
 		$movimiento->almacen_nombre=$almacen_nombre['nombre'];
         $movimiento->productos_nombre=$productos_nombre['nombre_producto'];
-        //$movimiento->productos_id=$id_producto;
+        $movimiento->productos_id=$id_producto;
         $movimiento->id_usuario=$usuario;
-        /*if(@count($cantmovimiento)==0){
+        if(@count($cantmovimiento)==0){
             $movimiento->valor=$cantidad;
 		    $movimiento->valor_antiguo=null;
         }else{
             $movimiento->valor=$cantmovimiento['valor']+$cantidad;
 		    $movimiento->valor_antiguo=$cantmovimiento['valor'];
-        }*/
-		$movimiento->valor=$d_almace['stock'];
-		$movimiento->valor_antiguo=$d_almace['stock']+$cantidad;
+        }
         $movimiento->save();
         
         $data =array(

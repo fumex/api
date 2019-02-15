@@ -29,6 +29,9 @@ class CreateDetalleVentasTable extends Migration
             $table->integer('otro_id')->nullable()->default(0);
             $table->float('otro_porcentage')->nullable()->default(0);
             $table->integer('id_producto');
+            $table->string('nombre_producto'); 
+            $table->string('unidad_medida');
+            //$table->integer('id_codigo_producto');
             $table->boolean('estado');
             $table->timestamps();
         });

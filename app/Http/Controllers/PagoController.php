@@ -7,8 +7,14 @@ use App\Pago;
 use App\Proveedor;
 use App\PagoDetalle;
 use App\detalle_almacen;
+use App\codigo_producto;
 use DB;
 use App\movimientos_detalle_almacen;
+use App\Inventario;
+use App\Movimiento;
+use App\Almacenes;
+use App\TipoDocumento;
+use App\Productos;
 class PagoController extends Controller
 {
     public function addPago(Request $request){
@@ -85,44 +91,49 @@ class PagoController extends Controller
          return $pago;
        }
     }
-   
-   public function deletePagoDetalle($id){
-        $pago_d=PagoDetalle::find($id);
-        $cantidad=$pago_d['cantidad'];
-        $cod=$pago_d['id_pago'];
-        $id_producto=$pago_d['id_producto'];
 
-        if(@count($pago_d)>=1){
-            $pago_d->estado=false;
-            $pago_d->save();
-            //return $pago_d;
-            $pago=Pago::where('code','=',$cod)->first();
-            $id_almacen=$pago['id_almacen'];
-            if(@count($pago)>=1){
-                $almacen_d=detalle_almacen::where('id_almacen','=',$id_almacen)->where('id_producto','=',$id_producto)->first();
-                if(@count($almacen_d)>=1){
-                    $almacen_d->stock=$almacen_d['stock']-$cantidad;
-                    $almacen_d->save();
-                    return response()->json($almacen_d);
-                }
-            }   
-        }
-   }
-   public function borrardealmacen($id){
+    public function getdetallepagos($id){
+        return $pago_d=PagoDetalle::where('id_pago',$id)->select('id')->get();
+    }
+
+    public function deletePagoDetalle($id){
         $pago_d=PagoDetalle::find($id);
-        $cantidad=$pago_d['cantidad'];
+        $cod=$pago_d['id_pago'];
+        $pago_d->estado=false;
+        $pago_d->save();
+        $id_almacen=$pago['id_almacen'];
+        $editarcodigos=codigo_producto::where('id_detalle_pago',$id)->update(['estado'=>false,'accion'=>'Devolucion']);
+
+        $data =array(
+            'status'=>'succes',
+            'code'=>200,
+            'mensage'=>'se inhabilito'
+        );
+        
+        return response()->json($data,200);
+
+    }
+    public function borrardealmacen($id){
+        $pago_d=PagoDetalle::find($id);
+       
         $cod=$pago_d['id_pago'];
         $id_producto=$pago_d['id_producto'];
 
         $pago=Pago::where('code','=',$cod)->first();
-        $id_almacen=$pago['id_almacen'];
-        $almacen_d=detalle_almacen::where('id_almacen','=',$id_almacen)->where('id_producto','=',$id_producto)->first();
+        $getmov=Movimiento::where('id_tabla',$pago['id'])->where('tabla_nombre','Pagos')->get()->last();
+        $usuario=$getmov['id_usuario'];
+
+        $cantidad=$pago_d['cantidad'];
+
+        $codigos=codigo_producto::where('id_detalle_pago',$id)->get()->last();
+        $almacen_d=detalle_almacen::where('id','=',$codigos['id_detalle_almacen'])->first();
         
         $stockactual=$almacen_d['stock'];
         $precioctual=$almacen_d['precio_compra'];
 
         $m_d_a_ultimo=movimientos_detalle_almacen::where('id_detalle_almacen',$almacen_d['id'])->where('created_at','<',$pago['created_at'])->get()->last();
-        $pre_comp=$m_d_a_ultimo['precio_compra_actual'];
+        $pre_comp=$pago_d['precio_unitario'];
+        //echo $stockactual.'-'.$precioctual.'-'.$cantidad.'-'.$pre_comp;
         $costoactualizado=(($stockactual *$precioctual)-($cantidad*$pre_comp))/($stockactual-$cantidad);
         
         $costoguardado=round($costoactualizado,2);
@@ -136,13 +147,69 @@ class PagoController extends Controller
             $m_d_almacen->precio_actual=$m_d_a_ultimo['precio_actual'];
             $m_d_almacen->precio_compra_actual=$costoguardado;
             $m_d_almacen->precio_compra_anterior=$almacen_d['precio_compra'];
+            $m_d_almacen->id_usuario=$usuario;
             $m_d_almacen->save();
         }
-
+        $almacen_d->stock=$almacen_d['stock']-$cantidad;
         $almacen_d->precio_compra=$costoguardado;  
         $almacen_d->save();
-        return response()->json($almacen_d);
-   }
+        $data =array(
+            'status'=>'succes',
+            'code'=>200,
+            'mensage'=>'se modifico'
+        );
+        
+        return response()->json($data,200);
+    }
+
+    public function insertarmodeinven($id){
+       
+        $pago_detalle=PagoDetalle::find($id);
+        $codigos=codigo_producto::where('id_detalle_pago',$id)->get()->last();
+        $pago=Pago::where('code',$pago_detalle['id_pago'])->get()->last();
+        $getmov=Movimiento::where('id_tabla',$pago['id'])->where('tabla_nombre','Pagos')->get()->last();
+        
+        $id_producto=$pago_detalle['id_producto'];
+        $cantidad=$pago_detalle['cantidad'];
+        $precio=$pago_detalle['precio_unitario'];
+        $usuario=$getmov['id_usuario'];
+
+        $tipodocumento=$pago['id_documento'];
+        $nombretipodocumento=TipoDocumento::where('id','=',$tipodocumento)->value('documento');
+        $Inventario=new Inventario();
+        $Inventario->id_almacen=$pago['id_almacen'];
+        $Inventario->id_producto=$id_producto;
+        $Inventario->descripcion="Devolución :Compra ".$nombretipodocumento." ".$pago['nroBoleta'];
+        $Inventario->tipo_movimiento=1;
+        $Inventario->cantidad=$cantidad;
+        $Inventario->precio=$precio; 
+        $Inventario->save();
+
+        $d_almace=detalle_almacen::where('id','=',$codigos['id_detalle_almacen'])->first();
+        $id_tabla=Inventario::get()->last();
+        $almacen_nombre=Almacenes::where('id','=',$pago['id_almacen'])->get()->first();
+        $cantmovimiento=Movimiento::where('productos_id',$id_producto)->get()->last();
+        $productos_nombre=Productos::where('id','=',$id_producto)->get()->first();
+        
+        $movimiento=new Movimiento();
+        $movimiento->tabla_nombre='Pagos';
+        $movimiento->id_tabla=$pago['id'];
+        $movimiento->almacen_nombre=$almacen_nombre['nombre'];
+        $movimiento->productos_nombre=$productos_nombre['nombre_producto'];
+        $movimiento->productos_id=$id_producto;
+        $movimiento->id_usuario=$usuario;
+        $movimiento->valor=$cantmovimiento['valor']-$cantidad;
+        $movimiento->valor_antiguo=$cantmovimiento['valor'];
+        $movimiento->save();
+        
+        $data =array(
+            'status'=>'succes',
+            'code'=>200,
+            'mensage'=>'se inserto'
+        );
+        
+        return response()->json($data,200);
+    }
    public function getpagosconusuario($id){
        return $pago=Pago::join('movimientos','pagos.id','=','movimientos.id_tabla')
        ->join('users','movimientos.id_usuario','=','users.id')

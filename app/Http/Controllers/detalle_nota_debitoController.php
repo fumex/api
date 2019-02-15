@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class anular_ventaController extends Controller
+class detalle_nota_debitoController extends Controller
 {
     //
 }

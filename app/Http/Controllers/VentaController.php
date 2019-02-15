@@ -11,6 +11,9 @@ use App\detalle_Ventas;
 use App\Detalle_usuario; 
 use App\movimientos_detalle_almacen; 
 use App\Sucursal;
+use App\Cliente;
+use App\Moneda;
+
 class VentaController extends Controller
 {
     public function getdocumento(){
@@ -123,6 +126,7 @@ class VentaController extends Controller
         $json=$request->input('json',null);
         $params=json_decode($json);
         
+
         $serie_venta=(!is_null($json) && isset($params->serie_venta)) ? $params->serie_venta : null;
 		$tarjeta=(!is_null($json) && isset($params->tarjeta)) ? $params->tarjeta : null;
 		$id_caja=(!is_null($json) && isset($params->id_caja)) ? $params->id_caja : null;
@@ -132,9 +136,18 @@ class VentaController extends Controller
         $pago_tarjeta=(!is_null($json) && isset($params->pago_tarjeta)) ? $params->pago_tarjeta : null;
         $id_usuario=(!is_null($json) && isset($params->id_usuario)) ? $params->id_usuario : null;
         $id_moneda=(!is_null($json) && isset($params->id_moneda)) ? $params->id_moneda : null;
+        $igv=(!is_null($json) && isset($params->igv)) ? $params->igv : null;
+        $isc=(!is_null($json) && isset($params->isc)) ? $params->isc : null;
+        $otro=(!is_null($json) && isset($params->otro)) ? $params->otro : null;
+        $letrado=(!is_null($json) && isset($params->letrado)) ? $params->letrado : null;
 
+        $cliente_nro=Cliente::where('id',$id_cliente)->value('nro_documento');
+        $moneda_cod=(string)Moneda::where('id',$id_moneda)->value('codigo_sunat');
         $Venta=new Venta();
-            
+        
+        $Venta->nro_documento=$cliente_nro;
+        $Venta->razon_social="borrar";
+        $Venta->codigo_moneda=$moneda_cod;
         $Venta->serie_venta=$serie_venta;
         $Venta->tarjeta=$tarjeta;
         $Venta->id_caja=$id_caja;
@@ -145,6 +158,10 @@ class VentaController extends Controller
         $Venta->estado=true;
         $Venta->id_usuario=$id_usuario;
         $Venta->id_moneda=$id_moneda;
+        $Venta->igv=$igv;
+        $Venta->isc=$isc;
+        $Venta->otro=$otro;
+        $Venta->letrado=$letrado;
 
         $Venta->save();
 
@@ -310,10 +327,13 @@ class VentaController extends Controller
             ->join('categorias','productos.id_categoria','=','categorias.id')
             ->join('unidades','productos.id_unidad','=','unidades.id')
             ->where('detalle_ventas.id_venta',$ventas['id'])
-            ->select('monedas.moneda','ventas.id AS id_venta','detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto','productos.descripcion','unidades.unidad','productos.marca','productos.modelo','productos.observaciones'
-            ,'users.apellidos','ventas.serie_venta','clientes.nombre AS nombre_cliente','ventas.total','ventas.pago_efectivo','ventas.pago_tarjeta','ventas.created_at','users.name','clientes.nro_documento','clientes.direccion'
-            ,'detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario','detalle_ventas.cantidad','detalle_ventas.descuento'
-            ,'detalle_ventas.igv_id','detalle_ventas.isc_id','detalle_ventas.otro_id','detalle_ventas.igv_porcentage','detalle_ventas.isc_porcentage','detalle_ventas.otro_porcentage')
+            ->select('monedas.moneda','ventas.id AS id_venta','detalle_ventas.id','categorias.nombre AS nombre_categoria','productos.nombre_producto'
+            ,'productos.descripcion','unidades.unidad','productos.marca','productos.modelo','productos.observaciones'
+            ,'users.apellidos','ventas.serie_venta','clientes.nombre AS nombre_cliente','ventas.total','ventas.pago_efectivo'
+            ,'ventas.pago_tarjeta','ventas.created_at','users.name','clientes.nro_documento','clientes.direccion'
+            ,'detalle_ventas.igv','detalle_ventas.isc','detalle_ventas.otro','detalle_ventas.precio_unitario'
+            ,'detalle_ventas.cantidad','detalle_ventas.descuento' ,'detalle_ventas.igv_id','detalle_ventas.isc_id'
+            ,'detalle_ventas.otro_id','detalle_ventas.igv_porcentage','detalle_ventas.isc_porcentage','detalle_ventas.otro_porcentage')
             ->get();
         }else{
             $data =array(
@@ -331,4 +351,8 @@ class VentaController extends Controller
         ->get();
     }
     
+    public function getVenta($id){
+        $venta=Venta::find($id);
+        return response()->json($venta);   
+   }
 }

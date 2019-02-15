@@ -51,7 +51,7 @@ class EmpresaController extends Controller
         return new Response($file,200);
     }
     public function dataEmpresa(){
-        $empresa=Empresa::get()->last();
+        $empresa=Empresa::get()->first();
         return response()->json($empresa);
     }
 }

@@ -120,7 +120,7 @@ class CajaController extends Controller
 
        }
 
-       public function seleccionar($id){
+       public function seleccionar($id){ 
         $cajas=cajas::find($id);
         return $cajas;
        }

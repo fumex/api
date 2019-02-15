@@ -93,7 +93,7 @@ class Detalle_caja_usuarioController extends Controller
                 );
             }
         }
-        if($validar=true){
+        if($validar=true){ 
             $movimiento_vendedores->save();
         }
         return response()->json($data,200);

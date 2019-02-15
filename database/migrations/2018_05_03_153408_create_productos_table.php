@@ -22,7 +22,7 @@ class CreateProductosTable extends Migration
             $table->string('observaciones')->nullable();
             $table->string('descripcion')->nullable();
             $table->Integer('id_unidad')->nullable();
-            //$table->Integer('cantidad');
+            $table->string('codigo');
             $table->boolean('estado');
             $table->Integer('id_user');
             $table->string('imagen');

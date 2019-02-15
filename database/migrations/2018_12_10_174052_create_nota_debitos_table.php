@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateNotaCreditosTable extends Migration
+class CreateNotaDebitosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateNotaCreditosTable extends Migration
      */
     public function up()
     {
-        Schema::create('nota_creditos', function (Blueprint $table) {
+        Schema::create('nota_debitos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('tipo_nota');
             $table->string('serie_nota');
             $table->Integer('id_venta');
             $table->string('motivo');
             $table->string('email')->nullable();
-            $table->string('correccion_ruc')->nullable();
-            $table->float('descuento')->nullable();
             $table->Integer('id_usuario');
-            $table->Integer('id_venta_nueva')->nullable();
             $table->Integer('resultado')->nullable();
             $table->string('letrado');
             $table->timestamps();
@@ -37,6 +34,6 @@ class CreateNotaCreditosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('nota_creditos');
+        Schema::dropIfExists('nota_debitos');
     }
 }

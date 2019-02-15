@@ -37,7 +37,15 @@ class ProductosController extends Controller
         //$cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
         $id_user=(!is_null($json) && isset($params->id_user)) ? $params->id_user : null;
         $imagen=(!is_null($json) && isset($params->imagen)) ? $params->imagen : null;
-
+        $cantidad=Productos::count();
+        $i=0;
+        $codigo="P-";
+        $cantidad+=1;
+        while($i<(4-strlen($cantidad))){
+            $codigo.="0";
+            $i++;
+        }
+        $codigo.=$cantidad;
         if(!is_null($nombre_producto)  /*&& !is_null($cantidad)*/ && !is_null($id_categoria)){
             $isset_pro=Productos::where('nombre_producto','=',$nombre_producto)->where('estado',true)->first();
             if(@count($isset_pro)==0){
@@ -49,7 +57,7 @@ class ProductosController extends Controller
                 $Productos->id_categoria=$id_categoria;
                 $Productos->descripcion=$descripcion;
                 $Productos->id_unidad=$id_unidad;
-                //$Productos->cantidad=$cantidad;
+                $Productos->codigo=$codigo;
                 $Productos->estado=true;
                 $Productos->imagen=$imagen;
                 $Productos->id_user=$id_user;

@@ -12,7 +12,7 @@ class nota_creditoController extends Controller
 {
     public function insertar(Request $request){
         $json=$request->input('json',null);
-        $params=json_decode($json);
+        $params=json_decode($json); 
         
 
         $tipo_nota=(!is_null($json) && isset($params->tipo_nota)) ? $params->tipo_nota : null;
@@ -24,6 +24,7 @@ class nota_creditoController extends Controller
         $descuento=(!is_null($json) && isset($params->descuento)) ? $params->descuento : null;
         $serie_venta_remplazo=(!is_null($json) && isset($params->serie_venta_remplazo)) ? $params->serie_venta_remplazo : null;
         $letrado=(!is_null($json) && isset($params->letrado)) ? $params->letrado : null;
+        $email=(!is_null($json) && isset($params->email)) ? $params->email : null;
 
         if($tipo_nota=="01" || $tipo_nota=="02" || $tipo_nota=="06" ){
             $modificarventa=Venta::where('id',$id_venta)->update(['estado'=>false]);
@@ -109,30 +110,18 @@ class nota_creditoController extends Controller
         $n_credito->serie_nota=$serie_nota;
         $n_credito->descuento=$descuento;
         $n_credito->id_venta_nueva=$id_venta_new['id'];
-        //$n_credito->letrado=$letrado;
+        $n_credito->email=$email;
+        $n_credito->letrado=$letrado;
 
         $seriesdelanota=nota_credito::where('serie_nota',$serie_nota)->first();
         if($tipo_nota!="02" || !is_null($correccion_ruc) ){
-            if(@count($isset_alm)==0){
-                $n_credito->save();
-                if($tipo_nota=='02'){
-
-                }
-                $data =array(
-                    'status'=>'succes',
-                    'code'=>200,
-                    'mensage'=>'guardado'
-                );
-                return response()->json($data,200);
-            }else{
-                $data =array(
-                    'status'=>'error',
-                    'code'=>400,
-                    'mensage'=>'ya existe'
-                );
-                return response()->json($data,200);
-            }
-            
+            $n_credito->save();
+            $data =array(
+                'status'=>'succes',
+                'code'=>200,
+                'mensage'=>'guardado'
+            );
+            return response()->json($data,200);    
         }else{
             $data =array(
                 'status'=>'error',
@@ -140,7 +129,6 @@ class nota_creditoController extends Controller
                 'mensage'=>$request
             );
             return response()->json($data,200);
-
         }
     }
     public function generarserienota($id){

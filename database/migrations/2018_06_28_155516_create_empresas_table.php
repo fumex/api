@@ -26,8 +26,11 @@ class CreateEmpresasTable extends Migration
             $table->string('web');
             $table->string('email');
             $table->string('imagen')->nullable();
+            $table->string('pfx')->nullable();
             $table->boolean('estado')->nullable()->default(true);
             $table->Integer('id_user');
+            $table->boolean('agente_retencion')->nullable()->default(false);
+            $table->boolean('agente_percepcion')->nullable()->default(false);
             $table->timestamps();
         });
     }

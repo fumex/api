@@ -95,7 +95,7 @@ class Detalle_cajaController extends Controller
         return response()->json($data,200);
     }
 
-    public function mostrarventas($id){
+    public function mostrarventas($id){ 
         $i=0;
         $ultventas=array();
         $consulta="";
@@ -157,14 +157,16 @@ class Detalle_cajaController extends Controller
     }
     public function getdetallecajas($id){
         return $consulta=detalle_caja::join('cajas','detalle_cajas.id_caja','cajas.id')
+        ->join('users','detalle_cajas.id_usuario','=','users.id')
         ->where('detalle_cajas.id',$id)
-        ->select('detalle_cajas.id','detalle_cajas.id_caja','detalle_cajas.abierta','detalle_cajas.created_at','detalle_cajas.id_usuario','detalle_cajas.monto_actual','detalle_cajas.monto_apertura','detalle_cajas.monto_cierre_efectivo','detalle_cajas.monto_cierre_tarjeta','detalle_cajas.updated_at','cajas.nombre')
+        ->select('users.name','users.apellidos','detalle_cajas.id','detalle_cajas.id_caja','detalle_cajas.abierta','detalle_cajas.created_at','detalle_cajas.id_usuario','detalle_cajas.monto_actual','detalle_cajas.monto_apertura','detalle_cajas.monto_cierre_efectivo','detalle_cajas.monto_cierre_tarjeta','detalle_cajas.updated_at','cajas.nombre')
         ->get();
     }
     public function getdetallecaja($id){
         return  $consulta=detalle_caja::join('cajas','detalle_cajas.id_caja','cajas.id')
+        ->join('users','detalle_cajas.id_usuario','=','users.id')
         ->where('cajas.id',$id)
-        ->select('detalle_cajas.id','detalle_cajas.id_caja','detalle_cajas.abierta','detalle_cajas.created_at','detalle_cajas.id_usuario','detalle_cajas.monto_actual','detalle_cajas.monto_apertura','detalle_cajas.monto_cierre_efectivo','detalle_cajas.monto_cierre_tarjeta','detalle_cajas.updated_at','cajas.nombre')
+        ->select('users.name','users.apellidos','detalle_cajas.id','detalle_cajas.id_caja','detalle_cajas.abierta','detalle_cajas.created_at','detalle_cajas.id_usuario','detalle_cajas.monto_actual','detalle_cajas.monto_apertura','detalle_cajas.monto_cierre_efectivo','detalle_cajas.monto_cierre_tarjeta','detalle_cajas.updated_at','cajas.nombre')
         ->get();
     }
 }

@@ -64,7 +64,7 @@ class Dettalle_UsuarioController extends Controller
         }
         return response()->json($data,200);
 
-    }
+    } 
     public function getdetalleudsuario($id){
         $Detalle_usuario=Detalle_usuario::where('id_user',$id)->get();
         
@@ -86,9 +86,11 @@ class Dettalle_UsuarioController extends Controller
     }
     public function getdetalleudsuarioactual($id){
         //$detalle=detalle_caja_usuario::where('estado',true)->get();
+        $caja=cajas::where('cajas.id',$id)->get()->first();
         $Detalle_usuario=Detalle_usuario::join('users','detalle_usuarios.id_user','=','users.id')
         ->join('detalle_caja_usuarios','detalle_caja_usuarios.id_vendedor','=','detalle_usuarios.id_user')
         ->where('detalle_caja_usuarios.id_caja',$id)
+        ->where('detalle_usuarios.id_sucursal',$caja->id_sucursal)
         //->whereNotIn('users.id',[$detalle['id_usuario']])
         //->where('detalle_caja_usuarios.estado',true)
         ->where('detalle_usuarios.permiso',true)

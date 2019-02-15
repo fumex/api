@@ -20,6 +20,7 @@ class CreatePagoDetallesTable extends Migration
             $table->Integer('cantidad');
             $table->float('precio_unitario');
             $table->boolean('estado')->nullable()->default(true);
+            //$table->boolean('vendible')->nullable()->default(true);
             $table->timestamps();
         });
     }

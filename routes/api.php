@@ -66,6 +66,9 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('auth/pagos-delete/{code}','PagoController@deletePago');
 
 	Route::get('auth/pagos_d/{id}','PagoController@deletePagoDetalle');
+	Route::get('getdetallepagosanulacion/{codigo}','PagoController@getdetallepagos');
+	Route::get('Anulacion_insertarIyM/{id}','PagoController@insertarmodeinven')->where(['id' => '[0-9]+']);
+	Route::get('Anulacion_borradealmacen/{id}','PagoController@borrardealmacen')->where(['id' => '[0-9]+']);
 	//***Detalles Pago*****
 	Route::post('auth/pago-detalle-add','PagoDetalleController@addPagoDetalle');
 	Route::get('auth/get','PagoDetalleController@getAlmacen');
@@ -188,7 +191,28 @@ Route::get('auth/logout','AuthenticateController@logout');
 	//     *********   Firma y Certificado Digital   ************
 	//---------------------------------------------------------------
 	Route::post('certificado-up','FirmaController@upCertificado');
-	Route::post('prueba','PruebaController@bole');
+	Route::post('prueba','PruebaController@factura');
+	Route::get('prue/{id}','PruebaController@company');
+	//***********************************************************************	
+	//------------------------Factura---------------------------------------
+	//***********************************************************************
+	Route::post('factura','FacturaController@factura');
+	//factura con persepcion
+	Route::post('factura-percepcion','FacturaController@facturaPercepcion');
+	//factura Gratuita
+	Route::post('factura-gratuita','FacturaController@facturaGratuita');
+	//***********************************************************************	
+	//------------------------Boleta---------------------------------------
+	//***********************************************************************
+	Route::post('boleta','BoletaController@boleta');
+	//***********************************************************************
+	//-----------------nota de credito y debito------------------------------
+	//***********************************************************************
+	Route::post('nota-credito','NotaController@notaCredito');
+	Route::post('nota-debito','NotaController@notaDebito');
+
+
+
 
 	//-------------------------------------------------------------
 	//------------clientes-----------------------------------------
@@ -256,6 +280,12 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('editar_detalle_caja_usuarios','Detalle_caja_usuarioController@modificar');
 	Route::get('eliminarusuariosporcaja/{id}','Detalle_caja_usuarioController@eliminartodacaja' )->where(['id' => '[0-9]+']);
 
+	//---------------CODIGO DE PRODUCTOS-----------------------------------------
+	
+	Route::post('insertar_codigo_productos_vendible','codigo_productoController@insertarvendible');
+	Route::get('getcodigo_productosporcaja/{id}','codigo_productoController@seleccionarcodigoporcajas' )->where(['id' => '[0-9]+']);
+
+	
 	//-----------------------------------------------------------------
 	//----------------Ventas--------------------------------------------------------
 	
@@ -277,6 +307,9 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('generarserienota/{id}','nota_creditoController@generarserienota');	
 	Route::post('guardarnotacredito','nota_creditoController@insertar');
 	Route::get('id_nota_creditos','nota_creditoController@getidnota');
+	//----------------Nota de Debito--------------------------------------------------------
+	Route::get('generarserien_debito/{id}','nota_debitoController@generarserienota');	
+	Route::post('guardarnotadebito','nota_debitoController@insertar');
 	//------------------------detalle nota de credito----------------------------------------------	
 	Route::post('guardardetallenotacredito','detalle_notacreditoController@insertar');
 	Route::get('pruebasnota/{id}','detalle_notacreditoController@prub');	
