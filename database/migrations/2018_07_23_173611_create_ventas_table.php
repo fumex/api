@@ -20,7 +20,8 @@ class CreateVentasTable extends Migration
             $table->integer('id_caja');
             $table->integer('id_cliente');
             $table->string('nro_documento');
-            //$table->string('razon_social');
+            $table->string('tipo_documento')->nullable();
+            $table->Decimal('descuento_global');
             $table->Decimal('total');
             $table->Decimal('pago_efectivo')->nullable();
             $table->Decimal('pago_tarjeta')->nullable();

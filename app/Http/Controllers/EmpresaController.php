@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 use App\Empresa;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Facades\Excel;
+
 class EmpresaController extends Controller
 {
     public function addEmpresa(Request $request){
+        //return $request;
         $create = Empresa::create($request->all());
         return response()->json($create);
     } 
@@ -46,12 +50,26 @@ class EmpresaController extends Controller
         	return response()->json('No  hay imagen');
         }   	
     }
+    
     public function getImagen($name){
         $file=Storage::disk('empresa')->get($name);
         return new Response($file,200);
     }
+    public function verificarexist(){
+        $empre=Empresa::get();
+        if(@count($empre)==0){
+            return response()->json(false);;
+        }else{
+            return response()->json(true);;
+        }
+    }
     public function dataEmpresa(){
         $empresa=Empresa::get()->first();
-        return response()->json($empresa);
+        if(@count($empresa)>=1){
+            return response()->json($empresa);
+        }else{
+            return "false";
+        }
+        
     }
 }

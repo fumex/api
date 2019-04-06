@@ -169,10 +169,13 @@ class VentaController extends Controller
         $total=$detalle_caja['monto_actual']+$total;
         $actualizar_caja=detalle_caja::where('id',$detalle_caja['id'])->update(['monto_actual'=>$total]);
 
+        $idventa=Venta::orderby('id')->get()->last();
+
         $data =array(
             'status'=>'succes',
             'code'=>200,
             'mensage'=>'registrado',
+            'serie'=>$idventa['serie_venta'],
         );
 
         return response()->json($data,200);

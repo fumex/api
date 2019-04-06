@@ -11,7 +11,7 @@ use App\Inventario;
 use App\Movimiento;
 use App\Almacenes;
 use App\Productos;
-use App\movimientos_detalle_almacen; 
+use App\movimientos_detalle_almacen;  
 
 class DetalleVentaController extends Controller
 {
@@ -70,12 +70,17 @@ class DetalleVentaController extends Controller
         ->where('detalle_almacen.id_producto','=',$id_producto)->get()->last();
             
         $total=$tock['stock']-$cantidad;
+        if($tock['stock']-$cantidad>0){
+            $costoactual=(($tock['stock'] *$tock['precio_compra'])-($cantidad*$tock['precio_compra']))/($tock['stock']-$cantidad);
+            $costoactualredondeado=round($costoactual*100)/100;
+        }else{
+            $costoactualredondeado=0;
+        }
         
-        $costoactual=(($tock['stock'] *$tock['precio_compra'])-($cantidad*$tock['precio_compra']))/($tock['stock']-$cantidad);
-        $costoactualredondeado=round($costoactual*100)/100;
         $m_d_a_ultimo=movimientos_detalle_almacen::where('id_detalle_almacen',$detalle_almacen['id'])->get()->last();
         if($costoactualredondeado!=$tock['precio_compra']){
             $m_d_almacen=new movimientos_detalle_almacen();
+            $m_d_almacen->id_usuario=$id_venta['id_usuario'];
             $m_d_almacen->id_detalle_almacen=$tock['id'];
             $m_d_almacen->descuento_anterior=$m_d_a_ultimo['descuento_anterior'];
             $m_d_almacen->descuento_actual=$m_d_a_ultimo['descuento_actual'];
@@ -91,11 +96,13 @@ class DetalleVentaController extends Controller
         //-------------------------actualizacionb monto caja actual---------------------------
         
         //-------------------------------------------------------------------------------------
+        $getdetalleventas=detalle_Ventas::get()->last();
         $data =array(
             'status'=>'succes',
             'code'=>200,
             'mensage'=>'registrado',
-            'stock'=>$tock
+            'stock'=>$tock,
+            'id'=>$getdetalleventas['id']
         );
 
         return response()->json($data,200);

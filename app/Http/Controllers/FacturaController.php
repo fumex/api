@@ -44,7 +44,7 @@ class FacturaController extends Controller
 	public function company($id){
 		$emp = json_decode(Empresa::find($id));
 		$address = new Address();
-		$address -> setUbigueo('080101') //averiguar
+		$address -> setUbigueo($emp->{'ubigeo'}) //averiguar
 				 -> setDepartamento($emp->{'departamento'})
 				 ->setProvincia($emp->{'provincia'})
 				 ->setDistrito($emp->{'distrito'})
@@ -54,8 +54,8 @@ class FacturaController extends Controller
 		$comp = new Company();
 		return $comp->setRuc('20000000001')
 				 //->setRuc($emp->{'ruc'})
-				 ->setRazonSocial('NASA SAC') //implmentar
-				 ->setNombreComercial($emp->{'nombre'})
+				 ->setRazonSocial($emp->{'nombre_comercial'}) //implmentar
+				 ->setNombreComercial($emp->{'nombre_comercial'})
 				 ->setAddress($address);
 	}
 	//-----------------Factura Normal--------------------------
@@ -71,7 +71,7 @@ class FacturaController extends Controller
 		$client=$this->client($venta->id_cliente);
 		//return $this->client($venta->id_cliente);
 		//Emisor
-		$company=$this->company(1); //falta traer desde aqui
+		//$company=$this->company(1); //falta traer desde aqui
 		
 		//Venta
 		$invoice = new Invoice();

@@ -10,7 +10,7 @@ class FirmaController extends Controller
     	if($request->hasFile('arch')){
     		$file = $request->arch;
     		$archivo=$request->file('arch');
-    		$path=$archivo->getClientOriginalExtension();
+    		$path=$archivo->getClientOriginalExtension(); 
 
     		\Storage::disk('certificado')->put($request->ruc.".".$path,\File::get($archivo));
 

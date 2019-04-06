@@ -136,7 +136,6 @@ class DetalleAlmacenController extends Controller
         ->where('detalle_almacen.stock','>',0)
         ->where('codigo_productos.estado',true)
         ->orderby('codigo_productos.id')
-
         ->select('codigo_productos.id AS id_codigo','productos.id','detalle_almacen.id AS id_detalle_almacen'
         ,'productos.descripcion','unidades.abreviacion','categorias.nombre','productos.nombre_producto'
         ,'productos.imagen','detalle_almacen.precio_venta','productos.codigo','detalle_almacen.descuento_maximo'

@@ -70,10 +70,10 @@ class PruebaController extends Controller
 
 	public function factura(Request $request){
 		$vnt=json_decode(Venta::find($request->id));
-
+		
 		$util = Util::getInstance();
 		//cliente
-		$client=$this->client($vnt->{'id_cliente'});
+		$client=$this->client('16');
 		
 		//Emisor
 		$company=$this->company(1); //falta traer desde aqui

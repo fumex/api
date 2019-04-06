@@ -176,8 +176,13 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('fecha','orden_depedidocontroler@fecha');
 	Route::get('prueba','InventarioController@prueba');
 
-
-
+	//--------------------------ubigeo-----------------------
+	Route::post('exel-up','ubigeoController@upubigeoexel');
+	Route::get('get-all','ubigeoController@vertodo');
+	Route::get('get-provincias','ubigeoController@verprovincias');
+	Route::get('get-departamentos','ubigeoController@verdepartamento');
+	//------------------------------------------------------	
+ 
 	//--------------------------Ventas-------------------------------
 	//-----------------------Empresa--------------------------------
 	Route::post('empresa-add','EmpresaController@addEmpresa');
@@ -187,6 +192,8 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::get('empresa-delete','EmpresaController@deleteEmpresa');
 	Route::get('empresas','EmpresaController@getEmpresas');
 	Route::post('imagen-up','EmpresaController@upImagen');
+	Route::get('verificarsiexisteempresa','EmpresaController@verificarexist');
+	
 	//---------------------------------------------------------------
 	//     *********   Firma y Certificado Digital   ************
 	//---------------------------------------------------------------
@@ -284,7 +291,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 	
 	Route::post('insertar_codigo_productos_vendible','codigo_productoController@insertarvendible');
 	Route::get('getcodigo_productosporcaja/{id}','codigo_productoController@seleccionarcodigoporcajas' )->where(['id' => '[0-9]+']);
-
+	Route::post('editarcodigo_producto','codigo_productoController@codigovendido');
 	
 	//-----------------------------------------------------------------
 	//----------------Ventas--------------------------------------------------------

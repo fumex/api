@@ -14,10 +14,10 @@ class ServicioController extends Controller
     
     public function getServicios(){
         $proveedores=DB::table('proveedors')
-                         ->join('tipo_proveedors','proveedors.tipo_proveedor','=','tipo_proveedors.id')
-                         ->select('proveedors.id','proveedors.nombre_proveedor','proveedors.ruc','proveedors.direccion','proveedors.telefono','proveedors.email','tipo_proveedors.tipo')
-                         ->where('proveedors.estado','=',true)->where('tipo_proveedors.operacion','=','Servicio')
-                         ->get();
+                        ->join('tipo_proveedors','proveedors.tipo_proveedor','=','tipo_proveedors.id')
+                        ->select('proveedors.id','proveedors.nombre_proveedor','proveedors.ruc','proveedors.direccion','proveedors.telefono','proveedors.email','tipo_proveedors.tipo')
+                        ->where('proveedors.estado','=',true)->where('tipo_proveedors.operacion','=','Servicio')
+                        ->get();
         return response()->json($proveedores);
     }
     public function code(){

@@ -74,6 +74,20 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        //--------------------archivos exel---------------------------- 
+        'entidades' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/exel/datos_entidades_gubernamentales'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        'productosexel' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/exel/productos'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        //------------------------------------------------------------- 
 
         //--------------------Documentos: XML, Cache, .PEM, PFX-------- 
         'certificado' => [

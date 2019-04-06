@@ -296,13 +296,16 @@ class InventarioController extends Controller
 
        }
 
-       public function seleccionar(Request $request){
+    public function seleccionar(Request $request){
+        
         $json=$request->input('json');
         $params=json_decode($json);
 
         $id_almacen	=(!is_null($json) && isset($params->id_almacen)) ? $params->id_almacen : null;
         $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
-
+         
+        
+        
         $listar2=Inventario::join('almacenes','inventarios.id_almacen','=','almacenes.id')
         ->join('productos','inventarios.id_producto','=','productos.id')
         ->select('inventarios.id','inventarios.created_at','almacenes.nombre','productos.nombre_producto','inventarios.descripcion','inventarios.precio','tipo_movimiento','inventarios.cantidad')
@@ -310,7 +313,7 @@ class InventarioController extends Controller
         ->where('id_almacen','=',$id_almacen)
         ->get();
         return $listar2;
-       }
+    }
 
     public function eliminar($id){
         $Inventario=Inventario::find($id);

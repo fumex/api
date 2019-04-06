@@ -104,7 +104,26 @@ class codigo_productoController extends Controller
         /*$categoria=Categoria::create($request->all());
         return $categoria;*/
     }
-    
+    public function codigovendido(Request $request){
+        $json=$request->input('json',null);
+        $params=json_decode($json);
+
+        $id_detalle_pago=(!is_null($json) && isset($params->id_detalle_pago)) ? $params->id_detalle_pago : null;
+        $id_codigo_producto=(!is_null($json) && isset($params->id_codigo_producto)) ? $params->id_codigo_producto : null;
+        $cantidad=(!is_null($json) && isset($params->cantidad)) ? $params->cantidad : null;
+
+        $i=0;
+        $codi_productos=codigo_producto::where('id',$id_codigo_producto)->get()->first();
+        while($i<$cantidad){
+            $getcod=codigo_producto::where('id_detalle_almacen',$codi_productos['id_detalle_almacen'])->where('estado',true)->orderby('id')->get()->first();
+            $edit_cod_pro=codigo_producto::where('id',$getcod['id'])->update(['estado'=> false,'accion'=>'Venta','id_detalle_tabla'=>$id_codigo_producto]);
+            $i++;
+
+        }
+
+        return $i;
+
+    }
     public function seleccionarcodigoporcajas($id){
         $productos=array();
         $i=0;
