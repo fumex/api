@@ -18,7 +18,7 @@ Route::post('auth/refresh','AuthenticateController@refresh');
 Route::get('auth/logout','AuthenticateController@logout');
 
 
-//Route::middleware(['jwt.auth'])->group(function(){
+Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('auth/me','AuthenticateController@me');
 	Route::get('auth/tasks','TaskController@getAll');
 	Route::post('auth/tasks','TaskController@add');
@@ -229,6 +229,10 @@ Route::get('auth/logout','AuthenticateController@logout');
 	Route::post('cliente-add','ClienteController@addCliente');
 	Route::post('cliente-update/{id}','ClienteController@updateCliente');
 	Route::get('cliente-delete/{id}','ClienteController@deleteCliente');
+	//------------Perimisos-----------------------------------------
+	//--------------------------------------------------------------
+	Route::post('add_permiso','PermisosController@insertar');
+	Route::post('get_permisos','PermisosController@revisar');
 	//----------------Impuesto-------------------------------------------
 	Route::get('impuestos','ImpuestoController@getImpuestos');
 	Route::get('impuesto/{id}','ImpuestoController@getImpuesto');
@@ -333,7 +337,7 @@ Route::get('auth/logout','AuthenticateController@logout');
 
 	Route::get('redonde/{cantidad}','PagoDetalleController@redondeo');
 
-//});
+});
 	Route::post('imagenes','UserController@upimagenes');
 	Route::post('imagenesproductos','ProductosController@upimagenes');
 	//-----------Imagenes-----------------------------------------

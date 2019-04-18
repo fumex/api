@@ -123,6 +123,7 @@ class InventarioController extends Controller
         $movimiento->productos_nombre=$productos_nombre['nombre_producto'];
         $movimiento->id_usuario=$usuario;
         $movimiento->id_usuario=$usuario;
+        $movimiento->productos_id=$id_producto;
         if(@count($cantmovimiento)==0){
             $movimiento->valor=$cantidad;
             $movimiento->valor_antiguo=null;
@@ -207,6 +208,7 @@ class InventarioController extends Controller
                         $m_d_almacen->precio_anterior=$m_d_a_ultimootro['precio_anterior'];
                         $m_d_almacen->precio_actual=$m_d_a_ultimootro['precio_actual'];
                         $m_d_almacen->precio_compra_actual=$otrocostoredondeado;
+                        $m_d_almacen->id_usuario=$usuario;
                         $m_d_almacen->precio_compra_anterior=$detalle_almacenotro['precio_compra'];
                         $m_d_almacen->save();
                     }

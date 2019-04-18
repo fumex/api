@@ -88,22 +88,20 @@ class UserController extends Controller
                 
                 $d_user->estado=true;
                 
-                if($d_user->rol=='admin'){
+                if($d_user->rol=='Administrador'){
                     $d_user->strd=1305;
-                    $d_user->save();
                     }
                 if($d_user->rol=='empleado'){
                     $d_user->strd=20;
-                    $d_user->save();
                 }
                 if($d_user->rol=='vendedor'){
                     $d_user->strd=1524;
-                    $d_user->save();
                 }
                 if($d_user->rol=='Encargado de Almacen'){
                     $d_user->strd=8450;
-                    $d_user->save();
+                    
                 }
+                $d_user->save();
                 $data =array(
                 'status'=>'succes',
                     'code'=>200,

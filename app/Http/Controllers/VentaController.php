@@ -140,13 +140,15 @@ class VentaController extends Controller
         $isc=(!is_null($json) && isset($params->isc)) ? $params->isc : null;
         $otro=(!is_null($json) && isset($params->otro)) ? $params->otro : null;
         $letrado=(!is_null($json) && isset($params->letrado)) ? $params->letrado : null;
+        $email=(!is_null($json) && isset($params->email)) ? $params->email : null;
 
         $cliente_nro=Cliente::where('id',$id_cliente)->value('nro_documento');
         $moneda_cod=(string)Moneda::where('id',$id_moneda)->value('codigo_sunat');
         $Venta=new Venta();
         
         $Venta->nro_documento=$cliente_nro;
-        $Venta->razon_social="borrar";
+        $Venta->descuento_global=0;
+        $Venta->email=0;
         $Venta->codigo_moneda=$moneda_cod;
         $Venta->serie_venta=$serie_venta;
         $Venta->tarjeta=$tarjeta;
@@ -176,6 +178,7 @@ class VentaController extends Controller
             'code'=>200,
             'mensage'=>'registrado',
             'serie'=>$idventa['serie_venta'],
+            'fecha'=>$idventa['created_at'],
         );
 
         return response()->json($data,200);
