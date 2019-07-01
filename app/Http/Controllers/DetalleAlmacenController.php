@@ -20,6 +20,13 @@ class DetalleAlmacenController extends Controller
         return $detalle_almacen;
     }
 
+    public function vertodo(){
+        $detalle_almacen=detalle_almacen::join('almacenes','detalle_almacen.id_almacen','almacenes.id')
+        ->join('productos','detalle_almacen.id_producto','productos.id')
+        ->select('detalle_almacen.id','detalle_almacen.precio_compra','detalle_almacen.precio_venta','detalle_almacen.stock','almacenes.nombre','productos.nombre_producto','detalle_almacen.descuento_maximo')
+        ->get();
+        return $detalle_almacen;
+    }
     public function insertar(Request $request){
         $json=$request->input('json',null);
         $params=json_decode($json);

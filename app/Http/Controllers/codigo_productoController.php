@@ -35,12 +35,12 @@ class codigo_productoController extends Controller
             if($vendible==true){
                 $terminal="T";
                 $buscardetallealmacen=detalle_almacen::where('id_producto',$id_producto)->where('id_almacen',$id_almacen)->where('vendible',true)->get()->last();
-                $id_detalle_almacen=$buscardetallealmacen->id;
+                $id_detalle_almacen=$buscardetallealmacen['id'];
                 $buscarentablacodigo=codigo_producto::where('id_detalle_almacen',$id_detalle_almacen)->where('vendible',true)->orderby('id')->get()->last();
             }else{
                 $terminal="F";
                 $buscardetallealmacen=detalle_almacen::where('id_producto',$id_producto)->where('id_almacen',$id_almacen)->where('vendible',false)->get()->last();
-                $id_detalle_almacen=$buscardetallealmacen->id;
+                $id_detalle_almacen=$buscardetallealmacen['id'];
                 $buscarentablacodigo=codigo_producto::where('id_detalle_almacen',$id_detalle_almacen)->where('vendible',false)->orderby('id')->get()->last();
             }
             

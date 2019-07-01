@@ -120,6 +120,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 
 	//***detalles_de almacen*******
 	Route::get('mostrarlamacen/{id}','DetalleAlmacenController@ver' );
+	Route::get('todoslosproductos','DetalleAlmacenController@vertodo' );
 	Route::get('almacen/{id}','DetalleAlmacenController@seleccionar' )->where(['id' => '[0-9]+']);
 	Route::get('almacen/eliminar/{id}','DetalleAlmacenController@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('almacen','DetalleAlmacenController@insertar');
@@ -307,6 +308,11 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('getventaporserie/{id}','VentaController@getventaporserie' );
 	Route::get('getventaporfecha/{fecha}/{id}','VentaController@getventasporfecha' )->where(['id' => '[0-9]+']);
 	Route::get('getventaporusuario/{fecha}/{id}','VentaController@getventaporusuario' )->where(['id' => '[0-9]+']);
+
+	Route::get('gteventahoy','VentaController@getventasdiarias' )->where(['id' => '[0-9]+']);
+	Route::get('getallventas','VentaController@getventastotales' )->where(['id' => '[0-9]+']);
+	Route::get('getventaporsucursal/{id}','VentaController@getventaporsucursal' )->where(['id' => '[0-9]+']);
+
 	Route::get('getproductosvendidos/{fecha}/{ID}','VentaController@getproductosvendidos' )->where(['id' => '[0-9]+']);
 	Route::get('getventaporid/{id}','VentaController@getventaporid' )->where(['id' => '[0-9]+']);
 

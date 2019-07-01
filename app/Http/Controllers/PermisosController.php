@@ -19,7 +19,7 @@ class PermisosController extends Controller
 
         $id_user=User::where('estado',true)->get()->last();
 
-        $count_per=Permisos_roles::where('url','=',$url)->where('tipo_permiso','pagina')->where('estado',true)->first();
+        $count_per=Permisos_roles::where('id_user',$id_user)->where('url','=',$url)->where('tipo_permiso','pagina')->where('estado',true)->first();
         if(@count($count_per)==0){
             $permisos=new Permisos_roles();
             $permisos->id_user=$id_user['id'];
@@ -34,7 +34,7 @@ class PermisosController extends Controller
                 'mensage'=>'registrado'
             );    
         }
-        $count_per=Permisos_roles::where('url','=',$url)->where('tipo_permiso',$tipo_permiso)->where('estado',true)->first();
+        $count_per=Permisos_roles::where('id_user',$id_user)->where('url','=',$url)->where('tipo_permiso',$tipo_permiso)->where('estado',true)->first();
         if(@count($count_per)==0 && !is_null($tipo_permiso)){
             $permisos=new Permisos_roles();
             $permisos->id_user=$id_user['id'];

@@ -297,6 +297,44 @@ class VentaController extends Controller
         ->select('ventas.id','users.apellidos','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at','users.name','ventas.id_usuario')
         ->get();
     }
+
+    public function getventasdiarias(){
+        $now = new \DateTime();
+        $fechainicial=$now->format('d_m_Y').' 00:00:00';
+        $fechafinal=$now->format('d_m_Y').' 23:59:59';
+        return $venta=Venta::join('clientes','ventas.id_cliente','=','clientes.id')
+        ->join('users','ventas.id_usuario','=','users.id')
+        ->join('cajas','ventas.id_caja','=','cajas.id')
+        ->join('sucursals','cajas.id_sucursal','sucursals.id')
+        ->whereBetween('ventas.created_at',[$fechainicial,$fechafinal])
+        ->select('ventas.id','users.apellidos','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at','users.name','ventas.id_usuario')
+        ->get();
+    }
+    public function getventastotales(){
+
+        return $venta=Venta::join('clientes','ventas.id_cliente','=','clientes.id')
+        ->join('users','ventas.id_usuario','=','users.id')
+        ->join('cajas','ventas.id_caja','=','cajas.id')
+        ->join('sucursals','cajas.id_sucursal','sucursals.id')
+        ->select('ventas.id','users.apellidos','ventas.serie_venta','ventas.id_caja','cajas.nombre AS namecaja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at','users.name','ventas.id_usuario')
+        ->orderby('created_at')
+        ->get();
+    }
+
+    public function getventaporsucursal($id){
+        $now = new \DateTime();
+        $fechainicial=$now->format('d_m_Y').' 00:00:00';
+        $fechafinal=$now->format('d_m_Y').' 23:59:59';
+        return $venta=Venta::join('clientes','ventas.id_cliente','=','clientes.id')
+        ->join('users','ventas.id_usuario','=','users.id')
+        ->join('cajas','ventas.id_caja','=','cajas.id')
+        ->join('sucursals','cajas.id_sucursal','sucursals.id')
+        ->where('sucursals.id',$id)
+        ->whereBetween('ventas.created_at',[$fechainicial,$fechafinal])
+        ->select('ventas.id','users.apellidos','ventas.serie_venta','ventas.id_caja','clientes.nombre','ventas.total','ventas.pago_efectivo','pago_tarjeta','ventas.created_at','users.name','ventas.id_usuario')
+        ->get();
+    }
+
     public function getproductosvendidos($fecha,$id){
         $fechainicial=$fecha.' 00:00:00';
         $fechafinal=$fecha.' 23:59:59';
