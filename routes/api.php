@@ -110,7 +110,7 @@ Route::middleware(['jwt.auth'])->group(function(){
 	Route::get('mostralamacenusuario/{id}','AlmacenesController@almacenusuario');
 
 	//***inventario*******
-	Route::get('inventario','InventarioController@ver' );
+	Route::get('inventario','InventarioController@ver' ); 
 	Route::post('inventarioselect','InventarioController@seleccionar' );
 	Route::get('inventario/eliminar/{id}','InventarioController@eliminar' )->where(['id' => '[0-9]+']);
 	Route::post('inventario','InventarioController@insertar');

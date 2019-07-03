@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\detalle_caja_usuario;
 use App\movimiento_vendedores;
 use App\cajas;
+use App\User;
 use Illuminate\Support\Facades\DB;
 
 class Detalle_caja_usuarioController extends Controller
@@ -108,16 +109,27 @@ class Detalle_caja_usuarioController extends Controller
         
         return response()->json($detalle_caja_usuario);
     }
-    //para la parte de evntas
+    //para la parte de evntas 
     public function getcajasporusuario($id){
-        $detalle_caja_usuario=detalle_caja_usuario::join('cajas','detalle_caja_usuarios.id_caja','=','cajas.id')
-        ->join('sucursals','cajas.id_sucursal','=','sucursals.id')
-        ->where('cajas.estado',true)
-        ->where('detalle_caja_usuarios.id_vendedor',$id)
-        ->select('cajas.id','cajas.nombre','cajas.descripcion','sucursals.nombre_sucursal')
-        ->get();
+        $user=User::where('id',$id)->get()->last();
+        if($user['superad']==true){
+            $detalle_caja_usuario=cajas::join('sucursals','cajas.id_sucursal','=','sucursals.id')
+            ->where('cajas.estado',true)
+            ->select('cajas.id','cajas.nombre','cajas.descripcion','sucursals.nombre_sucursal')
+            ->get();
+            
+            return response()->json($detalle_caja_usuario);
+        }else{  
+            $detalle_caja_usuario=detalle_caja_usuario::join('cajas','detalle_caja_usuarios.id_caja','=','cajas.id')
+            ->join('sucursals','cajas.id_sucursal','=','sucursals.id')
+            ->where('cajas.estado',true)
+            ->where('detalle_caja_usuarios.id_vendedor',$id)
+            ->select('cajas.id','cajas.nombre','cajas.descripcion','sucursals.nombre_sucursal')
+            ->get();
+            
+            return response()->json($detalle_caja_usuario);
+        }
         
-        return response()->json($detalle_caja_usuario);
     }
     public function eliminartodacaja($id){
         $movimiento_vendedores=new movimiento_vendedores();

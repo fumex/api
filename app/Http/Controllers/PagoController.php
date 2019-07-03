@@ -15,6 +15,7 @@ use App\Movimiento;
 use App\Almacenes;
 use App\TipoDocumento;
 use App\Productos;
+use App\User;
 class PagoController extends Controller
 {
     public function addPago(Request $request){
@@ -51,18 +52,28 @@ class PagoController extends Controller
     }
 //-------------------------------Lista de  pagos por usuarios----------------------------------------
     public function listPagos($id){
-       $pagos=DB::table('pagos')
-                    ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
-                    ->join('tipo_documentos','pagos.id_documento','=','tipo_documentos.id')
-                    ->join('almacenes','pagos.id_almacen','=','almacenes.id')
-                    ->join('sucursals','almacenes.id','=','sucursals.id_almacen')
-                    ->join('detalle_usuarios','sucursals.id','=','detalle_usuarios.id_sucursal')
-                    ->select('pagos.id','pagos.code','pagos.id_proveedor','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.exonerados','pagos.gravados','pagos.otro','pagos.fecha')
-                    ->where('detalle_usuarios.id_user','=',$id)
-                    ->where('detalle_usuarios.permiso','=',true)
-                    ->where('pagos.estado','=',true)
-                    ->get();
-        return response()->json($pagos);
+        $user=User::where('id',$id)->get()->last();
+        if($user['superad']==true){
+            $pagos=DB::table('pagos')
+            ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
+            ->where('pagos.estado','=',true)
+            ->get();
+            return response()->json($pagos);
+        }else{
+            $pagos=DB::table('pagos')
+            ->join('proveedors','pagos.id_proveedor','=','proveedors.id')
+            ->join('tipo_documentos','pagos.id_documento','=','tipo_documentos.id')
+            ->join('almacenes','pagos.id_almacen','=','almacenes.id')
+            ->join('sucursals','almacenes.id','=','sucursals.id_almacen')
+            ->join('detalle_usuarios','sucursals.id','=','detalle_usuarios.id_sucursal')
+            ->select('pagos.id','pagos.code','pagos.id_proveedor','proveedors.nombre_proveedor','tipo_documentos.documento','pagos.nroBoleta','almacenes.nombre','pagos.tipoPago','pagos.subtotal','pagos.igv','pagos.exonerados','pagos.gravados','pagos.otro','pagos.fecha')
+            ->where('detalle_usuarios.id_user','=',$id)
+            ->where('detalle_usuarios.permiso','=',true)
+            ->where('pagos.estado','=',true)
+            ->get();
+            return response()->json($pagos);
+        }
+      
     }
 //-------------------------------------------------Pago detalles--------------------------------------------
     public function getPagoDetalle($code){

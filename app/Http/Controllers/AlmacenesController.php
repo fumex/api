@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Almacenes;
 
+use App\User;
+
 class AlmacenesController extends Controller
 {
     public function ver(){
@@ -16,18 +18,27 @@ class AlmacenesController extends Controller
         
     }
     public function almacenusuario($id){
- 
-        $almacen=Almacenes::join('sucursals','almacenes.id','=','sucursals.id_almacen')
-        ->join('detalle_usuarios','sucursals.id','=',  'detalle_usuarios.id_sucursal')
-        ->where('detalle_usuarios.id_user','=',$id)
-        ->where('detalle_usuarios.permiso',true)
-        ->where('permiso','=',true)
-        ->where('almacenes.estado',true)
-        ->select('almacenes.id','almacenes.nombre','almacenes.descripcion','almacenes.direccion','almacenes.telefono','almacenes.id_user')
-        ->distinct('almacenes.nombre')
-        ->get();
+        $user=User::where('id',$id)->get()->last();
+        $alma1=null;
+        if($user['superad']==true){
+            return $alma1=Almacenes::where('almacenes.estado',true)
+            ->select('almacenes.id','almacenes.nombre','almacenes.descripcion','almacenes.direccion','almacenes.telefono','almacenes.id_user')
+            ->distinct('almacenes.nombre')
+            ->get();
+        }else{
+            $almacen=Almacenes::join('sucursals','almacenes.id','=','sucursals.id_almacen')
+            ->join('detalle_usuarios','sucursals.id','=',  'detalle_usuarios.id_sucursal')
+            ->where('detalle_usuarios.id_user','=',$id)
+            ->where('detalle_usuarios.permiso',true)
+            ->where('permiso','=',true)
+            ->where('almacenes.estado',true)
+            ->select('almacenes.id','almacenes.nombre','almacenes.descripcion','almacenes.direccion','almacenes.telefono','almacenes.id_user')
+            ->distinct('almacenes.nombre')
+            ->get();
 
-        return $almacen;
+            return $almacen;
+        }
+        
     }   
     public function insertar(Request $request){
         $json=$request->input('json',null);

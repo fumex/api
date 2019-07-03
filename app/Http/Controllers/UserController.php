@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     public function ver(){
-        return $listar=User::where('estado',true)->get();
+        return $listar=User::where('estado',true)->where('superad',false)->get();
     }
     public function modificarcontra($id,Request $request){
         /*if (! $user = $this->jwtAuth->parseToken()->authenticate()) {
@@ -87,7 +87,8 @@ class UserController extends Controller
                 $d_user->imagen=$imagen;
                 
                 $d_user->estado=true;
-                
+                $d_user->rol="admin";
+                $d_user->strd=1305;
                 if($d_user->rol=='Administrador'){
                     $d_user->strd=1305;
                     }

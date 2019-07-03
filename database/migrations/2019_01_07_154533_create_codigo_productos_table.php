@@ -15,7 +15,7 @@ class CreateCodigoProductosTable extends Migration
     {
         Schema::create('codigo_productos', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_detalle_almacen')->nullable()->default(null);
+            $table->integer('id_detalle_almacen');
             $table->string('numero_de_serie')->nullable()->default(null);
             $table->string('codigo_interno')->nullable()->default(null);
             $table->string('codigo_automatico');

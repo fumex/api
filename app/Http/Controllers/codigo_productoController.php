@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use App\codigo_producto;
 use App\detalle_almacen;
 use App\PagoDetalle;
+use App\Pago;
 
 class codigo_productoController extends Controller
 {
     public function insertarvendible(Request $request){
-        $json=$request->input('json',null);
+        $json=$request->input('json',null); 
         $params=json_decode($json);
         $nombre_producto=(!is_null($json) && isset($params->nombre_producto)) ? $params->nombre_producto : null;
         $id_producto=(!is_null($json) && isset($params->id_producto)) ? $params->id_producto : null;
@@ -23,6 +24,7 @@ class codigo_productoController extends Controller
         $id_usuario=(!is_null($json) && isset($params->id_usuario)) ? $params->id_usuario : null;
         
         $id_detalle_pago=PagoDetalle::get()->last();
+        $idpago=Pago::get()->last();
         $prefigocodigo=null;
         $numeromedio=0;
         $busquedaprefijo=null;
@@ -31,15 +33,15 @@ class codigo_productoController extends Controller
         $i=0;
         $terminal=null;
         
-        if(!is_null($id_producto) || !is_null($id_almacen) || !is_null($id_usuario) || !is_null($vendible)){
+        if(!is_null($id_producto)  || !is_null($id_usuario) || !is_null($vendible)){
             if($vendible==true){
                 $terminal="T";
-                $buscardetallealmacen=detalle_almacen::where('id_producto',$id_producto)->where('id_almacen',$id_almacen)->where('vendible',true)->get()->last();
+                $buscardetallealmacen=detalle_almacen::where('id_producto',$id_producto)->where('id_almacen',$idpago['id_almacen'])->where('vendible',true)->get()->last();
                 $id_detalle_almacen=$buscardetallealmacen['id'];
                 $buscarentablacodigo=codigo_producto::where('id_detalle_almacen',$id_detalle_almacen)->where('vendible',true)->orderby('id')->get()->last();
             }else{
                 $terminal="F";
-                $buscardetallealmacen=detalle_almacen::where('id_producto',$id_producto)->where('id_almacen',$id_almacen)->where('vendible',false)->get()->last();
+                $buscardetallealmacen=detalle_almacen::where('id_producto',$id_producto)->where('id_almacen',$idpago['id_almacen'])->where('vendible',false)->get()->last();
                 $id_detalle_almacen=$buscardetallealmacen['id'];
                 $buscarentablacodigo=codigo_producto::where('id_detalle_almacen',$id_detalle_almacen)->where('vendible',false)->orderby('id')->get()->last();
             }

@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->boolean('estado');
             $table->Integer('strd');
             $table->string('imagen');
+            $table->boolean('superad')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

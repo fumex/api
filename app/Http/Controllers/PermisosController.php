@@ -69,13 +69,21 @@ class PermisosController extends Controller
         //return $request;
         $permisos=Permisos_roles::where('url','=',$url)->where('id_user',$id)->where('estado',true)->get();
         $permisospagina=Permisos_roles::where('url','=',$url)->where('id_user',$id)->where('tipo_permiso','pagina')->where('estado',true)->get();
-        if(@count($permisospagina)==0){
+        $user=User::where('id',$id)->get()->last();
+        if($user['superad']==true){
             return $data =array(
-                'mensaje'=>false,
+                'mensaje'=>true,
             );
         }else{
-            return $permisos;
+            if(@count($permisospagina)==0){
+                return $data =array(
+                    'mensaje'=>false,
+                );
+            }else{
+                return $permisos;
+            }
         }
+        
         
        
     }     
